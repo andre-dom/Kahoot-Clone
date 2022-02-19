@@ -31,3 +31,8 @@ class QuizSerializer(WritableNestedModelSerializer):
         fields = ('slug', 'name', 'questions',)
         lookup_field = 'slug'
         depth = 2
+        
+    def validate(self, data):
+        if len(data['questions']) == 0:
+            raise serializers.ValidationError("Must be at least one question")
+        return data
