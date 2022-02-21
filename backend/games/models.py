@@ -20,8 +20,7 @@ class Game(models.Model):
 
 
 class Player(models.Model):
-    email = models.ForeignKey(User, null=False, on_delete=models.CASCADE, )
-
+    email = models.EmailField()
     game = models.ForeignKey(Game, null=False, related_name='players', on_delete=models.CASCADE, )
     UUID = models.UUIDField(editable=False, default=uuid.uuid4, unique=True, )
 
