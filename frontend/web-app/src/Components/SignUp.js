@@ -1,4 +1,5 @@
 import React from "react";
+import KahootState from '../Context/Kahoot/KahootState';
 import { useState } from "react";
 import {
   Container,
@@ -15,6 +16,11 @@ import {
 } from "@chakra-ui/react";
 
 const SignUp = () => {
+
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+
+
   return (
     <Center height="100vh">
       <Box
@@ -30,14 +36,14 @@ const SignUp = () => {
           <Center>
             <FormControl isRequired mt="20px">
               <Stack spacing={2}>
-                <FormLabel htmlFor="email">Email address</FormLabel>
+                <FormLabel htmlFor="username">User Name</FormLabel>
                 <Input
-                  placeholder="email@example.com"
+                  placeholder="username"
                   size="md"
                   variant="filled"
                   width="auto"
-                  // value={email}
-                  // onChange = {(e) => {setEmail(e.target.value)}}
+                  value={userName}
+                  onChange = {(e) => {setUserName(e.target.value)}}
                 ></Input>
 
                 <FormLabel htmlFor="password">Password</FormLabel>
@@ -47,12 +53,19 @@ const SignUp = () => {
                   size="md"
                   variant="filled"
                   width="auto"
-                  // value = {password}
-                  // onChange = {(e => {setPassword(e.target.value)})}
+                  value = {password}
+                  onChange = {(e => {setPassword(e.target.value)})}
                 ></Input>
               </Stack>
-              <Button mt="20px" colorScheme="teal" size="sm" width="100%">
-                Signup
+              <Button 
+              mt="20px" 
+              colorScheme="teal" 
+              size="sm" 
+              width="100%"
+              type="submit"
+              onClick={SignUp}
+              >
+                Sign Up
               </Button>
             </FormControl>
           </Center>
