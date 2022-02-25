@@ -8,17 +8,21 @@ from django.contrib.auth.models import User
 
 class Quiz(models.Model):
     name = models.CharField(max_length=30)
-    creator = models.ForeignKey(User, related_name='quizzes', on_delete=models.CASCADE,)
+    creator = models.ForeignKey(User, related_name='quizzes', on_delete=models.CASCADE, )
+    # used to make objects unique by providing a '-' inside key's syntax
     slug = AutoSlugField(populate_from='name', unique=True, editable=False)
 
+    # not sure what this will be used for right now...
     def num_questions(self):
         return len(self.questions.all())
 
+    # Django will use the result of that function to display objects of that type for example in the admin interface.
     def __str__(self):
         return self.name
 
 
 class Question(models.Model):
+
     question_body = models.TextField()
     quiz = models.ForeignKey('Quiz', related_name='questions', on_delete=models.CASCADE, )
     correct_answer = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(4)])

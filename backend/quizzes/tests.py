@@ -96,5 +96,46 @@ class QuizPostTests(APITestCase):
         response = self.client.post(url, data, format='json')
         self.client.force_authenticate(user=None)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {"non_field_errors:"["Must have exactly 4 answers!"]})
 
+    def test_post_quiz_with_5_answers(self):
+        """
+        If a quiz has a question with 5 answers, fail to validate
+        """
 
+        url = reverse("quiz-list")
+        data = {
+            "name": "string",
+            "questions": [
+                {
+                    "question_body": "string",
+                    "answers": [
+                        {
+                            "answer_body": "a",
+
+                        },
+                        {
+                            "answer_body": "b",
+
+                        },
+                        {
+                            "answer_body": "c",
+
+                        },
+                        {
+                            "answer_body": "d"
+                        },
+                        {
+                            "answer_body": "e"
+                        }
+                    ],
+                    "correct_answer": 4
+                }
+            ]
+        }
+        self.client.force_authenticate(user=self.user1)
+
+        response = self.client.post(url, data, format='json')
+        self.client.force_authenticate(user=None)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {"non_field_errors:"["Must have exactly 4 answers!"]})

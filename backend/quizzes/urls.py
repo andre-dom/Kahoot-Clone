@@ -6,5 +6,6 @@ router = routers.DefaultRouter()
 router.register('quizzes', views.QuizView)
 
 urlpatterns = [
+
     path('', include(router.urls))
 ]
