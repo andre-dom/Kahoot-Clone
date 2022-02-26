@@ -1,4 +1,5 @@
 import React from "react";
+import KahootContext from "../Context/Kahoot/kahootContext";
 import { useState, useContext } from "react";
 import { Navigate, useNavigate, Link } from "react-router-dom";
 
@@ -18,16 +19,35 @@ import {
 } from "@chakra-ui/react";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [userName, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const kahootContext = useContext(KahootContext); 
+  const navigate = useNavigate(); 
+
+  const { Login, authed } = kahootContext; 
+
   const linkStyle = {
     margin: "1rem",
     textDecoration: "none",
     color: "blue",
   };
 
-  console.log("email: ", email);
-  console.log("password: ", password);
+  const isEmpty = (str) => {
+    return (!str || str.length === 0);
+  }
+
+  const handleLogin = async () => {
+
+    if(!isEmpty(userName) && !isEmpty(password)) {
+
+      await Login(userName, password)
+
+      console.log('handlelogin if statement'); 
+
+      navigate('/Dashboard')
+    }
+
+  };
 
   return (
     <Center height="100vh">
@@ -51,9 +71,9 @@ const Login = () => {
                     size="md"
                     variant="filled"
                     width="auto"
-                    value={email}
+                    value={userName}
                     onChange={(e) => {
-                      setEmail(e.target.value);
+                      setUsername(e.target.value);
                     }}
                   ></Input>
 
@@ -70,18 +90,26 @@ const Login = () => {
                     }}
                   ></Input>
                 </Stack>
-                <Button mt="20px" colorScheme="teal" size="sm" width="100%">
+                <Button 
+                mt="20px" 
+                colorScheme="teal" 
+                size="sm" 
+                width="100%"
+                onClick={handleLogin}
+                >
                   Login
                 </Button>
               </FormControl>
             </Center>
           </Container>
         </Box>
-        <HStack>
-          <p pr="5px">Don't have an account yet?</p>
-          <Link style={linkStyle} to="/">
-            SignUp
-          </Link>
+        <HStack pl="55px">
+          <Center>
+            <p>Don't have an account yet?</p>
+            <Link style={linkStyle} to="/">
+              SignUp
+            </Link>
+          </Center>
         </HStack>
       </Stack>
     </Center>
@@ -89,3 +117,5 @@ const Login = () => {
 };
 
 export default Login;
+
+

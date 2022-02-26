@@ -5,23 +5,28 @@ import KahootState from "./Context/Kahoot/KahootState";
 import Login from "./Components/Login";
 import SignUp from "./Components/SignUp";
 import Dashboard from "./Components/Dashboard";
-import { Divider } from "@chakra-ui/react";
+import RequireAuth from "./Context/RequireAuth";
 
 const App = () => {
   return (
-    // <BrowserRouter>
-    //   <KahootState>
-    //     <div>
-    //       <Routes>
-    //         <Route path="/" element={<SignUp />} />
-    //         <Route path="/Login" element={<Login />} />
-    //       </Routes>
-    //     </div>
-    //   </KahootState>
-    // </BrowserRouter>
-    <div>
-      <Dashboard />
-    </div>
+    <BrowserRouter>
+      <KahootState>
+        <div>
+          <Routes>
+            <Route path="/" element={<SignUp />} />
+            <Route path="/Login" element={<Login />} />
+            <Route path="/DashBoard" 
+            element={
+              <RequireAuth>
+                <Dashboard />
+              </RequireAuth>
+            }
+            />
+          </Routes>
+        </div>
+      </KahootState>
+    </BrowserRouter>
+   
   );
 };
 

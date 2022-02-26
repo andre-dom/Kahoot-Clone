@@ -28,14 +28,6 @@ const Main = () => {
           color="gray.500"
         >
           <QuizCard />
-          <QuizCard />
-          <QuizCard />
-          <QuizCard />
-          <QuizCard />
-          <QuizCard />
-          <QuizCard />
-          <QuizCard />
-          <QuizCard />
         </SimpleGrid>
       </Box>
     </Box>

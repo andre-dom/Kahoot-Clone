@@ -4,7 +4,7 @@ import { Box, Button, Text, Center } from "@chakra-ui/react";
 
 const QuizCard = () => {
   return (
-    <Box boxShadow="md" rounded="md" bg="white" height="200px">
+    <Box boxShadow="md" rounded="md" bg="white" height="200px" width = "330px">
       <Box
         display="flex"
         alignItems="center"

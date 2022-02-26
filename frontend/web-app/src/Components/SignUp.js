@@ -1,6 +1,7 @@
 import React from "react";
-import KahootState from "../Context/Kahoot/KahootState";
-import { useState } from "react";
+import KahootContext from "../Context/Kahoot/kahootContext";
+
+import { useState, useContext } from "react";
 import { Navigate, useNavigate, Link } from "react-router-dom";
 
 import {
@@ -19,13 +20,39 @@ import {
 } from "@chakra-ui/react";
 
 const SignUp = () => {
-  const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
+
   const linkStyle = {
     margin: "1rem",
     textDecoration: "none",
     color: "blue",
   };
+
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const kahootContext = useContext(KahootContext)
+  const navigate = useNavigate(); 
+
+  const { SignUp, authed } = kahootContext; 
+
+  const isEmpty = (str) => {
+    return (!str || str.length === 0);
+  }
+
+  const handleSignUp = async () => {
+
+    console.log(userName); 
+    console.log(password); 
+    console.log('authed: ', authed)
+
+    if(!isEmpty(userName) && !isEmpty(password)) {
+
+      await SignUp(userName, password)
+
+      console.log('navigate to dashboard not working :( authed is ', authed); 
+      navigate('/Dashboard'); 
+    }
+  }; 
+
 
   return (
     <Center height="100vh">
@@ -74,7 +101,7 @@ const SignUp = () => {
                   size="sm"
                   width="100%"
                   type="submit"
-                  onClick={SignUp}
+                  onClick={handleSignUp}
                 >
                   Sign Up
                 </Button>
@@ -82,11 +109,13 @@ const SignUp = () => {
             </Center>
           </Container>
         </Box>
-        <HStack>
-          <p pr="5px">Already have an account?</p>
-          <Link style={linkStyle} to="/Login">
-            Login
-          </Link>
+        <HStack pl="55px">
+          <Center>
+            <p>Already have an account?</p>
+            <Link style={linkStyle} to="/Login">
+              Login
+            </Link>
+          </Center>
         </HStack>
       </Stack>
     </Center>
