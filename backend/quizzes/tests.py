@@ -96,7 +96,7 @@ class QuizPostTests(APITestCase):
         response = self.client.post(url, data, format='json')
         self.client.force_authenticate(user=None)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {"non_field_errors:"["Must have exactly 4 answers!"]})
+        self.assertEqual(response.data, {"questions": [{"non_field_errors": ["Must be exactly 4 answers to each question"]}]})
 
     def test_post_quiz_with_5_answers(self):
         """
@@ -138,4 +138,4 @@ class QuizPostTests(APITestCase):
         response = self.client.post(url, data, format='json')
         self.client.force_authenticate(user=None)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {"non_field_errors:"["Must have exactly 4 answers!"]})
+        self.assertEqual(response.data, {"questions": [{"non_field_errors": ["Must be exactly 4 answers to each question"]}]})
