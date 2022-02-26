@@ -39,15 +39,15 @@ class QuizPostTests(APITestCase):
                     "question_body": "string",
                     "answers": [
                         {
-                            "answer_body": "a",
+                            "answer_body": "a"
 
                         },
                         {
-                            "answer_body": "b",
+                            "answer_body": "b"
 
                         },
                         {
-                            "answer_body": "c",
+                            "answer_body": "c"
 
                         },
                         {
@@ -75,15 +75,15 @@ class QuizPostTests(APITestCase):
                     "question_body": "string",
                     "answers": [
                         {
-                            "answer_body": "a",
+                            "answer_body": "a"
 
                         },
                         {
-                            "answer_body": "b",
+                            "answer_body": "b"
 
                         },
                         {
-                            "answer_body": "c",
+                            "answer_body": "c"
 
                         }
 
@@ -111,15 +111,15 @@ class QuizPostTests(APITestCase):
                     "question_body": "string",
                     "answers": [
                         {
-                            "answer_body": "a",
+                            "answer_body": "a"
 
                         },
                         {
-                            "answer_body": "b",
+                            "answer_body": "b"
 
                         },
                         {
-                            "answer_body": "c",
+                            "answer_body": "c"
 
                         },
                         {
