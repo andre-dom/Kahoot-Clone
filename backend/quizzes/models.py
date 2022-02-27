@@ -20,9 +20,11 @@ class Quiz(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = 'quizzes'
+
 
 class Question(models.Model):
-
     question_body = models.TextField()
     quiz = models.ForeignKey('Quiz', related_name='questions', on_delete=models.CASCADE, )
     correct_answer = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(4)])
