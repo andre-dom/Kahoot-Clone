@@ -7,8 +7,14 @@ import {
   LOGIN,
   SIGNUP,
   LOGOUT,
-  SET_TOKEN
+  SET_TOKEN,
+  SET_AUTH
 } from '../types'; 
+
+//!---------------------------------------------------------------------------------
+//! DO NOT USE THIS FILE ANYMORE. Auth state moved to AuthProvider.js 
+//! This page will hold api calls to quizzes (I think. The structure has to be figured out)
+//!---------------------------------------------------------------------------------
 
 const KahootState = props => {
 
@@ -51,7 +57,7 @@ const KahootState = props => {
         payload: true
       }); 
 
-     // console.log('dispatch was called. Here is authed: ', state.authed); 
+      //console.log('dispatch was called. Here is authed: ', state.authed); 
 
 
     } catch (e) {
@@ -101,11 +107,11 @@ const KahootState = props => {
         payload: true
       });
 
-      console.log('login(): dispatch was called. Here is authed: ', state.authed);
+      //console.log('login(): dispatch was called. Here is authed: ', state.authed);
 
     } catch (e) {
 
-      console.log(e); 
+      console.log('Error: ', e); 
 
       return false; 
 
@@ -117,6 +123,10 @@ const KahootState = props => {
 
   const Logout = async () => {
 
+    console.log('logout():', state.token); 
+
+    // const test = JSON.parse(state.token);
+
     
 
     try {
@@ -125,12 +135,13 @@ const KahootState = props => {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Token ${state.token}`
-        }
+        },
+      
       }); 
 
       const result = await response.json(); 
 
-      console.log("logout ", result); 
+      // console.log("logout ", result); 
 
     
       dispatch({
@@ -138,20 +149,31 @@ const KahootState = props => {
         payload: false
       })
 
-      console.log('logout(): dispatch was called. Here is authed: ', state.authed);
+      // set
+
+      //  console.log('logout(): dispatch was called. Here is authed: ', state.authed);
 
     } catch (e) {
 
-      console.log(e); 
+      console.log('error: ', e); 
 
     }
   
     
   }
 
+  const setAuth = (payload) => {
+
+    dispatch({
+      type: SET_AUTH,
+      payload: payload 
+    }); 
+  }
+
   const values = {
     authed: state.authed, 
     token: state.token,
+    setAuth,
     SignUp,
     Login,
     Logout
