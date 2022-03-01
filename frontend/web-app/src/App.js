@@ -18,16 +18,18 @@ const App = () => {
         {/* public routes */}
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
-
+        
         {/* protected routes */}
         <Route element = {<RequireAuth/>}>
-          <Route element = {<KahootProvider/>}>
-            <Route path="/dashboard" element = {<Dashboard/>}/>
-          </Route>
+            <Route path="/dashboard" element = {
+              <KahootProvider> 
+                <Dashboard/> 
+              </KahootProvider>
+              }/>
         </Route>        
 
-          {/* catch all (404 page) */}
-          <Route path= "*" element = {<Missing/>}/>
+        {/* catch all (404 page) */}
+        <Route path= "*" element = {<Missing/>}/>
       </Route>
     </Routes>
   
