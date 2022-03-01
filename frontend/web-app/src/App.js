@@ -21,12 +21,10 @@ const App = () => {
 
         {/* protected routes */}
         <Route element = {<RequireAuth/>}>
-          <KahootProvider>
+          <Route element = {<KahootProvider/>}>
             <Route path="/dashboard" element = {<Dashboard/>}/>
-          </KahootProvider>
-        </Route>
-
-        
+          </Route>
+        </Route>        
 
           {/* catch all (404 page) */}
           <Route path= "*" element = {<Missing/>}/>
