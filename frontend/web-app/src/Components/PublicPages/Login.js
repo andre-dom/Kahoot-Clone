@@ -8,8 +8,6 @@ import {
   Heading,
   FormControl,
   FormLabel,
-  FormErrorMessage,
-  FormHelperText,
   Input,
   Center,
   Box,
@@ -41,12 +39,10 @@ const Login = () => {
 
   // Username State
   const [user, setUser] = useState('');
-  const [validName, setValidName] = useState(false);
   const [userFocus, setUserFocus] = useState(false); 
 
   //Password State
   const [pwd, setPwd] = useState("");
-  const [validPwd, setValidPwd] = useState(false); 
   const [pwdFocus, setPwdFocus] = useState(false); 
 
   //Error message state

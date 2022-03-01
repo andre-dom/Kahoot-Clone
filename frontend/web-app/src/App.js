@@ -7,6 +7,7 @@ import Login from "./Components/PublicPages/Login";
 import SignUp from "./Components/PublicPages/SignUp";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import RequireAuth from "./Context/RequireAuth";
+import { KahootProvider } from "./Context/Kahoot/KahootProvider";
 
 const App = () => {
   return (
@@ -20,7 +21,9 @@ const App = () => {
 
         {/* protected routes */}
         <Route element = {<RequireAuth/>}>
-          <Route path="/dashboard" element = {<Dashboard/>}/>
+          <KahootProvider>
+            <Route path="/dashboard" element = {<Dashboard/>}/>
+          </KahootProvider>
         </Route>
 
         
