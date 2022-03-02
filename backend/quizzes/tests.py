@@ -11,7 +11,14 @@ class QuizPostTests(APITestCase):
         self.user1 = User.objects.create(username='user1')
         self.user1.set_password("password")
         self.user1.save()
-
+    def test_get_question_with_less_than_1_correct_answers(self):
+        """
+        If a question has less than 1 correct answer, fail to validate
+        """
+        url = reverse("quiz-list")
+        data = {
+            
+        }
     def test_post_quiz_with_no_questions(self):
         """
         If a quiz has no questions, fail to validate
