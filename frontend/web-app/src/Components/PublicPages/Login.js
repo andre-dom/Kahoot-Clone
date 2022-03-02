@@ -32,7 +32,7 @@ const Login = () => {
   const navigate = useNavigate(); 
   const location = useLocation(); 
 
-  const from = location.state?.from?.pathname || '/'; 
+  const from = location.state?.from?.pathname || '/dashboard'; 
 
   const userRef = useRef(); 
   const errorRef = useRef(); 
@@ -93,7 +93,7 @@ const Login = () => {
         },
         body: JSON.stringify(data)
       }); 
-  
+  //* we can do response.status to get the error code  
       const result = await response.json(); 
 
       const token = result?.auth_token; 

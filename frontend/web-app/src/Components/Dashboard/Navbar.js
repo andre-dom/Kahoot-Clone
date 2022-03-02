@@ -25,6 +25,7 @@ const Navbar = () => {
       const result = await response;  
 
       setAuth(false); 
+      localStorage.clear(); 
       navigate('/Login'); 
 
     } catch (e) {
