@@ -31,7 +31,7 @@ class Players(models.Model):
 
 class Question_Answer(models.Model):
     #fix this
-    player = models.ForeignKey('Player',related_name='question_answers',on_delete=models.CASCADE,)
+    # player = models.ForeignKey('Player',related_name='question_answers',on_delete=models.CASCADE,)
     question = models.ForeignKey(Question,null=True,related_name='question_answers',on_delete=models.CASCADE)
     answer = models.ForeignKey(Answer,null=True,related_name='question_answers',on_delete=models.CASCADE)
 

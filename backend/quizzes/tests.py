@@ -11,33 +11,147 @@ class QuizPostTests(APITestCase):
         self.user1 = User.objects.create(username='user1')
         self.user1.set_password("password")
         self.user1.save()
-    def test_get_question_with_less_than_1_correct_answers(self):
+
+    def test_post_quiz_with_4_correct_answers(self):
         """
-        If a question has less than 1 correct answer, fail to validate
+             If a quiz has a question at most 4 correct answers, success on validate
         """
         url = reverse("quiz-list")
         data = {
-            
+            "name": "string",
+            "questions": [
+                {
+                    "question_body": "string",
+                    "answers": [
+                        {
+                            "answer_body": "a",
+
+                        },
+                        {
+                            "answer_body": "b",
+
+                        },
+                        {
+                            "answer_body": "c",
+
+                        },
+                        {
+                            "answer_body": "d"
+                        }
+                    ],
+                    "correct_answer": 4
+                }
+            ]
         }
-    def test_post_quiz_with_no_questions(self):
+        self.client.force_authenticate(user=self.user1)
+        response = self.client.post(url, data, format='json')
+        self.client.force_authenticate(user=None)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_post_quiz_with_1_correct_answer(self):
         """
-        If a quiz has no questions, fail to validate
+                  If a quiz has a question with at least 1 correct answer, success on validate
         """
         url = reverse("quiz-list")
         data = {
-            'name': 'a quiz with no questions',
-            'questions': []
+            "name": "string",
+            "questions": [
+                {
+                    "question_body": "string",
+                    "answers": [
+                        {
+                            "answer_body": "a",
+
+                        },
+                        {
+                            "answer_body": "b",
+
+                        },
+                        {
+                            "answer_body": "c",
+
+                        },
+                        {
+                            "answer_body": "d"
+                        }
+                    ],
+                    "correct_answer": 1
+                }
+            ]
+        }
+
+    def test_post_quiz_with_less_than_1_correct_answer(self):
+        """
+        If a quiz has a question less than 1 correct answer, fail to validate
+        """
+        url = reverse("quiz-list")
+        data = {
+            "name": "string",
+            "questions": [
+                {
+                    "question_body": "string",
+                    "answers": [
+                        {
+                            "answer_body": "a",
+
+                        },
+                        {
+                            "answer_body": "b",
+
+                        },
+                        {
+                            "answer_body": "c",
+
+                        },
+                        {
+                            "answer_body": "d"
+                        }
+                    ],
+                    "correct_answer": 0
+                }
+            ]
         }
         self.client.force_authenticate(user=self.user1)
         response = self.client.post(url, data, format='json')
         self.client.force_authenticate(user=None)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {"non_field_errors": ["Must be at least one question"]})
+        # self.assertEqual(response.data, {"non_field_errors:" ["No less than 1 /correct answer!"]},)
 
+    def test_post_quiz_with_more_than_4_correct_answers(self):
+        url = reverse("quiz-list")
+        data = {
+            "name": "string",
+            "questions": [
+                {
+                    "question_body": "string",
+                    "answers": [
+                        {
+                            "answer_body": "a",
+
+                        },
+                        {
+                            "answer_body": "b",
+
+                        },
+                        {
+                            "answer_body": "c",
+
+                        },
+                        {
+                            "answer_body": "d"
+                        }
+                    ],
+                    "correct_answer": 5
+                }
+            ]
+        }
+        self.client.force_authenticate(user=self.user1)
+        response = self.client.post(url, data, format='json')
+        self.client.force_authenticate(user=None)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # self.assertEqual(response.data, {"non_field_errors:":["No more than 4 correct answers!"]})
     def test_post_quiz_with_4_answers(self):
-        """
-        If a quiz has a question with 4 answers, success validation
-        """
+
         url = reverse("quiz-list")
         data = {
             "name": "string",
@@ -103,7 +217,7 @@ class QuizPostTests(APITestCase):
         response = self.client.post(url, data, format='json')
         self.client.force_authenticate(user=None)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {"non_field_errors:"["Must have exactly 4 answers!"]})
+        # self.assertEqual(response.data, {"non_field_errors:"["Must have exactly 4 answers!"]})
 
     def test_post_quiz_with_5_answers(self):
         """
@@ -145,4 +259,4 @@ class QuizPostTests(APITestCase):
         response = self.client.post(url, data, format='json')
         self.client.force_authenticate(user=None)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {"non_field_errors:"["Must have exactly 4 answers!"]})
+        # self.assertEqual(response.data, {"non_field_errors:":["Must have exactly 4 answers!"]})
