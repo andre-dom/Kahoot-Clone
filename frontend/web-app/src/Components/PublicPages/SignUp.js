@@ -1,14 +1,13 @@
 import React from "react";
 import useAuth from "../../hooks/useAuth";
 import { useState, useRef, useEffect } from "react";
-import { Navigate, useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import {
   Container,
   Heading,
   FormControl,
   FormLabel,
-  FormErrorMessage,
   FormHelperText,
   Input,
   Center,
@@ -25,9 +24,6 @@ const USER_REGEX = /^[A-Z][a-z0-9@#$%_.]{4,23}/
 const PWD_REGEX = /[A-Z][a-z0-9@#$%_.]{7,24}/
 
 const SignUp = () => {
-  /*
-  * TODO: Need to fix css for the <Alert/> component. 
-  */
   
   // getting auth state from the global AuthContext 
   const { setAuth } = useAuth(); 
@@ -48,7 +44,7 @@ const SignUp = () => {
 
   //Error message state
   const [errorMessage, setErrorMessage] = useState(''); 
-  const [error, setError] = useState(true); 
+  const [error, setError] = useState(false); 
 
 
   // will test the user input once the user starts typing
@@ -78,9 +74,55 @@ const SignUp = () => {
   useEffect(() => {
 
     setErrorMessage(''); 
+    setError(false); 
 
   }, [user, pwd])
 
+  const isEmpty = (str) => {
+    return (!str || str.length === 0);
+  }
+
+  /**
+   * Makes a request to the backend API to login and returns a token 
+   */
+  const login = async (data) => {
+    
+    const response = await fetch('http://127.0.0.1:8000/auth/token/login/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }); 
+
+    if(!response.ok) {
+
+      setError(true); 
+
+      if(response.status === 400) { //? What should we print out for each status
+       
+        setErrorMessage(`Status ${response.status}. Please Try Again`);
+
+      } else if(response.status === 401) {
+
+        setErrorMessage(`Status ${response.status}. Please Try Again`);
+
+      }
+
+      errorRef.current.focus();
+
+      return; 
+
+    } else {
+
+      const result = await response.json(); 
+
+      const token = result?.auth_token; 
+
+      return token; 
+
+    }
+  }
 
   /**
    * Makes a request to the backend API to create a user account
@@ -93,7 +135,19 @@ const SignUp = () => {
     const test2 = PWD_REGEX.test(pwd); 
 
     if(!test || !test2) {
+      
+      setError(true); 
+      
       setErrorMessage('Invalid Entry'); 
+      
+      return; 
+
+    } else if(isEmpty(user) || isEmpty(pwd)) {
+      
+      setError(true); 
+      
+      setErrorMessage('Input is empty!'); 
+
       return; 
     }
 
@@ -102,43 +156,51 @@ const SignUp = () => {
       "password": pwd
     }
 
-    try {
+    const response = await fetch('http://127.0.0.1:8000/auth/users/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data) 
+    });
 
-      const response = await fetch('http://127.0.0.1:8000/auth/users/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data) 
-      });
+    if(!response.ok) {
 
-      const result = await response.json(); 
+      setError(true); 
+
+      if(response.status === 400) { //? What should we print out for each status
+        setErrorMessage(`Status ${response.status}. Please Try Again`);
+
+      } else if(response.status === 401) {
+
+        setErrorMessage(`Status ${response.status}. Please Try Again`);
+
+      }
+
+      errorRef.current.focus();
+
+      return; 
       
-      setAuth({user, pwd}); 
-      setUser(''); 
-      setPwd(''); 
+    } else {
 
-      navigate('/dashboard'); 
-
-    } catch (err) {
-
-      //TODO: These error messages don't show up. Needs debugging
-      //TODO: Need to check if matching error response with API
-      if (!err?.response) {
-
-        setErrorMessage('No Server Response');
+      const result = await response.json();
       
-      } else if (err.response?.status === 409) {
-      
-        setErrorMessage('Username Taken');
-      
-      } else {
+      const token = await login(data); 
 
-        setErrorMessage('Registration Failed')
-      
+      if(isEmpty(token)) {
+        
+        setError(true); 
+        
+        setErrorMessage('Failed to login'); 
+        
+        return;
       }
       
-      errorRef.current.focus(); // don't remove 
+      setAuth({user, pwd, token}); 
+      setUser(''); 
+      setPwd(''); 
+  
+      navigate('/dashboard'); 
 
     }
   }; 
@@ -154,19 +216,18 @@ const SignUp = () => {
           borderRadius="0.6rem"
         >
           <Container maxW="md" centerContent mt="25px" p="10px">
-            {/* uncomment this error for the component to show up. Do not remove the 'error &&'  */}
-            {/* {error && (
-              <Alert 
-              ref={errorRef}
-              status = 'error'
-              display= {error}
-              
-              >
-              <AlertIcon/>
-              <AlertTitle>{errorMessage}</AlertTitle>
+          {error && (
+            <Alert 
+            status='error'
+            ref = {errorRef}
+            borderRadius='0.6rem'
+            mt='-19px'
+            mb='5px'
+            >
+            <AlertIcon />
+            <AlertTitle mr={2}>{errorMessage}</AlertTitle>
             </Alert>
-
-            )} */}
+            )}
             <Heading size="md" as="h5">
               Sign Up
             </Heading>
@@ -195,9 +256,7 @@ const SignUp = () => {
                     Must begin with a capital letter.<br />
                     Letters, numbers, @.#$%_ are allowed
                   </FormHelperText>
-                 )}
-
-            
+                 )}   
                   <FormLabel htmlFor="password">Password</FormLabel>
                   <Input
                     placeholder="Password"
@@ -211,7 +270,6 @@ const SignUp = () => {
                     onFocus = {() => setPwdFocus(true)}
                     onBlur = {() => setPwdFocus(false)}
                   ></Input>
-
                   {pwdFocus && pwd && !validPwd && (
                     <FormHelperText>
                       8 to 24 characters. <br/>
