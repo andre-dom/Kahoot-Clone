@@ -12,7 +12,7 @@ class QuizPostTests(APITestCase):
         self.user1.set_password("password")
         self.user1.save()
 
-    def test_post_quiz_with_4_correct_answers(self):
+    def test_post_quiz_with_correct_answer_index_4(self):
         """
              If a quiz has a question at most 4 correct answers, success on validate
         """
@@ -48,7 +48,7 @@ class QuizPostTests(APITestCase):
         self.client.force_authenticate(user=None)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_post_quiz_with_1_correct_answer(self):
+    def test_post_quiz_with_correct_answer_index_1(self):
         """
                   If a quiz has a question with at least 1 correct answer, success on validate
         """
@@ -80,7 +80,7 @@ class QuizPostTests(APITestCase):
             ]
         }
 
-    def test_post_quiz_with_less_than_1_correct_answer(self):
+    def test_post_quiz_with_correct_answer_index_0(self):
         """
         If a quiz has a question less than 1 correct answer, fail to validate
         """
@@ -117,7 +117,7 @@ class QuizPostTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # self.assertEqual(response.data, {"non_field_errors:" ["No less than 1 /correct answer!"]},)
 
-    def test_post_quiz_with_more_than_4_correct_answers(self):
+    def test_post_quiz_with_correct_answer_index_5(self):
         url = reverse("quiz-list")
         data = {
             "name": "string",
