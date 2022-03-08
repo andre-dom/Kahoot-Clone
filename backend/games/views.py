@@ -45,6 +45,14 @@ class GameStateViewSet(GenericViewSet):
         game = get_object_or_404(Game.objects.all(), creator=self.request.user)
         return response.Response(self.serializer_class(game).data, status=status.HTTP_200_OK)
 
+# instructor advance game state
+@api_view(['POST'])
+def advance_game(request):
+    game = get_object_or_404(Game.objects.all(), creator=request.user, state='active')
+    if game.advance_game():
+        return response.Response(GameSerializer(game).data, status=status.HTTP_200_OK)
+    return response.Response({'info': 'game has completed!'},status=status.HTTP_200_OK)
+
 
 # view for players to submit their answers
 @api_view(['POST'])

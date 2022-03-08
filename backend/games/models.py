@@ -10,7 +10,6 @@ from django_fsm import FSMField, transition
 from django.db import models
 
 
-# Create your models here.
 class Game(models.Model):
     creator = models.ForeignKey(User, related_name='games', on_delete=models.CASCADE, )
     quiz = models.ForeignKey(Quiz, null=False, on_delete=models.CASCADE, )
@@ -19,10 +18,12 @@ class Game(models.Model):
 
     # advance the game forward one question, return false if the game is over
     def advance_game(self):
-        if(self.current_question.index < self.quiz.num_questions()):
+        if self.current_question.index < self.quiz.num_questions():
             self.current_question = self.quiz.questions.get(index=self.current_question.index+1)
+            self.save()
             return True
         self.to_state_complete()
+        self.save()
         return False
 
     # precondition for state transition, make sure we are on the last question before we finish the game
@@ -30,7 +31,7 @@ class Game(models.Model):
         return not self.current_question.index < self.quiz.num_questions()
 
     # complete the game
-    @transition(field=state, source="unpublished", target="published", conditions=[can_complete])
+    @transition(field=state, source="active", target="complete", conditions=[can_complete])
     def to_state_complete(self):
         self.current_question = None
 

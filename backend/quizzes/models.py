@@ -38,7 +38,7 @@ class Question(models.Model):
         super(Question, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.question_body
+        return f'{self.index}. {self.question_body}'
 
 
 class Answer(models.Model):
@@ -51,4 +51,4 @@ class Answer(models.Model):
         super(Answer, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.answer_body
+        return f'{self.index}. {self.answer_body}'
