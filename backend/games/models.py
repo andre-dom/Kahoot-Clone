@@ -1,7 +1,8 @@
 import uuid
+import ast
 
 from django.contrib.auth.models import User
-from django.core.validators import int_list_validator, validate_comma_separated_integer_list
+from django.core.validators import validate_comma_separated_integer_list
 from django.dispatch import receiver
 
 from quizzes.models import Quiz, Question, Answer
@@ -27,6 +28,18 @@ class Player(models.Model):
     # store list of player's answers as a string, validate that it is a properly formatted list
     answers = models.CharField(validators=[validate_comma_separated_integer_list],
                                max_length=100)  # 100 chars, enough for 50 comma seperated answers
+
+    def set_answer(self, question_index, answer):
+        answers = ast.literal_eval(f'[{self.answers}]')
+        answers[question_index-1] = answer
+        self.answers = answer
+        self.save()
+
+    def get_answer(self, question_index):
+        return ast.literal_eval(f'[{self.answers}]')[question_index-1]
+
+    def get_answer_list(self, question_index, answer):
+        return ast.literal_eval(f'[{self.answers}]')
 
     def __str__(self):
         return f'{self.email}: {self.game.quiz.name}'
