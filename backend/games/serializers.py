@@ -23,7 +23,6 @@ class QuestionSerializer(WritableNestedModelSerializer):
 
 
 class PlayerSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Player
         fields = ('email',)
@@ -55,7 +54,9 @@ class GameSerializer(WritableNestedModelSerializer):
         return data
 
 
-class GameStateSerializer(WritableNestedModelSerializer):
+class CompletedGameSerializer(WritableNestedModelSerializer):
+    quiz = QuizFieldSerializer(slug_field='slug')
+    players = PlayerSerializer(many=True)
     class Meta:
         model = Game
-        readonly_fields = ('quiz', 'players',)
+        fields = ('quiz', 'players', 'slug', )

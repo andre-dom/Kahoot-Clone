@@ -15,16 +15,24 @@ class Game(models.Model):
     quiz = models.ForeignKey(Quiz, null=False, on_delete=models.CASCADE, )
     current_question = models.ForeignKey(Question, null=True, related_name='game', on_delete=models.CASCADE)
     state = FSMField(default='active', protected=True)
+    slug = models.CharField(unique=True, max_length=5)
 
     # advance the game forward one question, return false if the game is over
     def advance_game(self):
         if self.current_question.index < self.quiz.num_questions():
-            self.current_question = self.quiz.questions.get(index=self.current_question.index+1)
+            self.current_question = self.quiz.questions.get(index=self.current_question.index + 1)
             self.save()
             return True
         self.to_state_complete()
         self.save()
         return False
+
+    # return a sorted dict of players and their scores
+    def get_leaderboard(self):
+        leaderboard = {}
+        for player in self.players.all():
+            leaderboard[player.email] = player.num_correct_answers()
+        return {k: v for k, v in sorted(leaderboard.items(), key=lambda x: x[1], reverse=True)}
 
     # precondition for state transition, make sure we are on the last question before we finish the game
     def can_complete(self):
@@ -34,6 +42,8 @@ class Game(models.Model):
     @transition(field=state, source="active", target="complete", conditions=[can_complete])
     def to_state_complete(self):
         self.current_question = None
+        self.slug = uuid.uuid4().hex[:6].upper()
+        self.save()
 
     def __str__(self):
         return f'{self.creator.username}: {self.quiz.name}'
