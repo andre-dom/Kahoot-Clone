@@ -22,11 +22,11 @@ class QuizFieldSerializer(serializers.SlugRelatedField):
 
 class GameSerializer(WritableNestedModelSerializer):
     players = PlayerSerializer(many=True)
-    game_quiz = QuizFieldSerializer(slug_field='slug')
+    quiz = QuizFieldSerializer(slug_field='slug')
 
     class Meta:
         model = Game
-        fields = ('game_quiz', 'players',)
+        fields = ('quiz', 'players',)
 
     def validate(self, data):
         user = self.context['request'].user
@@ -40,4 +40,4 @@ class GameSerializer(WritableNestedModelSerializer):
 class GameStateSerializer(WritableNestedModelSerializer):
     class Meta:
         model = Game
-        readonly_fields = ('game_quiz', 'players',)
+        readonly_fields = ('quiz', 'players',)

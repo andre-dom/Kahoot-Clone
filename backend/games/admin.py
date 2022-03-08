@@ -5,22 +5,27 @@ from django.contrib import admin
 
 import nested_admin
 
-from .models import Game, Player, PlayerAnswerList
+from .models import Game, Player
 
 import nested_admin
 
-
-class PlayerInLine(nested_admin.NestedTabularInline):
+class PlayerAdmin(admin.ModelAdmin):
     model = Player
-    list_display = ('UUID', 'email',)
+    list_display = ('email',)
+    readonly_fields = ('UUID', 'answers')
+
+class PlayerInline(nested_admin.NestedTabularInline):
+    model = Player
+    list_display = ('email',)
+    readonly_fields = ('UUID', 'answers')
 
 
 class GameAdmin(nested_admin.NestedModelAdmin):
     model = Game
-    list_display = ('creator', 'game_quiz',)
+    list_display = ('creator', 'quiz',)
     readonly_fields = ('current_question', 'state',)
-    inlines = (PlayerInLine,)
+    inlines = (PlayerInline,)
 
 
 admin.site.register(Game, GameAdmin)
-admin.site.register(Player)
+admin.site.register(Player, PlayerAdmin)
