@@ -35,4 +35,6 @@ class QuizSerializer(WritableNestedModelSerializer):
     def validate(self, data):
         if len(data['questions']) == 0:
             raise serializers.ValidationError("Must be at least one question")
+        if len(data['questions']) > 50:
+            raise serializers.ValidationError("Can not have more than 50 questions")
         return data
