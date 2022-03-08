@@ -41,3 +41,4 @@ class GameStateSerializer(WritableNestedModelSerializer):
     class Meta:
         model = Game
         readonly_fields = ('quiz', 'players', )
+
