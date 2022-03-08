@@ -26,11 +26,16 @@ class Quiz(models.Model):
 
 class Question(models.Model):
     question_body = models.TextField()
+    index = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(50)])
     quiz = models.ForeignKey('Quiz', related_name='questions', on_delete=models.CASCADE, )
     correct_answer = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(4)])
 
     def num_answers(self):
         return len(self.answers.all())
+
+    def save(self, *args, **kwargs):
+        self.index = self.quiz.num_questions() + 1
+        super(Question, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.question_body
@@ -38,7 +43,12 @@ class Question(models.Model):
 
 class Answer(models.Model):
     answer_body = models.TextField()
+    index = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(4)])
     question = models.ForeignKey('Question', related_name='answers', on_delete=models.CASCADE, )
+
+    def save(self, *args, **kwargs):
+        self.index = self.question.num_answers() + 1
+        super(Answer, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.answer_body

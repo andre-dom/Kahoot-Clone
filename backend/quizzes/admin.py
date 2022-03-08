@@ -8,12 +8,12 @@ import nested_admin
 # i guess this is for what is displayed in the admin pages????
 class AnswerInline(nested_admin.NestedTabularInline):
     model = Answer
-    list_display = ('answer_body',)
+    list_display = ('index', 'answer_body',)
 
 
 class QuestionInline(nested_admin.NestedTabularInline):
     model = Question
-    list_display = ('question_body',)
+    list_display = ('index', 'question_body',)
     inlines = (AnswerInline,)
 
 

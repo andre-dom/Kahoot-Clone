@@ -40,4 +40,4 @@ class GameSerializer(WritableNestedModelSerializer):
 class GameStateSerializer(WritableNestedModelSerializer):
     class Meta:
         model = Game
-        readonly_fields = ('quiz', 'players',)
+        readonly_fields = ('quiz', 'players', )
