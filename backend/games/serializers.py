@@ -1,12 +1,29 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from quizzes.models import Quiz
+from quizzes.models import Quiz, Answer, Question
 from .models import Game, Player
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 
 
+class AnswerSerializer(WritableNestedModelSerializer):
+    index = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Answer
+        fields = ('answer_body', 'index', )
+
+
+class QuestionSerializer(WritableNestedModelSerializer):
+    answers = AnswerSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Question
+        fields = ('question_body', 'answers', "correct_answer", 'index' ,)
+
+
 class PlayerSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Player
         fields = ('email',)
@@ -23,10 +40,11 @@ class QuizFieldSerializer(serializers.SlugRelatedField):
 class GameSerializer(WritableNestedModelSerializer):
     players = PlayerSerializer(many=True)
     quiz = QuizFieldSerializer(slug_field='slug')
+    current_question = QuestionSerializer(read_only=True)
 
     class Meta:
         model = Game
-        fields = ('quiz', 'players',)
+        fields = ('quiz', 'players', 'current_question')
 
     def validate(self, data):
         user = self.context['request'].user
@@ -40,5 +58,4 @@ class GameSerializer(WritableNestedModelSerializer):
 class GameStateSerializer(WritableNestedModelSerializer):
     class Meta:
         model = Game
-        readonly_fields = ('quiz', 'players', )
-
+        readonly_fields = ('quiz', 'players',)

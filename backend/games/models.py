@@ -77,6 +77,15 @@ class Player(models.Model):
     def get_answer_list(self):
         return ast.literal_eval(f'[{self.answers}]')
 
+    def num_correct_answers(self):
+        correct = 0
+        answers = self.get_answer_list()
+        quiz = self.game.quiz
+        for i in range(0, quiz.num_questions()):
+            if answers[i] == quiz.questions.get(index=i + 1).correct_answer:
+                correct += 1
+        return correct
+
     def __str__(self):
         return f'{self.email}: {self.game.quiz.name}'
 

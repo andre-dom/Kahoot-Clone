@@ -53,6 +53,15 @@ def advance_game(request):
         return response.Response(GameSerializer(game).data, status=status.HTTP_200_OK)
     return response.Response({'info': 'game has completed!'},status=status.HTTP_200_OK)
 
+# instructor get current game standings
+@api_view(['GET'])
+def standings(request):
+    game = get_object_or_404(Game.objects.all(), creator=request.user, state='active')
+    leaderboard = {}
+    for player in game.players.all():
+        leaderboard[player.email] = player.num_correct_answers()
+    leaderboard = {k: v for k, v in sorted(leaderboard.items(), key=lambda x: x[1], reverse=True)}
+    return response.Response(leaderboard, status=status.HTTP_200_OK)
 
 # view for players to submit their answers
 @api_view(['POST'])
