@@ -7,7 +7,7 @@ from django.contrib import admin
 #
 # import nested_admin
 
-from .models import Game,Question_Answer,Players
+from .models import Game,PlayerAnswerList,Players
 
 import nested_admin
 
