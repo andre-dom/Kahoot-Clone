@@ -51,7 +51,7 @@ def initialize_game(sender, instance, created, *args, **kwargs):
 class Player(models.Model):
     email = models.EmailField()
     game = models.ForeignKey(Game, null=False, related_name='players', on_delete=models.CASCADE, )
-    UUID = models.UUIDField(editable=False, default=uuid.uuid4, unique=True, )
+    slug = models.CharField(unique=True, max_length=5)
     # store list of player's answers as a string, validate that it is a properly formatted list
     answers = models.CharField(validators=[validate_comma_separated_integer_list],
                                max_length=100)  # 100 chars, enough for 50 comma seperated answers
@@ -81,10 +81,12 @@ class Player(models.Model):
         return f'{self.email}: {self.game.quiz.name}'
 
 
-# runs after a player is saved to DB, make sure they have an initialized answer list
+# runs after a player is saved to DB, make sure they have an initialized answer list and id
 @receiver(models.signals.post_save, sender=Player)
 def initialize_answer_list(sender, instance, created, *args, **kwargs):
     if created:
         if not instance.answers:
             instance.answers = ','.join([str(0) for i in range(0, instance.game.quiz.num_questions())])
-            instance.save()
+        if not instance.slug:
+            instance.slug = uuid.uuid4().hex[:6].upper()
+        instance.save()

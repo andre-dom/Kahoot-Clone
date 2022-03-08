@@ -56,8 +56,8 @@ def advance_game(request):
 
 # view for players to submit their answers
 @api_view(['POST'])
-def submit_answer(request, UUID):
-    player = get_object_or_404(Player.objects.all(), UUID=UUID)
+def submit_answer(request, slug):
+    player = get_object_or_404(Player.objects.all(), slug=slug)
     if player.game.state != 'active':
         return response.Response({'error': 'This game has concluded'}, status=status.HTTP_403_FORBIDDEN)
     player.set_answer(player.game.current_question.index, request.data['answer'])

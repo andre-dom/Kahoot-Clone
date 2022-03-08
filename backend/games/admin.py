@@ -12,12 +12,12 @@ import nested_admin
 class PlayerAdmin(admin.ModelAdmin):
     model = Player
     list_display = ('email',)
-    readonly_fields = ('UUID', 'answers')
+    readonly_fields = ('slug', 'answers')
 
 class PlayerInline(nested_admin.NestedTabularInline):
     model = Player
     list_display = ('email',)
-    readonly_fields = ('UUID', 'answers')
+    readonly_fields = ('slug', 'answers')
 
 
 class GameAdmin(nested_admin.NestedModelAdmin):

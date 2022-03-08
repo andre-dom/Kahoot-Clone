@@ -12,5 +12,5 @@ urlpatterns = [
     path('game/delete/', delete_active_game, name='delete_active_game'),
     path('game/advance/', advance_game, name='advance_game'),
 
-    path('player/<slug:UUID>/submit', submit_answer, name='submit_answer'),
+    path('player/<slug:slug>/submit', submit_answer, name='submit_answer'),
 ]
