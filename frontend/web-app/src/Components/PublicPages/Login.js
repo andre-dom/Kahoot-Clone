@@ -101,11 +101,11 @@ const Login = () => {
       setError(true); 
 
       if(response.status === 400) { //? What should we print out for each status
-        setErrorMessage(`Status ${response.status}. Please Try Again`);
+        setErrorMessage("Wrong username or password");
 
       } else if(response.status === 401) {
 
-        setErrorMessage(`Status ${response.status}. Please Try Again`);
+        setErrorMessage("Wrong username or password");
 
       }
 
