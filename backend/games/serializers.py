@@ -23,9 +23,10 @@ class QuestionSerializer(WritableNestedModelSerializer):
 
 
 class PlayerSerializer(serializers.ModelSerializer):
+    slug = serializers.CharField(read_only=True)
     class Meta:
         model = Player
-        fields = ('email',)
+        fields = ('email', 'slug')
 
 
 class QuizFieldSerializer(serializers.SlugRelatedField):

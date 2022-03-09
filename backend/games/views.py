@@ -28,7 +28,7 @@ class GameViewSet(mixins.CreateModelMixin, GenericViewSet):
 
     @action(methods=['delete'], detail=False, )
     def delete_active_game(self, request):
-        get_object_or_404(Game.objects.all(), creator=self.request.user).delete()
+        get_object_or_404(Game.objects.all(), creator=self.request.user, state='active').delete()
         return response.Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(methods=['get'], detail=False, )

@@ -15,5 +15,5 @@ urlpatterns = [
     path('game/completed/', list_completed_games, name='list_completed_games'),
     path('game/completed/<slug:slug>/', get_completed_game, name='get_completed_game'),
 
-    path('player/<slug:slug>/submit', submit_answer, name='submit_answer'),
+    path('player/<slug:slug>/submit/', submit_answer, name='submit_answer'),
 ]

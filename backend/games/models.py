@@ -71,7 +71,7 @@ class Player(models.Model):
         if question_index < 1 or question_index > self.game.quiz.num_questions():
             raise ValueError(
                 f'get_answer: question_index should be between 1 and {self.game.quiz.num_questions()}, got {question_index}')
-        if answer < 1 or answer > 4:
+        if int(answer) < 1 or int(answer) > 4:
             raise ValueError(f'set_answer: question_index should be between 1 and 4, got {answer}')
         answers = ast.literal_eval(f'[{self.answers}]')
         answers[question_index - 1] = answer
