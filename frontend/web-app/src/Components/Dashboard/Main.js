@@ -1,9 +1,61 @@
-import React from "react";
+import React, { useState, useContext, useEffect } from "react";
 import QuizCard from "./QuizCard";
+import useAuth from "../../hooks/useAuth";
+
 
 import { Flex, Box, Heading, SimpleGrid } from "@chakra-ui/react";
 
 const Main = () => {
+
+  const [quizzes, setQuizzes] = useState([]); 
+
+  const { auth } = useAuth(); 
+
+  useEffect(() => {
+
+    getData(); 
+
+
+  },[])
+
+  /**
+   * Retrieves all the quizzes that were created
+   * by the user. 
+   */
+   const getData = async () => {
+
+    const response = await fetch('http://127.0.0.1:8000/quizzes/', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `token ${auth.token}`
+      },
+    }); 
+
+    if(!response.ok) {
+
+      console.log('there was an error.');
+      return; 
+    }
+
+    const result = await response.json(); 
+    
+    setQuizzes(result);
+
+   }; 
+
+   /**
+    * This function will be passed down to the QuizCard component. 
+    * QuizCard component will call this function which will update the
+    * quizzes state and update the dom. 
+    * @param slug from QuizCard component 
+    */
+   const handleDelete = (slug) => {
+      const newQuizzes = quizzes.filter((quiz) => quiz.slug !== slug)
+
+      setQuizzes(newQuizzes); 
+   }
+
   return (
     <Box>
       <Box m="14">
@@ -27,7 +79,14 @@ const Main = () => {
           rounded="lg"
           color="gray.500"
         >
-          <QuizCard />
+          {/* <QuizCard /> */}
+
+          {quizzes.map(quiz => (
+              //? Not sure if the slug can be a valid key. Keep an eye for this when deleting the quiz from dashboard. 
+            <QuizCard key = {quiz.slug} name = {quiz.name} slug = {quiz.slug} handleDelete = {handleDelete}></QuizCard>
+
+          ))
+          }
         </SimpleGrid>
       </Box>
     </Box>

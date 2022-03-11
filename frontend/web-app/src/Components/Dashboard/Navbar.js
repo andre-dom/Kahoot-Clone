@@ -9,6 +9,9 @@ const Navbar = () => {
   const navigate = useNavigate(); 
   const { auth, setAuth } = useAuth(); 
 
+  /**
+   * 
+   */
   const handlSubmit = async () => {
 
     try {
@@ -35,7 +38,9 @@ const Navbar = () => {
     }
   }; 
 
-
+  const addQuiz = () => {
+    navigate('/createQuiz');
+  }; 
 
   return (
     <Flex bgColor="blue.100" align="center" justify="space-between" p="14">
@@ -47,15 +52,28 @@ const Navbar = () => {
           User's Dashboard
         </Heading>
       </Box>
-      <Button
-        p="2"
-        border="1px"
-        borderColor="black.200"
-        borderRadius="md"
-        onClick = {handlSubmit}
-      >
-        Logout
-      </Button>
+
+      <Box>
+        <Button
+          p="2"
+          border="1px"
+          borderColor="black.200"
+          borderRadius="md"
+          onClick = {handlSubmit}
+          mr = '10px'
+        >
+          Logout
+        </Button>
+        <Button
+          p="2"
+          border="1px"
+          borderColor="black.200"
+          borderRadius="md"
+          onClick = {addQuiz}
+        >
+          Add Quiz
+        </Button>
+      </Box>
     </Flex>
   );
 };

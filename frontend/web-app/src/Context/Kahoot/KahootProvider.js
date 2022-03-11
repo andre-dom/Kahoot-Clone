@@ -5,10 +5,11 @@ const KahootContext = createContext({});
 
 export const KahootProvider = ({ children }) => {
 
-  //* You can write you functions that call to the API here! Remember that you are going to need state */
-
 const { auth } = useAuth(); 
+
+  //? Not sure if we need state :(
   const[quizzes, setQuizzes] = useState([]);
+  const[slug, setSlug] = useState(''); 
   const[name, setName] = useState("");
   const[question, setQuestion] = useState("");
   const[answer1, setAnswer1] = useState("");
@@ -45,6 +46,11 @@ const { auth } = useAuth();
     
     }
 
+
+  /**
+   * Recieves a quiz and auth token to make a post request to 
+   * the API 
+   */
   const postData = async () => {
    
     const response = await fetch('http://127.0.0.1:8000/quizzes/', {
@@ -55,33 +61,33 @@ const { auth } = useAuth();
       },
       body: JSON.stringify(myData)
     }); 
+
     if(!response.ok) {
 
-      console.log(response.text()); 
-
       console.log('there was an error.');
+
       return; 
     }
 
     const result = await response.json(); 
-
-    console.log(result); 
   }
 
+  //! Moving this function to Main.js. 
+  /**
+   * Retrieves all the quizzes that were created
+   * by the user. 
+   */
   const getData = async () => {
 
       const response = await fetch('http://127.0.0.1:8000/quizzes/', {
-      method: 'Get',
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `token ${auth.token}`
       },
-      //body: JSON.stringify(myData)
     }); 
 
     if(!response.ok) {
-
-      console.log(response.text()); 
 
       console.log('there was an error.');
       return; 
@@ -90,17 +96,26 @@ const { auth } = useAuth();
     const result = await response.json(); 
     
     setQuizzes(result);
-  
 
   }; 
+
+
+  //! Moving this function to QuizCard.js
+  
+  /**
+   * Uses a slug to identify the quiz the user wants to delete 
+   * @returns 
+   */
   const deleteData = async () => {
-const response = await fetch('http://127.0.0.1:8000/quizzes/hello/', {
-      method: 'Delete',
+
+    //? maybe check if the slug is empty and throw an error. 
+
+    const response = await fetch(`http://127.0.0.1:8000/quizzes/${slug}/`, {
+      method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `token ${auth.token}`
       },
-      //body: JSON.stringify(myData)
     }); 
 
     if(!response.ok) {
@@ -110,12 +125,18 @@ const response = await fetch('http://127.0.0.1:8000/quizzes/hello/', {
       console.log('there was an error.');
       return; 
     }
-
-
   }; 
-   const updateData = async () => {
-     console.warn('data', myData)
-    const response = await fetch('http://127.0.0.1:8000/quizzes/hello/', {
+
+
+  /**
+   * Takes in a slug to identify which quiz to update. 
+   * @returns 
+   */
+  const updateData = async () => {
+
+    //? maybe check if the slug is empty and throw an error. 
+    
+    const response = await fetch(`http://127.0.0.1:8000/quizzes/${slug}/`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -123,17 +144,14 @@ const response = await fetch('http://127.0.0.1:8000/quizzes/hello/', {
       },
       body: JSON.stringify(myData)
     }); 
-    if(!response.ok) {
 
-      console.log(response.text()); 
+    if(!response.ok) {
 
       console.log('there was an error.');
       return; 
     }
 
     const result = await response.json(); 
-
-    console.log(result); 
   }
 
 
@@ -142,7 +160,7 @@ const response = await fetch('http://127.0.0.1:8000/quizzes/hello/', {
     postData,
     getData,
     deleteData,
-    updateData
+    updateData,
 
 
   }; 
