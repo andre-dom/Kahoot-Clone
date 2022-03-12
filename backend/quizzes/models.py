@@ -7,15 +7,12 @@ from django.contrib.auth.models import User
 
 
 class Quiz(models.Model):
-    class Meta:
-        verbose_name_plural = "Quizzes"    # set plural version of model name
-
     name = models.CharField(max_length=30)
     creator = models.ForeignKey(User, related_name='quizzes', on_delete=models.CASCADE, )
     # used to make objects unique by providing a '-' inside key's syntax
     slug = AutoSlugField(populate_from='name', unique=True, editable=False)
 
-    # helper function to retrieve number of questions
+    # not sure what this will be used for right now...
     def num_questions(self):
         return len(self.questions.all())
 
@@ -23,22 +20,35 @@ class Quiz(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = 'quizzes'
+
 
 class Question(models.Model):
     question_body = models.TextField()
+    index = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(50)])
     quiz = models.ForeignKey('Quiz', related_name='questions', on_delete=models.CASCADE, )
     correct_answer = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(4)])
 
+    def num_answers(self):
+        return len(self.answers.all())
+
+    def save(self, *args, **kwargs):
+        self.index = self.quiz.num_questions() + 1
+        super(Question, self).save(*args, **kwargs)
+
     def __str__(self):
-        return self.question_body
+        return f'{self.index}. {self.question_body}'
 
 
 class Answer(models.Model):
-    class Meta:
-        order_with_respect_to = 'question'    # make sure we maintain the ordering of the question answers
-
     answer_body = models.TextField()
+    index = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(4)])
     question = models.ForeignKey('Question', related_name='answers', on_delete=models.CASCADE, )
 
+    def save(self, *args, **kwargs):
+        self.index = self.question.num_answers() + 1
+        super(Answer, self).save(*args, **kwargs)
+
     def __str__(self):
-        return self.answer_body
+        return f'{self.index}. {self.answer_body}'

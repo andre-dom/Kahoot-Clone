@@ -7,7 +7,7 @@ import Login from "./Components/PublicPages/Login";
 import SignUp from "./Components/PublicPages/SignUp";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import RequireAuth from "./Context/RequireAuth";
-import NewQuiz from "./Components/Quizzes/NewQuiz";
+// import NewQuiz from "./Components/Quizzes/NewQuiz";
 import { KahootProvider } from "./Context/Kahoot/KahootProvider";
 
 const App = () => {
@@ -28,7 +28,7 @@ const App = () => {
               </KahootProvider>
               }/>
 
-            <Route path='/createQuiz' element ={<NewQuiz/>}/>
+            {/* <Route path='/createQuiz' element ={<NewQuiz/>}/> */}
             
         </Route>        
 

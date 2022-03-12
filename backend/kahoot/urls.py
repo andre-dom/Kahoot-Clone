@@ -3,6 +3,7 @@ from django.template.defaulttags import url
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
+import games.urls
 import quizzes.urls
 
 urlpatterns = [
@@ -25,4 +26,6 @@ urlpatterns = [
 
     # link you will see at the start of web page when running server. base url
     path('', include(quizzes.urls)),
+    path('', include(games.urls)),
+    path('', include(games.urls)),
 ]

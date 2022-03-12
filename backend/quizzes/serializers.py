@@ -4,18 +4,21 @@ from .models import Quiz, Question, Answer
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 
 
-class AnswerSerializer(serializers.ModelSerializer):
+class AnswerSerializer(WritableNestedModelSerializer):
+    index = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Answer
-        fields = ('answer_body',)
+        fields = ('answer_body', 'index', )
 
 
 class QuestionSerializer(WritableNestedModelSerializer):
+    index = serializers.IntegerField(read_only=True)
     answers = AnswerSerializer(many=True)
 
     class Meta:
         model = Question
-        fields = ('question_body', 'answers', "correct_answer")
+        fields = ('question_body', 'answers', "correct_answer", 'index' ,)
 
     def validate(self, data):
         if len(data['answers']) != 4:
@@ -31,8 +34,10 @@ class QuizSerializer(WritableNestedModelSerializer):
         fields = ('slug', 'name', 'questions',)
         lookup_field = 'slug'
         depth = 2
-        
+
     def validate(self, data):
         if len(data['questions']) == 0:
             raise serializers.ValidationError("Must be at least one question")
+        if len(data['questions']) > 50:
+            raise serializers.ValidationError("Can not have more than 50 questions")
         return data
