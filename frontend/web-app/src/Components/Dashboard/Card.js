@@ -1,14 +1,11 @@
-import React, { useState, useEffect } from 'react'; 
+import React from 'react'; 
 import { 
   Box,
   Container,
-  Checkbox,
-  Input,
   VStack,
   HStack,
   Divider,
-  Textarea,
-  Button
+
 } from '@chakra-ui/react'
 
 import { DeleteIcon } from '@chakra-ui/icons'
@@ -21,7 +18,6 @@ const Card = ({questionSet, handleDelete}) => {
     } = questionSet;
     
 
-//! You are going to remove the inputs 
   return(
     <Container w = 'auto'>
       <Box 
@@ -71,7 +67,6 @@ const Card = ({questionSet, handleDelete}) => {
          
         </VStack>
       </Box>
-      {/* <Button size = 'sm'>Add Another Question</Button> */}
 
     </Container>
   ); 

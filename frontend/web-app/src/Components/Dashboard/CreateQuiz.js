@@ -8,7 +8,6 @@ import {
   Box,
   Button
 } from '@chakra-ui/react'
-import { Link } from 'react-router-dom';
 
 const CreateQuiz =()=>{
     const [quizName, setQuizName] = useState('');
@@ -35,19 +34,12 @@ const CreateQuiz =()=>{
                 <Button
                 onClick={() => navigate('/AddQuestions', {state:{quizName}})}
                 mt={4}
-                colorScheme='teal'
-                
+                colorScheme='teal'               
             >
             Next
-          </Button>
-         
-   
-           
-            
+          </Button>        
             </Box>
     </Center>
-
-
         </div>
     )
 }

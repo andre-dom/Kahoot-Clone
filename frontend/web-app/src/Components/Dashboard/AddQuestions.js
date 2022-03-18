@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Card from './Card';
 import useAuth from '../../hooks/useAuth'; 
 
@@ -14,7 +14,6 @@ import {
   Select,
   VStack
 } from '@chakra-ui/react'
-import { DeleteIcon } from '@chakra-ui/icons'
 
 const AddQuestions =()=>{
 
