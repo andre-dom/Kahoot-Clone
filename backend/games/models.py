@@ -4,9 +4,9 @@ import ast
 from django.contrib.auth.models import User
 from django.core.validators import validate_comma_separated_integer_list
 from django.dispatch import receiver
-
-from quizzes.models import Quiz, Question, Answer
+from quizzes.models import Quiz,Question,Answer
 from django_fsm import FSMField, transition
+
 from django.db import models
 
 
