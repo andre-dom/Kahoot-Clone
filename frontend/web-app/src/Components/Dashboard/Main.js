@@ -1,9 +1,9 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import QuizCard from "./QuizCard";
 import useAuth from "../../hooks/useAuth";
 
 
-import { Flex, Box, Heading, SimpleGrid } from "@chakra-ui/react";
+import { Box, Heading, SimpleGrid } from "@chakra-ui/react";
 
 const Main = () => {
 
@@ -11,10 +11,13 @@ const Main = () => {
 
   const { auth } = useAuth(); 
 
+  /**
+  * Every time the page renders, it will make a request to the 
+  * API to get the latest quizzes.    
+  */
   useEffect(() => {
 
     getData(); 
-
 
   },[])
 
@@ -79,7 +82,6 @@ const Main = () => {
           rounded="lg"
           color="gray.500"
         >
-          {/* <QuizCard /> */}
 
           {quizzes.map(quiz => (
               //? Not sure if the slug can be a valid key. Keep an eye for this when deleting the quiz from dashboard. 

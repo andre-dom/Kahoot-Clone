@@ -1,8 +1,10 @@
 import React from "react";
 import useAuth from "../../hooks/useAuth";
-import { Box, Button, Text, Center } from "@chakra-ui/react";
+import { Box, Button, Text, HStack } from "@chakra-ui/react";
 
 const QuizCard = ({ name, slug, handleDelete }) => { 
+
+  //TODO: Need to write the view quiz page! 
 
   const { auth } = useAuth(); 
 
@@ -51,30 +53,34 @@ const QuizCard = ({ name, slug, handleDelete }) => {
         height="20%"
         display="flex"
         alignItems="center"
-        justifyContent="left"
+        justifyContent="center"
       >
-        <Button 
-        colorScheme="teal" 
-        variant="link" 
-        fontWeight="16px"
-        >
-          Edit
-        </Button>
-        <Button 
-        colorScheme="teal" 
-        variant="link" 
-        fontWeight="16px"
-        >
-          Start
-        </Button>
-        <Button 
-        colorScheme="teal" 
-        variant="link" 
-        fontWeight="16px"
-        onClick = {deleteQuiz}
-        >
-          Delete
-        </Button>
+        <HStack align='center'>
+        
+          <Button 
+          colorScheme="teal" 
+          variant="link" 
+          fontWeight="16px"
+          >
+            View
+          </Button>
+          <Button 
+          colorScheme="teal" 
+          variant="link" 
+          fontWeight="16px"
+          >
+            Start
+          </Button>
+          <Button 
+          colorScheme="teal" 
+          variant="link" 
+          fontWeight="16px"
+          onClick = {deleteQuiz}
+          >
+            Delete
+          </Button>
+
+        </HStack>
       </Box>
     </Box>
   );

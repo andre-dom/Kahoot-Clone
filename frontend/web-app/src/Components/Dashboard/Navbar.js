@@ -29,7 +29,7 @@ const Navbar = () => {
 
       setAuth(false); 
       localStorage.clear(); 
-      navigate('/Login'); 
+      navigate('/login'); 
 
     } catch (e) {
 
