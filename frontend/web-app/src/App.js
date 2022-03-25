@@ -9,6 +9,7 @@ import Dashboard from "./Components/Dashboard/Dashboard";
 import RequireAuth from "./Context/RequireAuth";
 import CreateQuiz from "./Components/Quizzes/CreateQuiz";
 import AddQuestions from './Components/Quizzes/AddQuestions'; 
+import ViewQuiz from "./Components/Quizzes/ViewQuiz";
 import { KahootProvider } from "./Context/Kahoot/KahootProvider";
 
 const App = () => {
@@ -31,7 +32,7 @@ const App = () => {
 
           <Route path ='/createQuiz'element = {<CreateQuiz/>}/>
           <Route path ='/addQuestions' element = {<AddQuestions/>}/>
-
+          <Route path ='/viewQuiz/:name' element = {<ViewQuiz/>}/>
         </Route>        
 
         {/* catch all (404 page) */}

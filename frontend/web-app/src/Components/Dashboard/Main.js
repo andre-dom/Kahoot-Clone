@@ -76,7 +76,7 @@ const Main = () => {
 
         <SimpleGrid
           columns={4}
-          spacing="4"
+          spacing="10rem"
           m="3"
           textAlign="center"
           rounded="lg"
