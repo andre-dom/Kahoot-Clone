@@ -1,6 +1,9 @@
 import base64
+import csv
 import os
 
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
@@ -112,3 +115,22 @@ def get_completed_game(request, slug):
     game_data['median_score'] = scores.median()
     game_data['histogram'] = generate_score_histogram(scores, game.quiz.num_questions())
     return response.Response(game_data, status=status.HTTP_200_OK)
+
+# allow instructors to download the results of completed games as CSV
+@api_view(['GET'])
+def get_game_results_as_csv(request, slug):
+    game = get_object_or_404(Game.objects.all(), slug=slug, creator=request.user)
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    res = HttpResponse(
+        content_type='text/csv',
+        headers={'Content-Disposition': 'attachment; filename="' + game.slug + '.csv"'},
+    )
+
+    writer = csv.writer(res)
+    writer.writerow(["Player", "Correct", "Incorrect"])
+    for player in game.players.all():
+        correct = player.num_correct_answers()
+        writer.writerow([player.email, correct, game.quiz.num_questions() - correct])
+
+    return res
