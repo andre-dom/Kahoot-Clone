@@ -8,6 +8,7 @@ from quizzes.models import Quiz,Question,Answer
 from django_fsm import FSMField, transition
 
 from django.db import models
+from django.core.mail import send_mail
 
 
 class Game(models.Model):
@@ -52,8 +53,14 @@ class Game(models.Model):
 # runs after a Game is saved to DB, set current question to the first question if the game is just starting
 @receiver(models.signals.post_save, sender=Game)
 def initialize_game(sender, instance, created, *args, **kwargs):
+    emails = []
     if created:
         if not instance.current_question and instance.state == 'active':
+
+            for players in instance.players:
+                send_mail("GAME_INVITATION",instance.slug,sender,players.email)
+                # send_mail("GAME_INVITATION",instance.slug,sender,players.emai)
+                # send_mail("GAME INVITATION",instance.slug,)
             instance.current_question = instance.quiz.questions.get(index=1)
             instance.save()
 
@@ -62,7 +69,6 @@ class Player(models.Model):
     email = models.EmailField()
     game = models.ForeignKey(Game, null=False, related_name='players', on_delete=models.CASCADE, )
     slug = models.CharField(unique=True, max_length=5)
-    # store list of player's answers as a string, validate that it is a properly formatted list
     answers = models.CharField(validators=[validate_comma_separated_integer_list],
                                max_length=100)  # 100 chars, enough for 50 comma seperated answers
 
