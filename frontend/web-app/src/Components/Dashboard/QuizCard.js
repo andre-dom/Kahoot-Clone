@@ -29,34 +29,12 @@ const QuizCard = ({ name, slug, handleDelete }) => {
     handleDelete(slug); 
 
   };
-
-
-  const getQuiz = async () => {
-
-    const response = await fetch(`http://127.0.0.1:8000/quizzes/${slug}/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `token ${auth.token}`
-      },
-    }); 
-    
-    const result = await response.json(); 
-
-    // console.log(result); 
-    // console.log(result.name); 
-    // console.log(result.questions[0].question_body); 
-    // console.log(result.questions); 
-
-    return result; 
-    
-  }; 
   
   const viewQuiz = async () => {
 
-    const quiz = await getQuiz(); 
-    
-    navigate(`/viewQuiz/${name}`, {state: {name, slug, quiz}}); 
+    const url = name.replace(/\s+/g, '').toLowerCase(); 
+
+    navigate(`/viewQuiz/${url}`, {state: {name, slug}}); 
   }; 
 
   return (
