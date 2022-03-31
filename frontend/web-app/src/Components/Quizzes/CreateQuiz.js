@@ -11,7 +11,7 @@ import {
 
 const CreateQuiz = () => {
 
-    //TODO: needs to alert the user if quiz name is taken or not. 
+    //TODO: needs to alert the user if quiz name is taken or not
    
     const [quizName, setQuizName] = useState('');
     const [emptyQuizName, setEmptyQuizName] = useState(true); 

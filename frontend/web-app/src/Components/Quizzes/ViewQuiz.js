@@ -23,6 +23,10 @@ const ViewQuiz = () => {
 
   const { auth } = useAuth(); 
 
+  /**
+   * Gets a single quiz from the backend
+   * @param {*} slug 
+   */
   const getQuiz = async (slug) => {
 
     const response = await fetch(`http://127.0.0.1:8000/quizzes/${slug}/`, {

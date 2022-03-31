@@ -45,7 +45,7 @@ const AddQuestions = () => {
     const [emptyAnswer4, setEmptyAnswer4] = useState(true); 
     const [emptySelect, setEmptySelect] = useState(true); 
 
-
+    //stuff
     useEffect(() => {
 
         if(!isEmpty(question) && !isEmpty(answer1) && !isEmpty(answer2)
