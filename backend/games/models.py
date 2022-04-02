@@ -4,12 +4,17 @@ import ast
 from django.contrib.auth.models import User
 from django.core.validators import validate_comma_separated_integer_list
 from django.dispatch import receiver
+
+import kahoot.settings
 from quizzes.models import Quiz,Question,Answer
 from django_fsm import FSMField, transition
 
+
 from django.db import models
 from django.core.mail import send_mail
+from django.core import mail
 
+# from django.core.mail import EmailMessage
 
 class Game(models.Model):
     creator = models.ForeignKey(User, related_name='games', on_delete=models.CASCADE, )
@@ -54,13 +59,18 @@ class Game(models.Model):
 @receiver(models.signals.post_save, sender=Game)
 def initialize_game(sender, instance, created, *args, **kwargs):
     emails = []
+
+    connection = mail.get_connection()
     if created:
         if not instance.current_question and instance.state == 'active':
 
-            for players in instance.players:
-                send_mail("GAME_INVITATION",instance.slug,sender,players.email)
-                # send_mail("GAME_INVITATION",instance.slug,sender,players.emai)
-                # send_mail("GAME INVITATION",instance.slug,)
+
+            #this works
+            # send_mail(subject='helloworld',message='helloworld',from_email='',recipient_list=['laothomas01@gmail.com'],fail_silently=False,connection=connection,)
+
+
+
+            # print(kahoot.settings.EMAIL_BACKEND)
             instance.current_question = instance.quiz.questions.get(index=1)
             instance.save()
 
@@ -71,7 +81,8 @@ class Player(models.Model):
     slug = models.CharField(unique=True, max_length=5)
     answers = models.CharField(validators=[validate_comma_separated_integer_list],
                                max_length=100)  # 100 chars, enough for 50 comma seperated answers
-
+    def get_email(self):
+        return self.email
     # helper functions to convert between string and list
     def set_answer(self, question_index, answer):
         if question_index < 1 or question_index > self.game.quiz.num_questions():

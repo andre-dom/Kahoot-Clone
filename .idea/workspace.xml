@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a8c7daa5-459f-4395-9518-b705d00fd261" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Kahoot-Clone.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Kahoot-Clone.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/games/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/games/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/kahoot/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/kahoot/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +66,10 @@
       <workItem from="1647638352848" duration="1909000" />
       <workItem from="1647662825815" duration="308000" />
       <workItem from="1647899872134" duration="542000" />
-      <workItem from="1648255416088" duration="96000" />
+      <workItem from="1648255416088" duration="247000" />
+      <workItem from="1648260222214" duration="339000" />
+      <workItem from="1648751582043" duration="5554000" />
+      <workItem from="1648921540204" duration="10449000" />
     </task>
     <servers />
   </component>
