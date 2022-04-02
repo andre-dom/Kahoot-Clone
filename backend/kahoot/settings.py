@@ -169,8 +169,7 @@ EMAIL_HOST_PASSWORD = 'vtuowcwtrqpygmsr'
 EMAIL_PORT = 587
 
 #This did the trick
-
-#just use this line. it made things work.
+#just use this line. it made tings
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 

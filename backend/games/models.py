@@ -24,6 +24,7 @@ class Game(models.Model):
     slug = models.CharField(unique=True, max_length=5)
 
     # advance the game forward one question, return false if the game is over
+
     def advance_game(self):
         if self.current_question.index < self.quiz.num_questions():
             self.current_question = self.quiz.questions.get(index=self.current_question.index + 1)
@@ -66,7 +67,7 @@ def initialize_game(sender, instance, created, *args, **kwargs):
 
 
             #this works
-            # send_mail(subject='helloworld',message='helloworld',from_email='',recipient_list=['laothomas01@gmail.com'],fail_silently=False,connection=connection,)
+            send_mail(subject='helloworld',message='helloworld',from_email='',recipient_list=['jamomif154@sartess.com'],fail_silently=False,connection=connection,)
 
 
 
