@@ -60,16 +60,43 @@ class Game(models.Model):
 @receiver(models.signals.post_save, sender=Game)
 def initialize_game(sender, instance, created, *args, **kwargs):
     emails = []
-
     connection = mail.get_connection()
     if created:
         if not instance.current_question and instance.state == 'active':
+            for player in instance.players.all():
 
 
+            # for player in :
+            # for p in instance.players.filter():
+            #     print(p)
+            # send_mail(subject='helloworld', message='helloworld', from_email='',
+            #           recipient_list=['laothomas01@gmail.com'],
+            #           fail_silently=False, connection=connection,)
+
+
+            # for player in instance.players.all():
+
+
+            # send_mail(subject='helloworld', message='helloworld', from_email='',
+            #           recipient_list=['laothomas01@gmail.com'],
+            #           fail_silently=False, connection=connection, )
+
+                # print(player.select_related('email'))
+                # send_mail('helloworld',message='helloworld',from_email='',recipient_list=[player.email],fail_silently=False,connection=connection,)
+
+
+                # print()
+
+                # send_mail(subject='helloworld', message='helloworld', from_email='',
+                #           recipient_list=[player.email.all()],
+                #           fail_silently=False, connection=connection,)
+
+
+
+
+            # for player in instance.players:
+            #     print(player[0])
             #this works
-            send_mail(subject='helloworld',message='helloworld',from_email='',recipient_list=['jamomif154@sartess.com'],fail_silently=False,connection=connection,)
-
-
 
             # print(kahoot.settings.EMAIL_BACKEND)
             instance.current_question = instance.quiz.questions.get(index=1)
@@ -82,8 +109,7 @@ class Player(models.Model):
     slug = models.CharField(unique=True, max_length=5)
     answers = models.CharField(validators=[validate_comma_separated_integer_list],
                                max_length=100)  # 100 chars, enough for 50 comma seperated answers
-    def get_email(self):
-        return self.email
+
     # helper functions to convert between string and list
     def set_answer(self, question_index, answer):
         if question_index < 1 or question_index > self.game.quiz.num_questions():
