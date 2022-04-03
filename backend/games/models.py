@@ -59,11 +59,17 @@ class Game(models.Model):
 # runs after a Game is saved to DB, set current question to the first question if the game is just starting
 @receiver(models.signals.post_save, sender=Game)
 def initialize_game(sender, instance, created, *args, **kwargs):
-    emails = []
+
     connection = mail.get_connection()
     if created:
         if not instance.current_question and instance.state == 'active':
-            for player in instance.players.all():
+
+            # player_qs = instance.players.all()
+
+            # print(instance.players.values('email')
+            # print(instance.players.all()[0]['email'])
+
+
 
 
             # for player in :
