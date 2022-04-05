@@ -163,7 +163,7 @@ const AddQuestions = () => {
             
         };
 
-        await postQuiz(quizBundle); 
+        postQuiz(quizBundle); 
     }
 
     

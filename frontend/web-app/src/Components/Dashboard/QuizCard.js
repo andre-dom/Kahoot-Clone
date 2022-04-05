@@ -3,9 +3,10 @@ import useAuth from "../../hooks/useAuth";
 import { Box, Button, Text, HStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
-const QuizCard = ({ name, slug, handleDelete }) => { 
+const QuizCard = ({ name, slug, handleDelete, colorBg }) => { 
 
-  //TODO: Need to write the view quiz page! 
+
+  //!!! need to pass in name instead of slug for startGame()
 
   const { auth } = useAuth(); 
   const navigate = useNavigate(); 
@@ -30,24 +31,28 @@ const QuizCard = ({ name, slug, handleDelete }) => {
 
   };
   
-  const viewQuiz = async () => {
+  const viewQuiz = () => {
 
     const url = name.replace(/\s+/g, '').toLowerCase(); 
 
     navigate(`/viewQuiz/${url}`, {state: {name, slug}}); 
   }; 
 
+  const startGame  =  () => {
+    navigate(`/home`, {state: {slug}})
+  }
+
   return (
-    <Box boxShadow="md" rounded="md" bg="white" height="200px" width = "330px">
+    <Box boxShadow="md" rounded="md" bg="white" height="180px" width = "300px" m = '0'>
       <Box
         display="flex"
         alignItems="center"
         justifyContent="center"
         height="80%"
         borderTopRadius="md"
-        bgColor="blue.200"
+        bgColor={colorBg}
       >
-        <Text>{name}</Text>
+        <Text fontSize= 'xl' color='#333333'>{name}</Text>
       </Box>{" "}
       <Box
         height="20%"
@@ -58,7 +63,8 @@ const QuizCard = ({ name, slug, handleDelete }) => {
         <HStack align='center'>
         
           <Button 
-          colorScheme="teal" 
+          color="#669DB3FF" 
+          fontFamily='Verdana'
           variant="link" 
           fontWeight="16px"
           onClick = {viewQuiz}
@@ -66,14 +72,17 @@ const QuizCard = ({ name, slug, handleDelete }) => {
             View
           </Button>
           <Button 
-          colorScheme="teal" 
+          color="#669DB3FF" 
+          fontFamily='Verdana'
           variant="link" 
           fontWeight="16px"
+          onClick = {startGame}
           >
             Start
           </Button>
           <Button 
-          colorScheme="teal" 
+          color="#669DB3FF" 
+          fontFamily='Verdana'
           variant="link" 
           fontWeight="16px"
           onClick = {deleteQuiz}

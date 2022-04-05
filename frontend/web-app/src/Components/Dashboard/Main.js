@@ -3,7 +3,9 @@ import QuizCard from "./QuizCard";
 import useAuth from "../../hooks/useAuth";
 
 
-import { Box, Heading, SimpleGrid } from "@chakra-ui/react";
+import { Box, Heading, SimpleGrid, Center, Container, Wrap } from "@chakra-ui/react";
+
+const colors = ['#E27D60', '#85DCBA', '#E8A87C', '#C38D9E' , '#41B3A3']
 
 const Main = () => {
 
@@ -60,37 +62,55 @@ const Main = () => {
    }
 
   return (
-    <Box>
-      <Box m="14">
+    <Box> 
+      {/* <Center> */}
+      <Box>
         <Heading
+          m='50px'
           as="h5"
           size="md"
           p="2"
-          color="gray.500"
+          color="#333333"
           fontWeight="semi-bold"
           borderBottom="1px"
           borderColor="grey.200"
+          fontFamily='Verdana'
         >
           My Quizzes
         </Heading>
+  
+        <Box>
+        <Center>
 
-        <SimpleGrid
-          columns={4}
-          spacing="10rem"
-          m="3"
-          textAlign="center"
-          rounded="lg"
-          color="gray.500"
-        >
+          <SimpleGrid
+            columns = {[1, 1,2,3, 4]}
+            spacing = '40px'
+            rounded="lg"
+            color="gray.500"
+            m = '20px'
+          >
 
-          {quizzes.map(quiz => (
-              //? Not sure if the slug can be a valid key. Keep an eye for this when deleting the quiz from dashboard. 
-            <QuizCard key = {quiz.slug} name = {quiz.name} slug = {quiz.slug} handleDelete = {handleDelete}></QuizCard>
+        
+          
+              {quizzes.map((quiz, index) => 
+                (
+                  //? Not sure if the slug can be a valid key. Keep an eye for this when deleting the quiz from dashboard. 
 
-          ))
-          }
-        </SimpleGrid>
+          
+                <QuizCard key = {quiz.slug} name = {quiz.name} slug = {quiz.slug} handleDelete = {handleDelete} colorBg = {colors[index % 5]}></QuizCard>
+
+              ))}
+
+            
+          </SimpleGrid>
+        </Center>
+        </Box>
+          
+
+          
+        
       </Box>
+      {/* </Center> */}
     </Box>
   );
 };

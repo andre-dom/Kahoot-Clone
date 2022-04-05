@@ -11,17 +11,22 @@ import CreateQuiz from "./Components/Quizzes/CreateQuiz";
 import AddQuestions from './Components/Quizzes/AddQuestions'; 
 import ViewQuiz from "./Components/Quizzes/ViewQuiz";
 import { KahootProvider } from "./Context/Kahoot/KahootProvider";
-
+import Home from "./Components/Dashboard/Home";
+import Question from "./Components/Dashboard/Question";
+import LeaderBoard from "./Components/Dashboard/LeaderBoard";
 const App = () => {
   return (
-
+    <div style = {{
+      backgroundColor : '#7AC4B5',
+      minHeight: '100vh'/* minus the height of the footer */
+    }}
+    >
     <Routes>
       <Route path ='/' element = {<Layout/>}>
-
         {/* public routes */}
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
-        
+
         {/* protected routes */}
         <Route element = {<RequireAuth/>}>
             <Route path="/dashboard" element = {
@@ -30,15 +35,21 @@ const App = () => {
               </KahootProvider>
               }/>
 
-          <Route path ='/createQuiz'element = {<CreateQuiz/>}/>
-          <Route path ='/addQuestions' element = {<AddQuestions/>}/>
-          <Route path ='/viewQuiz/:name' element = {<ViewQuiz/>}/>
+            <Route path='/home' element ={<Home />} />
+            <Route path='/questions' element = {<Question/>} />
+            <Route path='/leaderBoard' element = {<LeaderBoard/>} />
+            <Route path='/createQuiz' element ={<CreateQuiz/>}/>
+            <Route path='/AddQuestions' element ={<AddQuestions/>}/>
+            <Route path ='/viewQuiz/:name' element = {<ViewQuiz/>}/>
         </Route>        
 
         {/* catch all (404 page) */}
         <Route path= "*" element = {<Missing/>}/>
       </Route>
     </Routes>
+
+
+    </div>
   
   );
 };

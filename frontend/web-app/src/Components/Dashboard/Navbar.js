@@ -43,12 +43,12 @@ const Navbar = () => {
   }; 
 
   return (
-    <Flex bgColor="blue.100" align="center" justify="space-between" p="14">
+    <Flex align="center" justify="space-between" p="14">
       <Box p="2">
         <Heading as = 'h4' size = 'md'>Kahoot Clone</Heading>
       </Box>
       <Box>
-        <Heading as="h2" size="xl" color="gray.500" fontWeight="semi-bold">
+        <Heading as="h2" size="xl" color="#333333" fontWeight="semi-bold" fontFamily='Verdana'>
           User's Dashboard
         </Heading>
       </Box>
