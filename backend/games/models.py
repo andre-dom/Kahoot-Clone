@@ -5,16 +5,12 @@ from django.contrib.auth.models import User
 from django.core.validators import validate_comma_separated_integer_list
 from django.dispatch import receiver
 
-import kahoot.settings
 from quizzes.models import Quiz,Question,Answer
 from django_fsm import FSMField, transition
 
 
 from django.db import models
 from django.core.mail import send_mail
-from django.core import mail
-
-# from django.core.mail import EmailMessage
 
 class Game(models.Model):
     creator = models.ForeignKey(User, related_name='games', on_delete=models.CASCADE, )
@@ -46,10 +42,6 @@ class Game(models.Model):
     # precondition for state transition, make sure we are on the last question before we finish the game
     def can_complete(self):
         return not self.current_question.index < self.quiz.num_questions()
-    # def get_emails(self):
-    #     emails = []
-    #     for player in self.players.all():
-    #         emails.append(player.email)
 
     # complete the game
     @transition(field=state, source="active", target="complete", conditions=[can_complete])
@@ -65,16 +57,10 @@ class Game(models.Model):
 # runs after a Game is saved to DB, set current question to the first question if the game is just starting
 @receiver(models.signals.post_save, sender=Game)
 def initialize_game(sender, instance, created, *args, **kwargs):
-
-    connection = mail.get_connection()
     if created:
         if not instance.current_question and instance.state == 'active':
-
-            send_mail(subject='helloworld',message='helloworld',from_email='',recipient_list=['djangoprojecttesting01@gmail.com'],fail_silently=False,connection=connection,)
-
-            # print(len(instance.players.all()))
-            # instance.current_question = instance.quiz.questions.get(index=1)
-            # instance.save()
+            instance.current_question = instance.quiz.questions.get(index=1)
+            instance.save()
 
 
 class Player(models.Model):
@@ -120,10 +106,18 @@ class Player(models.Model):
 
 # runs after a player is saved to DB, make sure they have an initialized answer list and id
 @receiver(models.signals.post_save, sender=Player)
-def initialize_answer_list(sender, instance, created, *args, **kwargs):
+def initialize_player(sender, instance, created, *args, **kwargs):
     if created:
-        if not instance.answers:
-            instance.answers = ','.join([str(0) for i in range(0, instance.game.quiz.num_questions())])
+        # at some point we should make a check to ensure that the player slug is unique
         if not instance.slug:
             instance.slug = uuid.uuid4().hex[:6].upper()
+        if not instance.answers:
+            send_mail(
+                'Kahoot-Clone Game Invite',
+                f'{instance.game.creator.username} has invited you to a game! Join with the link below:\n\nhttp://127.0.0.1:3000/game/{instance.slug}',
+                'admin@example.com',
+                [instance.email],
+                fail_silently=False,
+            )
+            instance.answers = ','.join([str(0) for i in range(0, instance.game.quiz.num_questions())])
         instance.save()
