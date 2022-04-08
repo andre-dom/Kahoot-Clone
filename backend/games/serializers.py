@@ -24,9 +24,11 @@ class QuestionSerializer(WritableNestedModelSerializer):
 
 class PlayerSerializer(serializers.ModelSerializer):
     slug = serializers.CharField(read_only=True)
+
     class Meta:
         model = Player
         fields = ('email', 'slug')
+
 
 
 class QuizFieldSerializer(serializers.SlugRelatedField):
@@ -53,6 +55,11 @@ class GameSerializer(WritableNestedModelSerializer):
         if len(data['players']) == 0:
             raise serializers.ValidationError("Must be at least one player")
         return data
+
+
+
+
+
 
 
 class CompletedGameSerializer(WritableNestedModelSerializer):

@@ -62,7 +62,9 @@ def initialize_game(sender, instance, created, *args, **kwargs):
 
     connection = mail.get_connection()
     if created:
+
         if not instance.current_question and instance.state == 'active':
+
 
             # player_qs = instance.players.all()
 
