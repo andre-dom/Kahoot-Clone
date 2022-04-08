@@ -5,10 +5,12 @@ from django.contrib.auth.models import User
 from django.core.validators import validate_comma_separated_integer_list
 from django.dispatch import receiver
 
-from quizzes.models import Quiz, Question, Answer
+from quizzes.models import Quiz,Question,Answer
 from django_fsm import FSMField, transition
-from django.db import models
 
+
+from django.db import models
+from django.core.mail import send_mail
 
 class Game(models.Model):
     creator = models.ForeignKey(User, related_name='games', on_delete=models.CASCADE, )
@@ -18,6 +20,7 @@ class Game(models.Model):
     slug = models.CharField(unique=True, max_length=5)
 
     # advance the game forward one question, return false if the game is over
+
     def advance_game(self):
         if self.current_question.index < self.quiz.num_questions():
             self.current_question = self.quiz.questions.get(index=self.current_question.index + 1)
@@ -31,7 +34,9 @@ class Game(models.Model):
     def get_leaderboard(self):
         leaderboard = {}
         for player in self.players.all():
+            print(player.email)
             leaderboard[player.email] = player.num_correct_answers()
+
         return {k: v for k, v in sorted(leaderboard.items(), key=lambda x: x[1], reverse=True)}
 
     # precondition for state transition, make sure we are on the last question before we finish the game
@@ -62,7 +67,6 @@ class Player(models.Model):
     email = models.EmailField()
     game = models.ForeignKey(Game, null=False, related_name='players', on_delete=models.CASCADE, )
     slug = models.CharField(unique=True, max_length=5)
-    # store list of player's answers as a string, validate that it is a properly formatted list
     answers = models.CharField(validators=[validate_comma_separated_integer_list],
                                max_length=100)  # 100 chars, enough for 50 comma seperated answers
 
@@ -102,10 +106,18 @@ class Player(models.Model):
 
 # runs after a player is saved to DB, make sure they have an initialized answer list and id
 @receiver(models.signals.post_save, sender=Player)
-def initialize_answer_list(sender, instance, created, *args, **kwargs):
+def initialize_player(sender, instance, created, *args, **kwargs):
     if created:
-        if not instance.answers:
-            instance.answers = ','.join([str(0) for i in range(0, instance.game.quiz.num_questions())])
+        # at some point we should make a check to ensure that the player slug is unique
         if not instance.slug:
             instance.slug = uuid.uuid4().hex[:6].upper()
+        if not instance.answers:
+            send_mail(
+                'Kahoot-Clone Game Invite',
+                f'{instance.game.creator.username} has invited you to a game! Join with the link below:\n\nhttp://127.0.0.1:3000/game/{instance.slug}',
+                'admin@example.com',
+                [instance.email],
+                fail_silently=False,
+            )
+            instance.answers = ','.join([str(0) for i in range(0, instance.game.quiz.num_questions())])
         instance.save()

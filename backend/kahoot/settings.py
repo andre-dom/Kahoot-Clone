@@ -29,6 +29,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'nested_admin',
     'drf_spectacular',
     'django_extensions',
+
 
     # created apps
     'quizzes.apps.QuizzesConfig',
@@ -144,3 +146,33 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:8080'
 ]
+# requirment for sending emails. use the smtp backend because we do not want to print to console.
+# must search for an smtp server
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+#requirement for sending emails
+
+#the connection to the smtp server
+
+EMAIL_USE_TLS = True
+
+# need the email host for sending emails. use smtp.gmail because it belongs to an smtp server i think
+EMAIL_HOST = 'smtp.gmail.com'
+
+#use an email address that has an app password.
+EMAIL_HOST_USER = 'djangoprojecttesting01@gmail.com'
+
+#app password
+EMAIL_HOST_PASSWORD = 'wacegjphaswgnqnl'
+
+#use port 587 for email sending
+EMAIL_PORT = 587
+
+#This did the trick
+#just use this line. it made tings
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+
+
+
