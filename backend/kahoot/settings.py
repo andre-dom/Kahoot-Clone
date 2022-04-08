@@ -160,10 +160,10 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 
 #use an email address that has an app password.
-EMAIL_HOST_USER = 'laothomas01@gmail.com'
+EMAIL_HOST_USER = 'djangoprojecttesting01@gmail.com'
 
 #app password
-EMAIL_HOST_PASSWORD = 'vtuowcwtrqpygmsr'
+EMAIL_HOST_PASSWORD = 'wacegjphaswgnqnl'
 
 #use port 587 for email sending
 EMAIL_PORT = 587

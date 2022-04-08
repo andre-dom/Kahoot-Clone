@@ -38,12 +38,18 @@ class Game(models.Model):
     def get_leaderboard(self):
         leaderboard = {}
         for player in self.players.all():
+            print(player.email)
             leaderboard[player.email] = player.num_correct_answers()
+
         return {k: v for k, v in sorted(leaderboard.items(), key=lambda x: x[1], reverse=True)}
 
     # precondition for state transition, make sure we are on the last question before we finish the game
     def can_complete(self):
         return not self.current_question.index < self.quiz.num_questions()
+    # def get_emails(self):
+    #     emails = []
+    #     for player in self.players.all():
+    #         emails.append(player.email)
 
     # complete the game
     @transition(field=state, source="active", target="complete", conditions=[can_complete])
@@ -62,13 +68,13 @@ def initialize_game(sender, instance, created, *args, **kwargs):
 
     connection = mail.get_connection()
     if created:
-
         if not instance.current_question and instance.state == 'active':
-            # this works
-            # send_mail(subject='helloworld',message='helloworld',from_email='',recipient_list=['laothomas01@gmail.com'],fail_silently=False,connection=connection,)
 
-            instance.current_question = instance.quiz.questions.get(index=1)
-            instance.save()
+            send_mail(subject='helloworld',message='helloworld',from_email='',recipient_list=['djangoprojecttesting01@gmail.com'],fail_silently=False,connection=connection,)
+
+            # print(len(instance.players.all()))
+            # instance.current_question = instance.quiz.questions.get(index=1)
+            # instance.save()
 
 
 class Player(models.Model):
