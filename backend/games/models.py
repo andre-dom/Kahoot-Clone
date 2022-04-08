@@ -64,49 +64,9 @@ def initialize_game(sender, instance, created, *args, **kwargs):
     if created:
 
         if not instance.current_question and instance.state == 'active':
+            # this works
+            # send_mail(subject='helloworld',message='helloworld',from_email='',recipient_list=['laothomas01@gmail.com'],fail_silently=False,connection=connection,)
 
-
-            # player_qs = instance.players.all()
-
-            # print(instance.players.values('email')
-            # print(instance.players.all()[0]['email'])
-
-
-
-
-            # for player in :
-            # for p in instance.players.filter():
-            #     print(p)
-            # send_mail(subject='helloworld', message='helloworld', from_email='',
-            #           recipient_list=['laothomas01@gmail.com'],
-            #           fail_silently=False, connection=connection,)
-
-
-            # for player in instance.players.all():
-
-
-            # send_mail(subject='helloworld', message='helloworld', from_email='',
-            #           recipient_list=['laothomas01@gmail.com'],
-            #           fail_silently=False, connection=connection, )
-
-                # print(player.select_related('email'))
-                # send_mail('helloworld',message='helloworld',from_email='',recipient_list=[player.email],fail_silently=False,connection=connection,)
-
-
-                # print()
-
-                # send_mail(subject='helloworld', message='helloworld', from_email='',
-                #           recipient_list=[player.email.all()],
-                #           fail_silently=False, connection=connection,)
-
-
-
-
-            # for player in instance.players:
-            #     print(player[0])
-            #this works
-
-            # print(kahoot.settings.EMAIL_BACKEND)
             instance.current_question = instance.quiz.questions.get(index=1)
             instance.save()
 
