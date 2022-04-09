@@ -47,6 +47,21 @@ const SignUp = () => {
   const [error, setError] = useState(false); 
 
 
+  /**
+  * If the user is already logged in then
+  * redirect them to dashboard. 
+  */
+   useEffect(() => {
+
+    const localUser = JSON.parse(localStorage.getItem('user')); 
+
+    if(localUser.user) {
+      navigate('/dashboard');
+    } 
+
+  }, []);
+
+
   // will test the user input once the user starts typing
   useEffect(() => {
 
@@ -69,8 +84,10 @@ const SignUp = () => {
 
   },[]);
 
-  // will clear error message when the user starts typing in the 
-  // fields listed in the dependency array
+  /**
+   * will clear error message when the user starts typing in the 
+   * fields listed in the dependency array
+   */
   useEffect(() => {
 
     setErrorMessage(''); 
@@ -78,6 +95,12 @@ const SignUp = () => {
 
   }, [user, pwd])
 
+  /**
+   * Checks if the given string is empty
+   * @param {*} str 
+   * @returns true if the given string is empty and false if 
+   * its not
+   */
   const isEmpty = (str) => {
     return (!str || str.length === 0);
   }
@@ -125,36 +148,12 @@ const SignUp = () => {
   }
 
   /**
-   * Makes a request to the backend API to create a user account
+   * Takes in data object and makes a request to the API to create a user.
+   * It then calls login to assign a token to the user. 
+   * @param {*} data 
+   * @returns 
    */
-  const handleSubmit = async (e) => {
-   
-    e.preventDefault(); 
-
-    const test = USER_REGEX.test(user); 
-    const test2 = PWD_REGEX.test(pwd); 
-
-    if(!test || !test2) {
-      
-      setError(true); 
-      
-      setErrorMessage('Invalid Entry'); 
-      
-      return; 
-
-    } else if(isEmpty(user) || isEmpty(pwd)) {
-      
-      setError(true); 
-      
-      setErrorMessage('Input is empty!'); 
-
-      return; 
-    }
-
-    const data = {
-      "username": user,
-      "password": pwd
-    }
+  const createAccount = async (data) => {
 
     const response = await fetch('http://127.0.0.1:8000/auth/users/', {
       method: 'POST',
@@ -203,6 +202,42 @@ const SignUp = () => {
       navigate('/dashboard'); 
 
     }
+
+  }; 
+
+  /**
+   * Makes a request to the backend API to create a user account
+   */
+  const handleSubmit = async (e) => {
+   
+    e.preventDefault(); 
+
+    const test = USER_REGEX.test(user); 
+    const test2 = PWD_REGEX.test(pwd); 
+
+    if(!test || !test2) {
+      
+      setError(true); 
+      
+      setErrorMessage('Invalid Entry'); 
+      
+      return; 
+
+    } else if(isEmpty(user) || isEmpty(pwd)) {
+      
+      setError(true); 
+      
+      setErrorMessage('Input is empty!'); 
+
+      return; 
+    }
+
+    const data = {
+      "username": user,
+      "password": pwd
+    }
+
+    await createAccount(data); 
   }; 
 
 

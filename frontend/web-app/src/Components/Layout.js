@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 
 const Layout = () => {
   return(
-    <main>
+    <main backgroundColor="#A8D0E6">
       <Outlet></Outlet>
     </main>
   )
