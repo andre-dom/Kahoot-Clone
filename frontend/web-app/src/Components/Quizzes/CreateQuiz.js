@@ -52,13 +52,17 @@ const CreateQuiz = () => {
                 <Box
                 height="200px"
                 width="400px"
+                bg = '#85DCBA'
                 boxShadow="0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)"
                 borderRadius="0.6rem"
                 p='4'
                 >
                 <FormControl isRequired>
                     <FormLabel htmlFor='quiz-name'>Quiz Name:</FormLabel>
-                    <Input id='quiz-name' autoComplete = 'off' placeholder='Add you quiz name' 
+                    <Input 
+                    id='quiz-name' autoComplete = 'off' 
+                    placeholder='Add you quiz name' 
+                    _placeholder={{ opacity: 1, color: 'gray.500' }}
                     value={quizName}
                     onChange={(e)=> setQuizName(e.target.value)}
                     />

@@ -54,8 +54,10 @@ const Question = () =>{
                 'Authorization': `token ${auth.token}`
             },
         })
+
         if(!response.ok){
             console.log(response);
+            return; 
         }
         const result = await response.json();
         console.log('current question is: ' + result.current_question.question_body);
@@ -84,15 +86,34 @@ const Question = () =>{
 
         if(result.info) {
             navigate('/leaderBoard');
-
-
         } else {
 
             setQuestion(result.current_question.question_body);
             setAnswers(result.current_question.answers);
+
+            await standings(); 
             
         }
    }
+
+   const standings = async () => {
+       const response = await fetch('http://127.0.0.1:8000/game/standings/', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `token ${auth.token}`
+            },
+        })
+
+        if(!response.ok){
+            console.log(response);
+            return; 
+        }
+
+        const result = await response.json(); 
+
+        console.log(result); 
+   }; 
 
 
     

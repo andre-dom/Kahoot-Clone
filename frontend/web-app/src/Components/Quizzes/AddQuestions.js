@@ -15,12 +15,14 @@ import {
   VStack
 } from '@chakra-ui/react'
 
+
 const AddQuestions = () => {
 
    const { auth } = useAuth(); 
 
     const navigate = useNavigate(); 
     const location = useLocation();
+    //console.log('location: ', location);
 
     const from = location.state?.from?.pathname || '/dashboard'; 
 
@@ -91,7 +93,6 @@ const AddQuestions = () => {
      * @returns to automatically end the function. 
      */
     const postQuiz = async (quizBundle) => {
-
         const response = await fetch('http://127.0.0.1:8000/quizzes/', {
             method: 'POST',
             headers: {
@@ -120,9 +121,11 @@ const AddQuestions = () => {
 
                 const result = await response.json(); 
         
-                navigate(from, { replace: true });
+                //navigate(from, { replace: true });
+                navigate('/dashboard');
 
             }
+             
     }
     
     /**
@@ -132,36 +135,95 @@ const AddQuestions = () => {
      */
     const handleFinish = async (e) => {
         e.preventDefault(); 
-        setQuestions([...questions, {
-            question_body: question,
-            answers: [
-                {
-                    answer_body:answer1,
+        //console.log('questions length: ', questions.length);
 
-                },
-                {
-                    answer_body:answer2,
+        //added if else statement to check for the first question
+        if(questions.length == 0){
+            const singleQuestion = {
+                question_body: question,
+                answers: [
+                    {
+                        answer_body:answer1,
 
-                },
-                {
-                    answer_body:answer3,
+                    },
+                    {
+                        answer_body:answer2,
 
-                },
-                {
-                    answer_body:answer4,
+                    },
+                    {
+                        answer_body:answer3,
 
-                },
+                    },
+                    {
+                        answer_body:answer4,
 
-            ],
-            correct_answer:correctAnswer
-            }
-        ]);
+                    },
+
+                ],
+                correct_answer:correctAnswer
+                };
+            setQuestions(singleQuestion);
+        }else{
+            // console.log('question: ', question);
+            // setQuestions([...questions, {
+            //     question_body: question,
+            //     answers: [
+            //         {
+            //             answer_body:answer1,
+
+            //         },
+            //         {
+            //             answer_body:answer2,
+
+            //         },
+            //         {
+            //             answer_body:answer3,
+
+            //         },
+            //         {
+            //             answer_body:answer4,
+
+            //         },
+
+            //     ],
+            //     correct_answer:correctAnswer
+            //     }
+            // ]);
+            const singleQuestion = {
+                question_body: question,
+                answers: [
+                    {
+                        answer_body:answer1,
+
+                    },
+                    {
+                        answer_body:answer2,
+
+                    },
+                    {
+                        answer_body:answer3,
+
+                    },
+                    {
+                        answer_body:answer4,
+
+                    },
+
+                ],
+                correct_answer:correctAnswer
+                };
+                questions.push(singleQuestion);
+                console.log(questions);
+            
+       }
+        
         
         const quizBundle = {
             name : quizName,
             questions:questions
             
         };
+        //console.log("inside handleFinish", quizBundle);
 
         postQuiz(quizBundle); 
     }
@@ -221,42 +283,55 @@ const AddQuestions = () => {
     }
  
     return (
-        <div overflow = 'hidden'>
-            <Center height="100vh">
+        <div  height="100vh">
+            <Center >
                 <Box
+                mt="100px"
                 height="640px"
                 width="600px"
+                bg = '#85DCBA'
                 boxShadow="0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)"
                 borderRadius="0.6rem"
                 p='4'
                 >
                     <FormControl isRequired>
                         <FormLabel htmlFor='question'>Question:</FormLabel>
-                        <Input id='question' placeholder='Add the question'
+                        <Input 
+                        id='question' 
+                        placeholder='Add the question'
+                         _placeholder={{ opacity: 1, color: 'gray.500' }}
                         value={question} autoComplete = 'off' onChange= {(e) => setQuestion(e.target.value)}
                         />
                     </FormControl>
                     <FormControl isRequired>
                         <FormLabel htmlFor='answer-1'>Answer 1:</FormLabel>
-                        <Input id='answer-1' placeholder='answer-1' 
+                        <Input id='answer-1' 
+                        placeholder='answer-1' 
+                        _placeholder={{ opacity: 1, color: 'gray.500' }}
                         value={answer1} autoComplete = 'off' onChange= {(e) => setAnswer1(e.target.value)}
                         />
                     </FormControl>
                     <FormControl isRequired>
                         <FormLabel htmlFor='answer-2'>Answer 2:</FormLabel>
-                        <Input id='answer-2' placeholder='answer-2' 
+                        <Input id='answer-2' 
+                        placeholder='answer-2' 
+                        _placeholder={{ opacity: 1, color: 'gray.500' }}
                         value={answer2} autoComplete = 'off' onChange= {(e) => setAnswer2(e.target.value)}
                         />
                     </FormControl>
                     <FormControl isRequired>
                         <FormLabel htmlFor='answer-3'>Answer 3:</FormLabel>
-                        <Input id='answer-3' placeholder='answer-3' 
+                        <Input id='answer-3' 
+                        placeholder='answer-3' 
+                        _placeholder={{ opacity: 1, color: 'gray.500' }}
                         value={answer3} autoComplete = 'off' onChange= {(e) => setAnswer3(e.target.value)}
                         />
                     </FormControl>
                     <FormControl isRequired mb='2'>
                         <FormLabel htmlFor='answer-3'>Answer 4:</FormLabel>
-                        <Input id='answer-4' placeholder='answer-4' 
+                        <Input id='answer-4' 
+                        placeholder='answer-4'
+                        _placeholder={{ opacity: 1, color: 'gray.500' }} 
                         value={answer4} autoComplete = 'off' onChange= {(e) => setAnswer4(e.target.value)}
                         />
                     </FormControl>
@@ -298,18 +373,20 @@ const AddQuestions = () => {
 
             </Center>
 
-            <Center mb = '40px'>
-                <Box>
+         
+
+            <Center >
+                
                     <VStack>
                         {                   
                         questions.map((questionSet,index) => (
-                            <div>
+                           
                             <Card key = {index} index = {index} questionSet = {questionSet} handleDelete={handleDelete}></Card>
-                            </div>
+                           
                             ))
                         }
                     </VStack>
-                </Box>
+            
             </Center>
         </div>
     )

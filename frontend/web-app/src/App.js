@@ -14,6 +14,8 @@ import { KahootProvider } from "./Context/Kahoot/KahootProvider";
 import Home from "./Components/Dashboard/Home";
 import Question from "./Components/Dashboard/Question";
 import LeaderBoard from "./Components/Dashboard/LeaderBoard";
+import StudentPage from "./Components/Quizzes/StudentPage";
+
 const App = () => {
   return (
     <div style = {{
@@ -26,6 +28,7 @@ const App = () => {
         {/* public routes */}
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
+        <Route path ='/student/:react' element = {<StudentPage/>}/>
 
         {/* protected routes */}
         <Route element = {<RequireAuth/>}>

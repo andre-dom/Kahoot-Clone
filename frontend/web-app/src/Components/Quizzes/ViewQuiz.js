@@ -23,6 +23,8 @@ const ViewQuiz = () => {
 
   const { auth } = useAuth(); 
 
+  const colorBg = location.state.colorBg;
+
   /**
    * Gets a single quiz from the backend
    * @param {*} slug 
@@ -46,7 +48,9 @@ const ViewQuiz = () => {
   useEffect(() => {
 
     const slug = location.state.slug;
-    const name = location.state.name;  
+    const name = location.state.name;
+   
+      
     setName(name); 
 
     getQuiz(slug); 
@@ -58,43 +62,44 @@ const ViewQuiz = () => {
      <Box>
         {question.map((question) => (
           <Box 
-          bg = '#F3F7F7'
+          bgColor={colorBg}
           borderRadius='0.5rem'
           p = '10px'
           m = '10px'
           minWidth='500px'
           maxWidth='520px'
           >
-          <Divider orientation='horizontal' borderWidth= '.2px'/>
     
-            <SimpleGrid column={2} minChildWidth='420px' spacing = {10}>
-              <Box>
+            <SimpleGrid column={2} minChildWidth='420px' spacing = {4}>
+              {/* <Box>
                 <Text fontSize='lg' align='center'>{name}</Text>
-              </Box>
+              </Box> */}
               <Box>
                 <Text textAlign='left' float='left'>Question:</Text>
-                <Text textAlign='right' float = 'right'>{question.question_body}</Text>
+                <Text textAlign='right' isTruncated>{question.question_body}</Text>
               </Box>
               <Divider orientation='horizontal' borderWidth= '.2px'/>
               <Box>
                 <Text textAlign='left' float='left'>Answer 1:</Text>
-                <Text textAlign='right' float = 'right'>{question.answers[0].answer_body}</Text>
+                <Text textAlign='right' isTruncated>{question.answers[0].answer_body}</Text>
               </Box>
               <Divider orientation='horizontal' borderWidth= '.2px'/>
               <Box>
                 <Text textAlign='left' float='left'>Answer 2:</Text>
-                <Text textAlign='right' float = 'right'>{question.answers[1].answer_body}</Text>
-              </Box>
-              <Divider orientation='horizontal' borderWidth= '.2px'/>
-              <Box>
-                <Text textAlign='left' float='left'>Answer 2:</Text>
-                <Text textAlign='right' float = 'right'>{question.answers[2].answer_body}</Text>
+                <Text textAlign='right' isTruncated>{question.answers[1].answer_body}</Text>
               </Box>
               <Divider orientation='horizontal' borderWidth= '.2px'/>
               <Box>
                 <Text textAlign='left' float='left'>Answer 3:</Text>
-                <Text textAlign='right' float = 'right'>{question.answers[3].answer_body}</Text>
+                <Text textAlign='right' isTruncated>{question.answers[2].answer_body}</Text>
               </Box>
+              <Divider orientation='horizontal' borderWidth= '.2px'/>
+              <Box>
+                <Text textAlign='left' float='left'>Answer 4:</Text>
+                <Text textAlign='right' isTruncated>{question.answers[3].answer_body}</Text>
+              </Box>
+              <Divider orientation='horizontal' borderWidth= '.2px'/>
+
               <Box>
                 <Text textAlign='left' float='left'>Correct Answer:</Text>
                 <Text textAlign='right' float = 'right'>{question.answers[question.correct_answer].answer_body}</Text>

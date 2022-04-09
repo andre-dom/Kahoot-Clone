@@ -35,7 +35,7 @@ const QuizCard = ({ name, slug, handleDelete, colorBg }) => {
 
     const url = name.replace(/\s+/g, '').toLowerCase(); 
 
-    navigate(`/viewQuiz/${url}`, {state: {name, slug}}); 
+    navigate(`/viewQuiz/${url}`, {state: {name, slug, colorBg}}); 
   }; 
 
   const startGame  =  () => {
