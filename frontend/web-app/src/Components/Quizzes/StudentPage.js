@@ -11,22 +11,22 @@ import { useParams, useLocation } from "react-router-dom";
 const StudentPage = () => {
 
     //const [answer, setAnswer] = useState();
-    const { react } = useParams();
+    // let { slug } = useParams();
+
+    // slug = 'EBDF79'
 
     
-    console.log(react); 
 
-    const postAnswer = async (answer) => {
 
-        console.log('slug: ', react); 
+    const postAnswer = async (answer) => { 
 
         const answerObj = {
             
-            'answer_body': answer
+            'answer': answer
             
         }
 
-        const response = await fetch(`http://127.0.0.1:8000/player/${react}/submit/`,{
+        const response = await fetch(`http://127.0.0.1:8000/player/440E0B/submit/`,{
             method:'POST',
             headers:{
                 'Content-Type':'application/json'

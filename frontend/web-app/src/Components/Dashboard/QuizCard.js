@@ -6,8 +6,6 @@ import { useNavigate } from "react-router-dom";
 const QuizCard = ({ name, slug, handleDelete, colorBg }) => { 
 
 
-  //!!! need to pass in name instead of slug for startGame()
-
   const { auth } = useAuth(); 
   const navigate = useNavigate(); 
 

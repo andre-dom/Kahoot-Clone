@@ -22,11 +22,14 @@ const Question = () =>{
 
     useEffect(async () => {
 
-        await currentQuestion(); 
+        currentQuestion();
+        getLeaderBoard();  
+        gameCompletedRetrieve(); 
+        gameCompletedRetrieve2(); 
         
 
-        console.log(question);
-        console.log(answers);
+        // console.log(question);
+        // console.log(answers);
     
     },[]);
 
@@ -43,7 +46,7 @@ const Question = () =>{
         }
         const result = await response.json();
 
-        console.log(result); 
+        console.log('game/standings/' + result + "\n"); 
     }
 
     const currentQuestion = async () =>{
@@ -91,29 +94,70 @@ const Question = () =>{
             setQuestion(result.current_question.question_body);
             setAnswers(result.current_question.answers);
 
-            await standings(); 
+            standings(); 
             
         }
    }
 
-   const standings = async () => {
-       const response = await fetch('http://127.0.0.1:8000/game/standings/', {
+    const standings = async () => {
+
+        const response = await fetch('http://127.0.0.1:8000/game/standings/',{
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `token ${auth.token}`
-            },
-        })
+            }
 
+        })
+        
         if(!response.ok){
             console.log(response);
-            return; 
         }
+        const result = await response.json();
 
-        const result = await response.json(); 
+        console.log('/game/standings/ ' + result + '\n'); 
 
-        console.log(result); 
-   }; 
+
+    }; 
+
+    const gameCompletedRetrieve = async () => {
+
+        const response = await fetch(`http://127.0.0.1:8000/game/completed/react/export/`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `token ${auth.token}`
+            }
+
+        })
+        
+        if(!response.ok){
+            console.log(response);
+        }
+        const result = await response.json();
+
+        console.log('/game/completed/react/export/: ', result, '\n'); 
+
+    }; 
+
+    const gameCompletedRetrieve2 = async () => {
+        const response = await fetch(`http://127.0.0.1:8000/game/completed/react/`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `token ${auth.token}`
+            }
+
+        })
+        
+        if(!response.ok){
+            console.log(response);
+        }
+        const result = await response.json();
+
+        console.log('/game/completed/react/: ' + result + '\n');
+
+    };
 
 
     
