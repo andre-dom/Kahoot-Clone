@@ -22,6 +22,7 @@ const Home = () => {
     const [error,  setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState(''); 
     const location = useLocation(); 
+    const [slug, setSlug] = useState('');
 
     /**
      * Once the user begins typing
@@ -31,6 +32,16 @@ const Home = () => {
       setError(false); 
     
     },[email])
+
+    useEffect(() => {
+      if(isEmpty(localStorage.getItem('slug'))){
+        alert('Slug is empty...')
+        return;
+      }
+      
+      setSlug(localStorage.getItem('slug'));
+      
+    },[])
 
 
     /**
@@ -76,9 +87,17 @@ const Home = () => {
       e.preventDefault();
       
       if(isEmpty(email)){ // if email input is empty
+        console.log('email is empty.'); 
+        if(emails.length > 0){
+
+          await startGame()
+
+        }
+
+        console.log('array length is also empty.'); 
+
         setError(true); 
         setErrorMessage('email is empty');  
-
         return;
      }
       if(!validEmail(email)){ // not valid email 
@@ -108,7 +127,7 @@ const Home = () => {
       */
     const startGame = async () => {
           
-      const slug = location.state.slug; 
+      // const slug = location.state.slug; 
 
       const data = {
           'quiz' : slug,

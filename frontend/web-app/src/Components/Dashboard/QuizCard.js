@@ -37,7 +37,8 @@ const QuizCard = ({ name, slug, handleDelete, colorBg }) => {
   }; 
 
   const startGame  =  () => {
-    navigate(`/home`, {state: {slug}})
+    localStorage.setItem('slug', slug)
+    navigate(`/home`)
   }
 
   return (

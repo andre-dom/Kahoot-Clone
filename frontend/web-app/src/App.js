@@ -28,7 +28,7 @@ const App = () => {
         {/* public routes */}
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
-        <Route path ='/student/:slug' element = {<StudentPage/>}/>
+        <Route path ='/game/:slug' element = {<StudentPage/>}/>
 
         {/* protected routes */}
         <Route element = {<RequireAuth/>}>

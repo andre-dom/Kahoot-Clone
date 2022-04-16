@@ -1,11 +1,13 @@
 from io import BytesIO
 import base64
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
 
 # take in a list of scores, return a histogram encoded in base64
 def generate_score_histogram(data, maxScore):
+    matplotlib.use('agg')
     plt.clf()
     bins = np.arange(maxScore + 2) - 0.5
     plt.hist(data, facecolor='#4582ec', edgecolor="#343a40", bins=bins)

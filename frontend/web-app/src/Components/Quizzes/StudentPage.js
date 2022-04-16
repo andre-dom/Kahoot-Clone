@@ -26,7 +26,7 @@ const StudentPage = () => {
             
         }
 
-        const response = await fetch(`http://127.0.0.1:8000/player/440E0B/submit/`,{
+        const response = await fetch(`http://127.0.0.1:8000/player/A333B0/submit/`,{
             method:'POST',
             headers:{
                 'Content-Type':'application/json'
@@ -49,9 +49,7 @@ const StudentPage = () => {
     return (
        
         <Box>
-            
             <SimpleGrid columns={2} spacingX='40px' spacingY='20px' >
-            
                 <Box >
                     <Center>
                         <Button bg='tomato' height='50vh'   width = '600px' onClick = {() => postAnswer(1)} >One</Button>

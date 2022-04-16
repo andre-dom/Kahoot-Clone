@@ -20,12 +20,12 @@ const Question = () =>{
     const[disable, setDisable] = useState(false); 
     const[appear, setAppear] = useState(false); 
 
-    useEffect(async () => {
+    useEffect(() => {
 
         currentQuestion();
         getLeaderBoard();  
         gameCompletedRetrieve(); 
-        gameCompletedRetrieve2(); 
+        // gameCompletedRetrieve2(); 
         
 
         // console.log(question);
@@ -46,7 +46,9 @@ const Question = () =>{
         }
         const result = await response.json();
 
-        console.log('game/standings/' + result + "\n"); 
+        const str = JSON.stringify(result)
+
+        console.log('game/standings/' + str + "\n"); 
     }
 
     const currentQuestion = async () =>{
@@ -68,8 +70,8 @@ const Question = () =>{
         setQuestion(result.current_question.question_body);
         setAnswers(result.current_question.answers);
 
-        console.log(question);
-        console.log(answers);
+        console.log('question: ' + question);
+        console.log('answers: ' + answers);
     }
 
      const nextQuestion = async () => {
@@ -83,8 +85,8 @@ const Question = () =>{
         if(!response.ok){
             console.log(response);
         }
-        const result =await response.json();
-        console.log(result);
+        const result = await response.json();
+        console.log('result ' + result);
         console.log(result.info); 
 
         if(result.info) {
@@ -94,31 +96,31 @@ const Question = () =>{
             setQuestion(result.current_question.question_body);
             setAnswers(result.current_question.answers);
 
-            standings(); 
+            //standings(); 
             
         }
    }
 
-    const standings = async () => {
+//     const standings = async () => {
 
-        const response = await fetch('http://127.0.0.1:8000/game/standings/',{
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `token ${auth.token}`
-            }
+//         const response = await fetch('http://127.0.0.1:8000/game/standings/',{
+//             method: 'GET',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'Authorization': `token ${auth.token}`
+//             }
 
-        })
+//         })
         
-        if(!response.ok){
-            console.log(response);
-        }
-        const result = await response.json();
+//         if(!response.ok){
+//             console.log(response);
+//         }
+//         const result = await response.json();
 
-        console.log('/game/standings/ ' + result + '\n'); 
+//         console.log('/game/standings/ ' + result + '\n'); 
 
 
-    }; 
+//     }; 
 
     const gameCompletedRetrieve = async () => {
 
@@ -136,29 +138,43 @@ const Question = () =>{
         }
         const result = await response.json();
 
-        console.log('/game/completed/react/export/: ', result, '\n'); 
+        console.log('/game/completed/E4D1D9/export/: ', result, '\n'); 
 
     }; 
 
-    const gameCompletedRetrieve2 = async () => {
-        const response = await fetch(`http://127.0.0.1:8000/game/completed/react/`,{
-            method: 'GET',
+//     const gameCompletedRetrieve2 = async () => {
+//         const response = await fetch(`http://127.0.0.1:8000/game/completed/react/`,{
+//             method: 'GET',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'Authorization': `token ${auth.token}`
+//             }
+
+//         })
+        
+//         if(!response.ok){
+//             console.log(response);
+//         }
+//         const result = await response.json();
+
+//         console.log('/game/completed/react/: ' + result + '\n');
+
+//     };
+    const deleteQuiz = async () => {
+        const response = await  fetch (`http://127.0.0.1:8000/game/delete/`,{
+            method:  'DELETE',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type':  'application/json',
                 'Authorization': `token ${auth.token}`
             }
-
         })
-        
         if(!response.ok){
-            console.log(response);
+            console.log('an error occurred');
+            return;
         }
-        const result = await response.json();
 
-        console.log('/game/completed/react/: ' + result + '\n');
-
-    };
-
+        navigate('/dashboard');
+    }
 
     
 
@@ -173,14 +189,9 @@ const Question = () =>{
                     <Text fontSize="5xl">{answers[2].answer_body}</Text>
                     <Text fontSize="5xl">{answers[3].answer_body}</Text>
                     <Button onClick = {nextQuestion}> Next Question</Button>
-
+                    <Button onClick =  {deleteQuiz}>End Quiz</Button>
                 </Box>
-                        
-
-
             }
-
-            
         </Box>
 
     )
