@@ -18,6 +18,7 @@ class Game(models.Model):
     current_question = models.ForeignKey(Question, null=True, related_name='game', on_delete=models.CASCADE)
     state = FSMField(default='active', protected=True)
     slug = models.CharField(unique=True, max_length=5)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     # advance the game forward one question, return false if the game is over
 

@@ -88,7 +88,7 @@ def submit_answer(request, slug):
 # list completed games
 @api_view(['GET'])
 def list_completed_games(request):
-    games = Game.objects.filter(creator=request.user, state='complete')
+    games = Game.objects.filter(creator=request.user, state='complete').order_by('-created_at')
     games_list = []
     for game in games.all():
         data = {'slug': game.slug, 'players': []}
