@@ -5,12 +5,12 @@ from django.contrib.auth.models import User
 from django.core.validators import validate_comma_separated_integer_list
 from django.dispatch import receiver
 
-from quizzes.models import Quiz,Question,Answer
+from quizzes.models import Quiz, Question, Answer
 from django_fsm import FSMField, transition
-
 
 from django.db import models
 from django.core.mail import send_mail
+
 
 class Game(models.Model):
     creator = models.ForeignKey(User, related_name='games', on_delete=models.CASCADE, )
@@ -20,8 +20,7 @@ class Game(models.Model):
     slug = models.CharField(unique=True, max_length=5)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # advance the game forward one question, return false if the game is over
-
+    # advance the game forward one question, return false if the game is ove
     def advance_game(self):
         if self.current_question.index < self.quiz.num_questions():
             self.current_question = self.quiz.questions.get(index=self.current_question.index + 1)
@@ -35,10 +34,16 @@ class Game(models.Model):
     def get_leaderboard(self):
         leaderboard = {}
         for player in self.players.all():
-            print(player.email)
             leaderboard[player.email] = player.num_correct_answers()
 
         return {k: v for k, v in sorted(leaderboard.items(), key=lambda x: x[1], reverse=True)}
+
+    # return an object for use with rechart
+    def get_rechart_object(self):
+        obj = []
+        for player in self.players.all():
+            obj.append(player.get_recharts_object())
+        return obj
 
     # precondition for state transition, make sure we are on the last question before we finish the game
     def can_complete(self):
@@ -100,6 +105,10 @@ class Player(models.Model):
             if answers[i] == quiz.questions.get(index=i + 1).correct_answer:
                 correct += 1
         return correct
+
+    # return an object for use with rechart
+    def get_recharts_object(self):
+        return {'name': self.email, 'value': self.num_correct_answers()}
 
     def __str__(self):
         return f'{self.email}: {self.game.quiz.name}'
