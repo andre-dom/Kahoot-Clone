@@ -342,10 +342,10 @@ const AddQuestions = () => {
                     onChange= { (e) => setCorrectAnswer(e.target.value)}
                     
                     >
-                        <option value='1'>Answer 1</option>
-                        <option value='2'>Answer 2</option>
-                        <option value='3'>Answer 3</option>
-                        <option value='4'>Answer 4</option>
+                        <option value='0'>Answer 1</option>
+                        <option value='1'>Answer 2</option>
+                        <option value='2'>Answer 3</option>
+                        <option value='3'>Answer 4</option>
                     </Select>
                     <Button
                         mt={4}

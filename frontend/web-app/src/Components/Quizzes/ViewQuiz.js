@@ -17,13 +17,24 @@ const ViewQuiz = () => {
 
   const location = useLocation(); 
 
-  const [question, setQuestion] = useState([]); 
+  const [questions, setQuestions] = useState([]); 
 
-  const [slug, setSlug] = useState(); 
+  const [name, setName] = useState(''); 
 
   const { auth } = useAuth(); 
 
   const colorBg = location.state.colorBg;
+
+
+  /**
+   * Checks if the given string is empty
+   * @param {*} str 
+   * @returns true if the given string is empty and false if 
+   * its not
+   */
+     const isEmpty = (str) => {
+      return (!str || str.length === 0);
+    }
 
   /**
    * Gets a single quiz from the backend
@@ -41,7 +52,7 @@ const ViewQuiz = () => {
     
     const result = await response.json(); 
 
-    setQuestion(result.questions); 
+    setQuestions(result.questions); 
     
   }; 
 
@@ -50,11 +61,28 @@ const ViewQuiz = () => {
   */
   useEffect(() => {
 
-    const slug = location.state.slug;
-    const name = location.state.name;
-   
-      
-    setSlug(name); 
+    let slug = ''; 
+    let name = '';
+
+    try {
+
+      slug = location.state.slug;
+      name = location.state.name;
+
+    } catch {
+
+      console.log('error')
+
+    } finally {
+
+      if(isEmpty(name) || isEmpty(slug)) {
+        console.log('an error with slug or name has occured'); 
+        return; 
+      }
+
+    }
+
+    setName(name)
 
     getQuiz(slug); 
 
@@ -62,8 +90,11 @@ const ViewQuiz = () => {
 
   return(
     <Container maxW='80rem' centerContent>
+       <Box>
+        <Text fontSize='lg' align='center'>{name}</Text>
+       </Box>
      <Box>
-        {question.map((question) => (
+        {questions.map((question) => (
           <Box 
           bgColor={colorBg}
           borderRadius='0.5rem'
@@ -74,9 +105,7 @@ const ViewQuiz = () => {
           >
     
             <SimpleGrid column={2} minChildWidth='420px' spacing = {4}>
-              {/* <Box>
-                <Text fontSize='lg' align='center'>{name}</Text>
-              </Box> */}
+  
               <Box>
                 <Text textAlign='left' float='left'>Question:</Text>
                 <Text textAlign='right' isTruncated>{question.question_body}</Text>

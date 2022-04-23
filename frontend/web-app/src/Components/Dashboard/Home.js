@@ -81,38 +81,39 @@ const Home = () => {
     /**
      * Checks if the input is valid
      * and calls helper functions to start game
+     * TODO FIX LOGIC
      */
     const handleClick = async (e) => {
       
       e.preventDefault();
       
-      if(isEmpty(email)){ // if email input is empty
-        console.log('email is empty.'); 
-        if(emails.length > 0){
+    //   if(isEmpty(email)){ // if email input is empty
+    //     console.log('email is empty.'); 
+    //     if(emails.length > 0){
 
-          await startGame()
+    //       await startGame()
 
-        }
+    //     }
 
-        console.log('array length is also empty.'); 
+    //     console.log('array length is also empty.'); 
 
-        setError(true); 
-        setErrorMessage('email is empty');  
-        return;
-     }
-      if(!validEmail(email)){ // not valid email 
-         setError(true); 
-         setErrorMessage('Not valid email');  
+    //     setError(true); 
+    //     setErrorMessage('email is empty');  
+    //     return;
+    //  }
+    //   if(!validEmail(email)){ // not valid email 
+    //      setError(true); 
+    //      setErrorMessage('Not valid email');  
 
-         return;
-      }
+    //      return;
+    //   }
  
-      if(emails.includes(email)){  // if array already contains email
-        setError(true); 
-        setErrorMessage('Email already exists');  
+    //   if(emails.includes(email)){  // if array already contains email
+    //     setError(true); 
+    //     setErrorMessage('Email already exists');  
 
-        return;
-     }
+    //     return;
+    //  }
 
      addPlayer(email);
 
@@ -146,6 +147,8 @@ const Home = () => {
       if(!response.ok){
           setError(true);
 
+          console.log('error: ' + JSON.stringify(response))
+
       } else {
         
         navigate('/questions')
@@ -158,25 +161,26 @@ const Home = () => {
    /**
     * Create an object and add it to the array
     * @returns 
+    * TODO FIX LOGIC
     */
    const addPlayer =  ()  => {
 
-    if(isEmpty(email)) { // if email input is empty 
-      setError(true);
-      setErrorMessage('Email input is empty'); 
+    // if(isEmpty(email)) { // if email input is empty 
+    //   setError(true);
+    //   setErrorMessage('Email input is empty'); 
 
-      return; 
+    //   return; 
 
-    } 
+    // } 
 
-    if(!validEmail(email)) { // if email is invalid 
+    // if(!validEmail(email)) { // if email is invalid 
 
-      setError(true); 
-      setErrorMessage('not valid email'); 
+    //   setError(true); 
+    //   setErrorMessage('not valid email'); 
 
-      return; 
+    //   return; 
     
-    } 
+    // } 
 
     const objEmail = {
         
