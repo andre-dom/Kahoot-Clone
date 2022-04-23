@@ -64,7 +64,7 @@ def advance_game(request):
     if game.advance_game():
         return response.Response(GameSerializer(game).data, status=status.HTTP_200_OK)
     leaderboard = game.get_leaderboard()
-    return response.Response({'info': 'game has completed!', 'leaderboard': leaderboard}, status=status.HTTP_200_OK)
+    return response.Response({'info': 'game has completed!', 'leaderboard': leaderboard, 'data': game.get_rechart_object()}, status=status.HTTP_200_OK)
 
 
 # instructor get current game standings
@@ -88,7 +88,7 @@ def submit_answer(request, slug):
 # list completed games
 @api_view(['GET'])
 def list_completed_games(request):
-    games = Game.objects.filter(creator=request.user, state='complete')
+    games = Game.objects.filter(creator=request.user, state='complete').order_by('-created_at')
     games_list = []
     for game in games.all():
         data = {'slug': game.slug, 'players': []}
@@ -113,7 +113,7 @@ def get_completed_game(request, slug):
     game_data['leaderboard'] = game.get_leaderboard()
     game_data['mean_score'] = scores.mean()
     game_data['median_score'] = scores.median()
-    game_data['histogram'] = generate_score_histogram(scores, game.quiz.num_questions())
+    game_data['data'] = game.get_rechart_object()
     return response.Response(game_data, status=status.HTTP_200_OK)
 
 # allow instructors to download the results of completed games as CSV
@@ -124,7 +124,7 @@ def get_game_results_as_csv(request, slug):
     # Create the HttpResponse object with the appropriate CSV header.
     res = HttpResponse(
         content_type='text/csv',
-        headers={'Content-Disposition': 'attachment; filename="' + game.slug + '.csv"'},
+        headers={'Content-Disposition': f'attachment; filename="{game.quiz.name.replace(" ", "_")}_{game.slug}.csv"'},
     )
 
     writer = csv.writer(res)
