@@ -11,18 +11,14 @@ import CreateQuiz from "./Components/Quizzes/CreateQuiz";
 import AddQuestions from './Components/Quizzes/AddQuestions'; 
 import ViewQuiz from "./Components/Quizzes/ViewQuiz";
 import { KahootProvider } from "./Context/Kahoot/KahootProvider";
-import Home from "./Components/Dashboard/Home";
-import Question from "./Components/Dashboard/Question";
-import LeaderBoard from "./Components/Dashboard/LeaderBoard";
+import Home from "./Game/Home";
+import Question from "./Game/Question";
+import LeaderBoard from "./Game/LeaderBoard";
 import StudentPage from "./Components/Quizzes/StudentPage";
 
 const App = () => {
   return (
-    <div style = {{
-      backgroundColor : '#7AC4B5',
-      minHeight: '100vh'/* minus the height of the footer */
-    }}
-    >
+    <div style = {{backgroundColor : '#7AC4B5', minHeight: '100vh'/* minus the height of the footer */}}>
     <Routes>
       <Route path ='/' element = {<Layout/>}>
         {/* public routes */}

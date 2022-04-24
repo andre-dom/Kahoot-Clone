@@ -8,7 +8,7 @@ import {
     AlertTitle,
     Text
  } from '@chakra-ui/react';
- import useAuth from '../../hooks/useAuth';
+ import useAuth from '../hooks/useAuth';
  import { useNavigate, useLocation } from "react-router-dom";
 
  const address = ['@gmail.com', '@yahoo.com', '@qq.com', '@163.com', '@outlook.com', '@sjsu.edu']; 
