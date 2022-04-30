@@ -73,6 +73,7 @@ class Player(models.Model):
     email = models.EmailField()
     game = models.ForeignKey(Game, null=False, related_name='players', on_delete=models.CASCADE, )
     slug = models.CharField(unique=True, max_length=5)
+    name = models.CharField(max_length=30, default=None, null=True)
     answers = models.CharField(validators=[validate_comma_separated_integer_list],
                                max_length=100)  # 100 chars, enough for 50 comma seperated answers
 
@@ -108,7 +109,7 @@ class Player(models.Model):
 
     # return an object for use with rechart
     def get_recharts_object(self):
-        return {'name': self.email, 'value': self.num_correct_answers()}
+        return {'name': self.name, 'value': self.num_correct_answers()}
 
     def __str__(self):
         return f'{self.email}: {self.game.quiz.name}'

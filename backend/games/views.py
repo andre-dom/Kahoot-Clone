@@ -136,3 +136,32 @@ def get_game_results_as_csv(request, slug):
         writer.writerow([player.email, correct, game.quiz.num_questions() - correct])
 
     return res
+
+# return true if name is set
+@api_view(['GET'])
+def get_name(request, slug):
+    player = get_object_or_404(Player.objects.all(), slug=slug)
+    if player.game.state != 'active':
+        return response.Response({'error': 'This game has concluded'}, status=status.HTTP_403_FORBIDDEN)
+    if(player.name != None):
+        return response.Response({'name': player.name}, status=status.HTTP_200_OK)
+    return response.Response(None, status=status.HTTP_200_OK)
+
+# return true if name is set
+@api_view(['post'])
+def set_name(request, slug):
+    name = request.data['name']
+    if(len(name) > 30):
+        return response.Response("error: Name is too long", status=status.HTTP_400_BAD_REQUEST)
+    player = get_object_or_404(Player.objects.all(), slug=slug)
+    if player.game.state != 'active':
+        return response.Response({'error': 'This game has concluded'}, status=status.HTTP_403_FORBIDDEN)
+    player.name = name
+    player.save()
+    return response.Response(status=status.HTTP_200_OK)
+    # player = get_object_or_404(Player.objects.all(), slug=slug)
+    # if player.game.state != 'active':
+    #     return response.Response({'error': 'This game has concluded'}, status=status.HTTP_403_FORBIDDEN)
+    # if(player.name != None):
+    #     return response.Response(True, status=status.HTTP_200_OK)
+    # return response.Response(False, status=status.HTTP_200_OK)
