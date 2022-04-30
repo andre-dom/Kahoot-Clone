@@ -93,6 +93,7 @@ def list_completed_games(request):
     for game in games.all():
         data = {'slug': game.slug, 'players': []}
         for player in game.players.all():
+            data['name'] = game.quiz.name
             data['players'].append({'email': player.email})
         games_list.append(data)
     return response.Response(games_list, status=status.HTTP_200_OK)
@@ -114,6 +115,7 @@ def get_completed_game(request, slug):
     game_data['mean_score'] = scores.mean()
     game_data['median_score'] = scores.median()
     game_data['data'] = game.get_rechart_object()
+    game_data['name'] = game.quiz.name
     return response.Response(game_data, status=status.HTTP_200_OK)
 
 # allow instructors to download the results of completed games as CSV

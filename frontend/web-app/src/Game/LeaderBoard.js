@@ -1,12 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import useAuth from '../hooks/useAuth';
+import { useLocation } from 'react-router-dom';
+
+import {
+    BarChart,
+    CartesianGrid,
+    XAxis,
+    YAxis,
+    Tooltip,
+    Legend,
+    Bar
+} from "recharts"
 
 const LeaderBoard = () => {
 
-    const { auth } = useAuth(); 
+    const { auth } = useAuth();
+    const location = useLocation();
+
 
     const [histogram, setHistogram] = useState(''); 
-
+    const [data, setData] = useState([]); 
     //getSlug async () http://127.0.0.1:8000/game/completed/
     // const getSlug = async () => {
     //     const response = await fetch('http://127.0.0.1:8000/game/completed/',{
@@ -61,6 +74,12 @@ const LeaderBoard = () => {
  
     useEffect(() => {
         //getLeaderBoard(); 
+        if(location.state.data){
+            console.log(location.state.data);
+            setData(location.state.data); 
+        }else{
+            console.log("location.state.data is empty");
+        }
         
     }, [])
 
@@ -69,6 +88,14 @@ const LeaderBoard = () => {
         <div>
             <h3>Leaderboard</h3>
             {/* <img src = {'data:image/jpeg;base64,'+histogram} ></img> */}
+            <BarChart width={730} height={250} data={data}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name"/>
+                <YAxis allowDecimals = {false}/>
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="value" fill="#8884d8" />
+            </BarChart>
 
 
         </div>
