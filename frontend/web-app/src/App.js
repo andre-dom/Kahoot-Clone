@@ -7,19 +7,27 @@ import Login from "./Components/PublicPages/Login";
 import SignUp from "./Components/PublicPages/SignUp";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import RequireAuth from "./Context/RequireAuth";
-// import NewQuiz from "./Components/Quizzes/NewQuiz";
+import CreateQuiz from "./Components/Quizzes/CreateQuiz";
+import AddQuestions from './Components/Quizzes/AddQuestions'; 
+import ViewQuiz from "./Components/Quizzes/ViewQuiz";
 import { KahootProvider } from "./Context/Kahoot/KahootProvider";
+import Home from "./Game/Home";
+import Question from "./Game/Question";
+import LeaderBoard from "./Game/LeaderBoard";
+import StudentPage from "./Components/Quizzes/StudentPage";
+import CompletedQuizzes from "./Components/Quizzes/CompletedQuizzes";
+import CompletedView from "./Components/Quizzes/CompletedView";
 
 const App = () => {
   return (
-
+    <div style = {{backgroundColor : '#7AC4B5', minHeight: '100vh'/* minus the height of the footer */}}>
     <Routes>
       <Route path ='/' element = {<Layout/>}>
-
         {/* public routes */}
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
-        
+        <Route path ='/game/:slug' element = {<StudentPage/>}/>
+
         {/* protected routes */}
         <Route element = {<RequireAuth/>}>
             <Route path="/dashboard" element = {
@@ -28,14 +36,24 @@ const App = () => {
               </KahootProvider>
               }/>
 
-            {/* <Route path='/createQuiz' element ={<NewQuiz/>}/> */}
-            
+            <Route path='/home' element ={<Home />} />
+            <Route path='/questions' element = {<Question/>} />
+            <Route path='/leaderBoard' element = {<LeaderBoard/>} />
+            <Route path='/createQuiz' element ={<CreateQuiz/>}/>
+            <Route path='/AddQuestions' element ={<AddQuestions/>}/>
+            <Route path ='/viewQuiz/:name' element = {<ViewQuiz/>}/>
+            <Route path ='/CompletedQuizzes' element = {<CompletedQuizzes/>}/>
+            <Route path = '/CompletedQuizzes/:slug' element = {<CompletedView/>}/>
+
         </Route>        
 
         {/* catch all (404 page) */}
         <Route path= "*" element = {<Missing/>}/>
       </Route>
     </Routes>
+
+
+    </div>
   
   );
 };

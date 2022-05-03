@@ -154,7 +154,7 @@ EVENTSTREAM_ALLOW_ORIGIN = '*'
 
 # requirment for sending emails. use the smtp backend because we do not want to print to console.
 # must search for an smtp server
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 #requirement for sending emails
 

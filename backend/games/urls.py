@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework import routers
-from .views import GameViewSet, submit_answer, advance_game, standings, list_completed_games, get_completed_game, get_game_results_as_csv, player_get_game_state
+
+from .views import GameViewSet, submit_answer, advance_game, standings, list_completed_games, get_completed_game, get_game_results_as_csv, get_name,set_name, player_get_game_state
 
 create_active_game = GameViewSet.as_view({'post': 'create'})
 get_active_game = GameViewSet.as_view({'get': 'get_active_game'})
@@ -18,4 +19,6 @@ urlpatterns = [
 
     path('player/<slug:slug>/game/', player_get_game_state, name='player_get_game_state'),
     path('player/<slug:slug>/submit/', submit_answer, name='submit_answer'),
+    path('player/<slug:slug>/name/', get_name, name='get_name'),
+    path('player/<slug:slug>/setname/', set_name, name='set_name'),
 ]

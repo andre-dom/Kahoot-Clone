@@ -19,8 +19,6 @@ import {
   AlertTitle,
 } from "@chakra-ui/react";
 
-const USER_REGEX = /^[A-Z][a-z0-9@#$%_.]{4,23}/
-const PWD_REGEX = /[A-Z][a-z0-9@#$%_.]{7,24}/
 
 const Login = () => {
 
@@ -47,6 +45,21 @@ const Login = () => {
   const [error, setError] = useState(false); 
 
   /**
+  * If the user is already logged in then
+  * redirect them to dashboard. 
+  */
+  useEffect(() => {
+
+    const localUser = JSON.parse(localStorage.getItem('user')); 
+
+    if(localUser.user) {
+      navigate('/dashboard');
+      console.log('going to dashboard...'); 
+    } 
+
+  }, []);
+
+  /**
    * this hook will run only once when the page is loaded
    */
   useEffect(() => {
@@ -66,6 +79,13 @@ const Login = () => {
 
   }, [user, pwd]);
 
+
+  /**
+   * Checks if the given string is empty
+   * @param {*} str 
+   * @returns true if the given string is empty and false if 
+   * its not
+   */
   const isEmpty = (str) => {
     return (!str || str.length === 0);
   }
@@ -87,6 +107,19 @@ const Login = () => {
       "username": user,
       "password": pwd
     }
+
+    loginUser(data); 
+    
+  }; 
+
+  /**
+   * This function makes a POST request to the API passing in the data object
+   * and redirects the user to the dashboard or the page that the user 
+   * came from. 
+   * @param {*} data 
+   * @returns 
+   */
+  const loginUser = async (data) => {
 
     const response = await fetch('http://127.0.0.1:8000/auth/token/login/', {
       method: 'POST',
@@ -126,7 +159,7 @@ const Login = () => {
       navigate(from, { replace: true });
 
     }
-    
+
   }; 
 
   return (
@@ -167,7 +200,8 @@ const Login = () => {
                     onChange={(e) => {setUser(e.target.value)}}
                     onFocus = {() => setUserFocus(true)}
                     onBlur={() => setUserFocus(false)}
-                  ></Input>
+                  >  
+                  </Input>
 
                   <FormLabel htmlFor="password">Password</FormLabel>
                   <Input
