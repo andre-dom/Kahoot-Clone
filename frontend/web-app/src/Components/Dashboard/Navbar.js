@@ -42,6 +42,10 @@ const Navbar = () => {
     navigate('/createQuiz');
   }; 
 
+  const completedQuizzes = () => {
+    navigate('/CompletedQuizzes');
+  }
+
   return (
     <Flex align="center" justify="space-between" p="14">
       <Box p="2">
@@ -70,8 +74,18 @@ const Navbar = () => {
           borderColor="black.200"
           borderRadius="md"
           onClick = {addQuiz}
+          mr = '10px'
         >
           Add Quiz
+        </Button>
+        <Button
+          p="2"
+          border="1px"
+          borderColor="black.200"
+          borderRadius="md"
+          onClick = {completedQuizzes}
+        >
+          Completed Quizzes
         </Button>
       </Box>
     </Flex>

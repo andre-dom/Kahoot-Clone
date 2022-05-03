@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'django_extensions',
 
+    'channels',
+    'django_eventstream',
 
     # created apps
     'quizzes.apps.QuizzesConfig',
@@ -60,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_grip.GripMiddleware',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -93,7 +96,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'kahoot.wsgi.application'
-
+ASGI_APPLICATION = 'kahoot.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
@@ -146,6 +149,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:8080'
 ]
+
+EVENTSTREAM_ALLOW_ORIGIN = '*'
+
 # requirment for sending emails. use the smtp backend because we do not want to print to console.
 # must search for an smtp server
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

@@ -16,3 +16,5 @@ django_fsm~=2.8.0
 pandas~=1.4.1
 matplotlib~=3.5.1
 numpy~=1.22.3
+channels~=3.0.4
+django-eventstream~=4.4.1

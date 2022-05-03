@@ -23,6 +23,9 @@ import pandas as pd
 import pandas.util
 import matplotlib as plt
 
+from django_eventstream import send_event
+
+
 
 class GameViewSet(mixins.CreateModelMixin, GenericViewSet):
     queryset = Game.objects.filter(state='active')
@@ -62,8 +65,16 @@ class GameStateViewSet(GenericViewSet):
 def advance_game(request):
     game = get_object_or_404(Game.objects.all(), creator=request.user, state='active')
     if game.advance_game():
+        question = game.current_question
+        index = question.index
+        body = question.question_body
+        answers = [answer.answer_body for answer in question.answers.all()]
+        for player in game.players.all():
+            send_event(player.slug, 'message', {'message': 'game advanced', 'question_index': index, 'question_body': body, 'correct': player.previous_question_correct(), 'score': player.get_score(), 'answers': answers})
         return response.Response(GameSerializer(game).data, status=status.HTTP_200_OK)
     leaderboard = game.get_leaderboard()
+    for player in game.players.all():
+        send_event(player.slug, 'message', {'text': 'game finished', 'correct': player.previous_question_correct(), 'score': player.get_score()})
     return response.Response({'info': 'game has completed!', 'leaderboard': leaderboard, 'data': game.get_rechart_object()}, status=status.HTTP_200_OK)
 
 
@@ -73,6 +84,18 @@ def standings(request):
     game = get_object_or_404(Game.objects.all(), creator=request.user, state='active')
     leaderboard = game.get_leaderboard()
     return response.Response(leaderboard, status=status.HTTP_200_OK)
+
+# view for players to get current game state
+@api_view(['GET'])
+def player_get_game_state(request, slug):
+    player = get_object_or_404(Player.objects.all(), slug=slug)
+    if player.game.state != 'active':
+        return response.Response({'error': 'This game has concluded'}, status=status.HTTP_403_FORBIDDEN)
+    question = player.game.current_question
+    index = question.index
+    body = question.question_body
+    answers = [answer.answer_body for answer in question.answers.all()]
+    return response.Response({'question_index': index, 'question_body': body, 'score': player.get_score(), 'answers': answers},  status=status.HTTP_200_OK)
 
 
 # view for players to submit their answers
@@ -93,6 +116,7 @@ def list_completed_games(request):
     for game in games.all():
         data = {'slug': game.slug, 'players': []}
         for player in game.players.all():
+            data['name'] = game.quiz.name
             data['players'].append({'email': player.email})
         games_list.append(data)
     return response.Response(games_list, status=status.HTTP_200_OK)
@@ -114,6 +138,7 @@ def get_completed_game(request, slug):
     game_data['mean_score'] = scores.mean()
     game_data['median_score'] = scores.median()
     game_data['data'] = game.get_rechart_object()
+    game_data['name'] = game.quiz.name
     return response.Response(game_data, status=status.HTTP_200_OK)
 
 # allow instructors to download the results of completed games as CSV
@@ -134,3 +159,32 @@ def get_game_results_as_csv(request, slug):
         writer.writerow([player.email, correct, game.quiz.num_questions() - correct])
 
     return res
+
+# return true if name is set
+@api_view(['GET'])
+def get_name(request, slug):
+    player = get_object_or_404(Player.objects.all(), slug=slug)
+    if player.game.state != 'active':
+        return response.Response({'error': 'This game has concluded'}, status=status.HTTP_403_FORBIDDEN)
+    if(player.name != None):
+        return response.Response({'name': player.name}, status=status.HTTP_200_OK)
+    return response.Response(None, status=status.HTTP_200_OK)
+
+# return true if name is set
+@api_view(['post'])
+def set_name(request, slug):
+    name = request.data['name']
+    if(len(name) > 30):
+        return response.Response("error: Name is too long", status=status.HTTP_400_BAD_REQUEST)
+    player = get_object_or_404(Player.objects.all(), slug=slug)
+    if player.game.state != 'active':
+        return response.Response({'error': 'This game has concluded'}, status=status.HTTP_403_FORBIDDEN)
+    player.name = name
+    player.save()
+    return response.Response(status=status.HTTP_200_OK)
+    # player = get_object_or_404(Player.objects.all(), slug=slug)
+    # if player.game.state != 'active':
+    #     return response.Response({'error': 'This game has concluded'}, status=status.HTTP_403_FORBIDDEN)
+    # if(player.name != None):
+    #     return response.Response(True, status=status.HTTP_200_OK)
+    # return response.Response(False, status=status.HTTP_200_OK)
