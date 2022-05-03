@@ -82,14 +82,14 @@ class Player(models.Model):
         self.answers = ','.join([str(i) for i in answers])
         self.save()
 
+    def get_answer_list(self):
+        return ast.literal_eval(f'[{self.answers}]')
+
     def get_answer(self, question_index):
         if question_index < 1 or question_index > self.game.quiz.num_questions():
             raise ValueError(
                 f'get_answer: question_index should be between 1 and {self.game.quiz.num_questions()}, got {question_index}')
-        return ast.literal_eval(f'[{self.answers}]')[question_index - 1]
-
-    def get_answer_list(self):
-        return ast.literal_eval(f'[{self.answers}]')
+        return self.get_answer_list()[question_index - 1]
 
     def num_correct_answers(self):
         correct = 0
@@ -99,6 +99,20 @@ class Player(models.Model):
             if answers[i] == quiz.questions.get(index=i + 1).correct_answer:
                 correct += 1
         return correct
+
+    # check if player got a given question correct
+    def question_correct(self, question_index):
+        return self.get_answer(question_index) == self.game.quiz.questions.get(index=question_index).correct_answer
+
+    # check if player got the previous question correct
+    def previous_question_correct(self):
+        if self.game.state == 'complete':
+            return self.question_correct(self.game.quiz.num_questions())
+        return self.question_correct(self.game.current_question.index - 1)
+
+    # return the player's score - for now just the number of correct answers
+    def get_score(self):
+        return self.num_correct_answers()
 
     def __str__(self):
         return f'{self.email}: {self.game.quiz.name}'
