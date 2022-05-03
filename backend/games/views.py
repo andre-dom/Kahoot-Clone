@@ -64,11 +64,13 @@ class GameStateViewSet(GenericViewSet):
 @api_view(['POST'])
 def advance_game(request):
     game = get_object_or_404(Game.objects.all(), creator=request.user, state='active')
-    question = game.current_question.index
-    body = game.current_question.question_body
     if game.advance_game():
+        question = game.current_question
+        index = question.index
+        body = question.question_body
+        answers = [answer.answer_body for answer in question.answers.all()]
         for player in game.players.all():
-            send_event(player.slug, 'message', {'message': 'game advanced', 'question_index': question, 'question_body': body, 'correct': player.previous_question_correct(), 'score': player.get_score()})
+            send_event(player.slug, 'message', {'message': 'game advanced', 'question_index': index, 'question_body': body, 'correct': player.previous_question_correct(), 'score': player.get_score(), 'answers': answers})
         return response.Response(GameSerializer(game).data, status=status.HTTP_200_OK)
     leaderboard = game.get_leaderboard()
     for player in game.players.all():
@@ -82,6 +84,18 @@ def standings(request):
     game = get_object_or_404(Game.objects.all(), creator=request.user, state='active')
     leaderboard = game.get_leaderboard()
     return response.Response(leaderboard, status=status.HTTP_200_OK)
+
+# view for players to get current game state
+@api_view(['GET'])
+def player_get_game_state(request, slug):
+    player = get_object_or_404(Player.objects.all(), slug=slug)
+    if player.game.state != 'active':
+        return response.Response({'error': 'This game has concluded'}, status=status.HTTP_403_FORBIDDEN)
+    question = player.game.current_question
+    index = question.index
+    body = question.question_body
+    answers = [answer.answer_body for answer in question.answers.all()]
+    return response.Response({'question_index': index, 'question_body': body, 'score': player.get_score(), 'answers': answers},  status=status.HTTP_200_OK)
 
 
 # view for players to submit their answers
