@@ -23,6 +23,8 @@ const Home = () => {
     const [errorMessage, setErrorMessage] = useState(''); 
     const location = useLocation(); 
     const [slug, setSlug] = useState('');
+    //const [alert, setAlert] = useState(false);
+    
 
     /**
      * Once the user begins typing
@@ -42,6 +44,10 @@ const Home = () => {
       setSlug(localStorage.getItem('slug'));
       
     },[])
+
+    useEffect(() => {
+      getGame();
+    }, [])
 
 
     /**
@@ -117,6 +123,8 @@ const Home = () => {
 
      addPlayer(email);
 
+     console.log('starting game...'); 
+
      await startGame()
     
       
@@ -135,6 +143,8 @@ const Home = () => {
           'players': emails
       }
 
+      console.log(data); 
+
       const response = await fetch('http://127.0.0.1:8000/game/new/', {
           method: 'POST',
           headers: {
@@ -146,6 +156,8 @@ const Home = () => {
 
       if(!response.ok){
           setError(true);
+          // setErrorMessage('there was an error'); 
+          // setStatus('error')
           console.log('there was an error')
           console.log('error: ' + JSON.stringify(response))
 
@@ -167,6 +179,7 @@ const Home = () => {
 
     if(isEmpty(email)) { // if email input is empty 
       setError(true);
+      // setStatus('error'); 
       setErrorMessage('Email input is empty'); 
 
       return; 
@@ -176,6 +189,7 @@ const Home = () => {
     if(!validEmail(email)) { // if email is invalid 
 
       setError(true); 
+      // setStatus('error'); 
       setErrorMessage('not valid email'); 
 
       return; 
@@ -194,20 +208,71 @@ const Home = () => {
        
    }
 
+   const getGame = async() => {
+    const response = await fetch('http://127.0.0.1:8000/game/', {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `token ${auth.token}`
+      },
+    })
+
+    console.log(response.status )
+
+    if(!response.ok){
+      console.log('error in getGame' + response);
+      
+    } else {
+
+      const result = await response.json();
+      
+      if(result) {
+        //setAlert(true); 
+        // setError(true);
+        // setErrorMessage('There is a game currently active.')
+        // setStatus('info')
+        navigate('/Dashboard')
+      } 
+
+    }
+   }
+
+   const resumeQuiz = () => {
+    navigate('/questions');
+  }
+
+  const endQuiz = async () =>{
+    const response = await  fetch (`http://127.0.0.1:8000/game/delete/`,{
+            method:  'DELETE',
+            headers: {
+                'Content-Type':  'application/json',
+                'Authorization': `token ${auth.token}`
+            }
+        })
+        if(!response.ok){
+            console.log('an error occurred');
+            return;
+        }
+        setError(false);
+  }
+
+
+
 
     return(
         <Box>
+
           <Box>
               {
                 error && (
                   <Alert 
-                    status='error'
                     borderRadius='0.6rem'
                     mt='-19px'
                     mb='5px'
                   >
-                  <AlertIcon />
-                  <AlertTitle mr={2}>{errorMessage}</AlertTitle>
+                      <AlertIcon />
+                      <AlertTitle mr={2}>{errorMessage}</AlertTitle>
+                         
                   </Alert>
                 )
               }

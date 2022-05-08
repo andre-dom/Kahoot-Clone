@@ -10,13 +10,14 @@ import RequireAuth from "./Context/RequireAuth";
 import CreateQuiz from "./Components/Quizzes/CreateQuiz";
 import AddQuestions from './Components/Quizzes/AddQuestions'; 
 import ViewQuiz from "./Components/Quizzes/ViewQuiz";
-import { KahootProvider } from "./Context/Kahoot/KahootProvider";
+import { GameProvider } from "./Context/GameProvider";
 import Home from "./Game/Home";
 import Question from "./Game/Question";
 import LeaderBoard from "./Game/LeaderBoard";
 import StudentPage from "./Components/Quizzes/StudentPage";
 import CompletedQuizzes from "./Components/Quizzes/CompletedQuizzes";
 import CompletedView from "./Components/Quizzes/CompletedView";
+import DisplayName from "./Game/DisplayName";
 
 const App = () => {
   return (
@@ -26,14 +27,17 @@ const App = () => {
         {/* public routes */}
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
-        <Route path ='/game/:slug' element = {<StudentPage/>}/>
+        <Route path ='/game/:slug' element = {<DisplayName/>}/>
+        <Route path ='/game/:slug/multipleChoice' element = {<StudentPage/>}/>
 
         {/* protected routes */}
         <Route element = {<RequireAuth/>}>
             <Route path="/dashboard" element = {
-              <KahootProvider> 
+              // <KahootProvider> 
+              <GameProvider>
                 <Dashboard/> 
-              </KahootProvider>
+              </GameProvider>
+              // </KahootProvider>
               }/>
 
             <Route path='/home' element ={<Home />} />
