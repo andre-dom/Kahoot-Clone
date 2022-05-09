@@ -82,7 +82,7 @@ const CompletedView = () => {
             <YAxis allowDecimals = {false}/>
             <Tooltip />
             <Legend />
-            <Bar dataKey="value" fill="#8884d8" />
+            <Bar dataKey="value" fill="#72bcd4" />
         </BarChart>
 
           <HStack>

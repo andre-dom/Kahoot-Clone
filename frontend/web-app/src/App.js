@@ -21,7 +21,7 @@ import DisplayName from "./Game/DisplayName";
 
 const App = () => {
   return (
-    <div style = {{backgroundColor : '#7AC4B5', minHeight: '100vh'/* minus the height of the footer */}}>
+    <div style = {{backgroundColor : '#F5F5F5', minHeight: '100vh'/* minus the height of the footer */}}>
     <Routes>
       <Route path ='/' element = {<Layout/>}>
         {/* public routes */}

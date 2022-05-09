@@ -6,7 +6,12 @@ import {
     Alert, 
     AlertIcon, 
     AlertTitle,
-    Text
+    Text,
+    Center,
+    FormControl,
+    FormLabel,
+    VStack,
+    Spinner
  } from '@chakra-ui/react';
  import useAuth from '../hooks/useAuth';
  import { useNavigate, useLocation } from "react-router-dom";
@@ -23,7 +28,7 @@ const Home = () => {
     const [errorMessage, setErrorMessage] = useState(''); 
     const location = useLocation(); 
     const [slug, setSlug] = useState('');
-    //const [alert, setAlert] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     
 
     /**
@@ -44,11 +49,6 @@ const Home = () => {
       setSlug(localStorage.getItem('slug'));
       
     },[])
-
-    useEffect(() => {
-      getGame();
-    }, [])
-
 
     /**
    * Checks if the given string is empty
@@ -135,15 +135,22 @@ const Home = () => {
       * @param {*} data 
       */
     const startGame = async () => {
-          
-      // const slug = location.state.slug; 
+
+      if(emails.length === 0) {
+        
+        console.log('emails array is empty'); 
+
+        return; 
+      }
 
       const data = {
           'quiz' : slug,
           'players': emails
       }
 
-      console.log(data); 
+      console.log('data before fetch: ', data);
+
+      setIsLoading(true);
 
       const response = await fetch('http://127.0.0.1:8000/game/new/', {
           method: 'POST',
@@ -154,6 +161,8 @@ const Home = () => {
           body:JSON.stringify(data)
       })
 
+      //console.log(response); 
+
       if(!response.ok){
           setError(true);
           // setErrorMessage('there was an error'); 
@@ -162,7 +171,7 @@ const Home = () => {
           console.log('error: ' + JSON.stringify(response))
 
       } else {
-        
+        setIsLoading(false);
         navigate('/questions')
         const result = await response.json();
 
@@ -196,100 +205,83 @@ const Home = () => {
     
     } 
 
+    const result = emails.filter(emailObj => emailObj.email === email); 
+   
+    if(result.length > 0) {
+      setError(true); 
+      setErrorMessage('Email already exists');  
+      return; 
+    }
+
     const objEmail = {
         
       "email": email
         
     }
-
     emails.push(objEmail);
+
+    console.log('emails: ', emails);
 
     setEmail(''); 
        
    }
 
-   const getGame = async() => {
-    const response = await fetch('http://127.0.0.1:8000/game/', {
-      method: 'GET',
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `token ${auth.token}`
-      },
-    })
-
-    console.log(response.status )
-
-    if(!response.ok){
-      console.log('error in getGame' + response);
+  return(
+        <div>
+            {
+        error && (
+          <Alert 
+            borderRadius='0.6rem'
+            mt='-19px'
+            mb='5px'
+          >
+              <AlertIcon />
+              <AlertTitle mr={2}>{errorMessage}</AlertTitle>
+                  
+          </Alert>
+        )
+      }
       
-    } else {
+            <Center height="100vh">
 
-      const result = await response.json();
-      
-      if(result) {
-        //setAlert(true); 
-        // setError(true);
-        // setErrorMessage('There is a game currently active.')
-        // setStatus('info')
-        navigate('/Dashboard')
-      } 
-
-    }
-   }
-
-   const resumeQuiz = () => {
-    navigate('/questions');
-  }
-
-  const endQuiz = async () =>{
-    const response = await  fetch (`http://127.0.0.1:8000/game/delete/`,{
-            method:  'DELETE',
-            headers: {
-                'Content-Type':  'application/json',
-                'Authorization': `token ${auth.token}`
-            }
-        })
-        if(!response.ok){
-            console.log('an error occurred');
-            return;
-        }
-        setError(false);
-  }
-
-
-
-
-    return(
-        <Box>
-
-          <Box>
-              {
-                error && (
-                  <Alert 
-                    borderRadius='0.6rem'
-                    mt='-19px'
-                    mb='5px'
-                  >
-                      <AlertIcon />
-                      <AlertTitle mr={2}>{errorMessage}</AlertTitle>
-                         
-                  </Alert>
-                )
-              }
-              <Input placeholder='Email' value={email} onChange = {(e) => setEmail(e.target.value)}/>
-              {/* <Button onClick = {handleClick}>Add</Button> */}
-              <Button onClick  =  {addPlayer}>Add Player</Button>
-              <Button onClick = {handleClick}> Start Game</Button>
-          </Box>
-
+            {isLoading ? (<Spinner color='red.500' />) : (
+              <VStack>
+              <Box
+              height="200px"
+              width="400px"
+              bg = '#85DCBA'
+              boxShadow="0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)"
+              borderRadius="0.6rem"
+              p='4'
+              >
         
-          {emails.map(email => (
-            <Text>{email.email}</Text>
+              <FormControl isRequired>
+                  <FormLabel htmlFor='Email'>Enter player's email here:</FormLabel>
+                  <Input id = "Email" placeholder='Email' value={email} onChange = {(e) => setEmail(e.target.value)}/>
+              </FormControl>
+              <Button m = {4} onClick  =  {addPlayer}>Add Player</Button>
+              <Button onClick = {handleClick}> Start Game</Button>       
+              </Box>
+              <Box>
+                
+              {emails.map(email => (
+                <Text>{email.email}</Text>
+                ))}
 
-          ))
-          }
+              </Box>
+              </VStack>
+            )}
 
-        </Box>
+              
+               
+            </Center>
+            
+            
+            
+        </div>
+
+
+
 
     )
 }

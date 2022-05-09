@@ -2,7 +2,10 @@ import React, { useEffect, useState  } from 'react';
 import {
     Box,
     Text,
-    Button
+    Button,
+    Center,
+    VStack,
+    SimpleGrid
     
 } from '@chakra-ui/react';
 
@@ -89,18 +92,51 @@ const Question = () =>{
 
     return(
         <Box>
-            <Text fontSize="5xl">{question}</Text>
-            {answers.length > 0 &&
+            <Center>
+                <VStack >
+                <Text fontSize="5xl">{question}</Text>
+                {answers.length > 0 &&
+            
+                // <Box>
+                //     <Text fontSize="5xl">{answers[0].answer_body}</Text>
+                //     <Text fontSize="5xl">{answers[1].answer_body}</Text>
+                //     <Text fontSize="5xl">{answers[2].answer_body}</Text>
+                //     <Text fontSize="5xl">{answers[3].answer_body}</Text>
+                //     <Button onClick = {nextQuestion}> Next Question</Button>
+                //     <Button onClick =  {deleteQuiz}>End Quiz</Button>
+                // </Box>
 
-                <Box>
-                    <Text fontSize="5xl">{answers[0].answer_body}</Text>
-                    <Text fontSize="5xl">{answers[1].answer_body}</Text>
-                    <Text fontSize="5xl">{answers[2].answer_body}</Text>
-                    <Text fontSize="5xl">{answers[3].answer_body}</Text>
-                    <Button onClick = {nextQuestion}> Next Question</Button>
-                    <Button onClick =  {deleteQuiz}>End Quiz</Button>
-                </Box>
+                <SimpleGrid columns={1} spacingX='40px' spacingY='20px'>
+                        <Box >
+                            <Center>
+                            <Text fontSize="5xl">{answers[0].answer_body}</Text>
+                            </Center>
+                            </Box>
+                        <Box >
+                            <Center>
+                            <Text fontSize="5xl">{answers[1].answer_body}</Text> 
+                            </Center>
+                        </Box>
+                        <Box >
+                            <Center>
+                            <Text fontSize="5xl">{answers[2].answer_body}</Text>
+                            </Center>
+                        </Box>
+                        <Box >
+                            <Center>
+                            <Text fontSize="5xl">{answers[3].answer_body}</Text>
+                            </Center>
+                        </Box>
+
+                    </SimpleGrid>
+                    
+            
             }
+            <Button onClick = {nextQuestion}> Next Question</Button>
+            <Button onClick =  {deleteQuiz}>End Quiz</Button>
+
+            </VStack>
+            </Center>
         </Box>
 
     )
