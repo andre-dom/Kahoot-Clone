@@ -18,3 +18,4 @@ matplotlib~=3.5.1
 numpy~=1.22.3
 channels~=3.0.4
 django-eventstream~=4.4.1
+celery

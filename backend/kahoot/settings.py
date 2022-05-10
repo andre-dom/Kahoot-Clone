@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-_rx)umnx@%7(8%tzoqn(vndedhy1he0(g^vjtx+(5qhxq9%$qt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
 
@@ -47,6 +47,8 @@ INSTALLED_APPS = [
 
     'channels',
     'django_eventstream',
+
+    'djcelery_email',
 
     # created apps
     'quizzes.apps.QuizzesConfig',
@@ -154,8 +156,8 @@ EVENTSTREAM_ALLOW_ORIGIN = '*'
 
 # requirment for sending emails. use the smtp backend because we do not want to print to console.
 # must search for an smtp server
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
+EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 #requirement for sending emails
 
 #the connection to the smtp server
@@ -178,7 +180,7 @@ EMAIL_PORT = 587
 #just use this line. it made tings
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-
+# CELERY_BROKER_URL =
 
 
 

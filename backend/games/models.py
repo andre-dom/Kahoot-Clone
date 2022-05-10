@@ -11,6 +11,7 @@ from django_fsm import FSMField, transition
 from django.db import models
 from django.core.mail import send_mail
 
+from celery import shared_task
 
 class Game(models.Model):
     creator = models.ForeignKey(User, related_name='games', on_delete=models.CASCADE, )
@@ -123,11 +124,21 @@ class Player(models.Model):
       
     # return an object for use with rechart
     def get_recharts_object(self):
-        return {'name': self.name, 'value': self.num_correct_answers()}
+        return {'name': self.name if self.name else self.email, 'value': self.num_correct_answers()}
 
     def __str__(self):
         return f'{self.email}: {self.game.quiz.name}'
 
+
+@shared_task
+def send_email_task(player):
+    send_mail(
+        'Kahoot-Clone Game Invite',
+        f'{player.game.creator.username} has invited you to a game! Join with the link below:\n\nhttp://127.0.0.1:3000/game/{player.slug}',
+        'admin@example.com',
+        [player.email],
+        fail_silently=False,
+    )
 
 # runs after a player is saved to DB, make sure they have an initialized answer list and id
 @receiver(models.signals.post_save, sender=Player)
@@ -137,12 +148,6 @@ def initialize_player(sender, instance, created, *args, **kwargs):
         if not instance.slug:
             instance.slug = uuid.uuid4().hex[:6].upper()
         if not instance.answers:
-            send_mail(
-                'Kahoot-Clone Game Invite',
-                f'{instance.game.creator.username} has invited you to a game! Join with the link below:\n\nhttp://127.0.0.1:3000/game/{instance.slug}',
-                'admin@example.com',
-                [instance.email],
-                fail_silently=False,
-            )
+            send_email_task(instance)
             instance.answers = ','.join([str(0) for i in range(0, instance.game.quiz.num_questions())])
         instance.save()
