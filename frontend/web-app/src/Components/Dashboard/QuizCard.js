@@ -4,6 +4,10 @@ import useGame from "../../hooks/useGame";
 import { Box, Button, Text, HStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
+import {
+  ip, 
+  port
+} from '../../ports'; 
 const QuizCard = ({ name, slug, handleDelete, colorBg }) => { 
 
 
@@ -20,7 +24,7 @@ const QuizCard = ({ name, slug, handleDelete, colorBg }) => {
 
     //? maybe check if the slug is empty and throw an error. 
 
-    const response = await fetch(`http://127.0.0.1:8000/quizzes/${slug}/`, {
+    const response = await fetch(ip + port + `/quizzes/${slug}/`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

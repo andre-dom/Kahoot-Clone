@@ -3,7 +3,10 @@ import useAuth from "../../hooks/useAuth";
 import { Box, Heading, SimpleGrid, Center  } from "@chakra-ui/react";
 import CompletedCard from "./CompletedCard";
 
-
+import {
+  ip,
+  port
+} from '../../ports'; 
 
 const CompletedQuizzes = () => {
   const {auth} = useAuth();
@@ -11,7 +14,7 @@ const CompletedQuizzes = () => {
 
   const getCompleted = async () => {
 
-    const response = await fetch('http://127.0.0.1:8000/game/completed/', {
+    const response = await fetch(ip + port + '/game/completed/', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
