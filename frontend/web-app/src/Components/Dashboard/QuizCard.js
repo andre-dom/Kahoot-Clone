@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
+import useGame from "../../hooks/useGame";
 import { Box, Button, Text, HStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
@@ -7,7 +8,9 @@ const QuizCard = ({ name, slug, handleDelete, colorBg }) => {
 
 
   const { auth } = useAuth(); 
+  const { game } = useGame();  
   const navigate = useNavigate(); 
+
 
   /**
    * Uses a slug to identify the quiz the user wants to delete 
@@ -42,29 +45,29 @@ const QuizCard = ({ name, slug, handleDelete, colorBg }) => {
   }
 
   return (
-    <Box boxShadow="md" rounded="md" bg="white" height="180px" width = "300px" m = '0'>
+    <Box boxShadow="md" rounded="md" bg="white" height="200px" width = "300px" m = '0'>
       <Box
         display="flex"
         alignItems="center"
         justifyContent="center"
-        height="80%"
+        height="75%"
         borderTopRadius="md"
         bgColor={colorBg}
       >
         <Text fontSize= 'xl' color='#333333'>{name}</Text>
       </Box>{" "}
       <Box
-        height="20%"
+        height="25%"
         display="flex"
         alignItems="center"
         justifyContent="center"
       >
-        <HStack align='center'>
+        <HStack align='center' >
         
           <Button 
           color="#669DB3FF" 
           fontFamily='Verdana'
-          variant="link" 
+          //variant="link" 
           fontWeight="16px"
           onClick = {viewQuiz}
           >
@@ -73,16 +76,17 @@ const QuizCard = ({ name, slug, handleDelete, colorBg }) => {
           <Button 
           color="#669DB3FF" 
           fontFamily='Verdana'
-          variant="link" 
+          //variant="link" 
           fontWeight="16px"
           onClick = {startGame}
+          disabled={game}
           >
             Start
           </Button>
           <Button 
           color="#669DB3FF" 
           fontFamily='Verdana'
-          variant="link" 
+          //variant="link" 
           fontWeight="16px"
           onClick = {deleteQuiz}
           >

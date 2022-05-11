@@ -6,10 +6,20 @@ import {
     Alert, 
     AlertIcon, 
     AlertTitle,
-    Text
+    Text,
+    Center,
+    FormControl,
+    FormLabel,
+    VStack,
+    Spinner
  } from '@chakra-ui/react';
  import useAuth from '../hooks/useAuth';
  import { useNavigate, useLocation } from "react-router-dom";
+
+ import {
+  ip,
+  port
+} from '../ports';
 
  const address = ['@gmail.com', '@yahoo.com', '@qq.com', '@163.com', '@outlook.com', '@sjsu.edu']; 
 
@@ -23,6 +33,8 @@ const Home = () => {
     const [errorMessage, setErrorMessage] = useState(''); 
     const location = useLocation(); 
     const [slug, setSlug] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    
 
     /**
      * Once the user begins typing
@@ -42,7 +54,6 @@ const Home = () => {
       setSlug(localStorage.getItem('slug'));
       
     },[])
-
 
     /**
    * Checks if the given string is empty
@@ -117,6 +128,8 @@ const Home = () => {
 
      addPlayer(email);
 
+     console.log('starting game...'); 
+
      await startGame()
     
       
@@ -127,15 +140,24 @@ const Home = () => {
       * @param {*} data 
       */
     const startGame = async () => {
-          
-      // const slug = location.state.slug; 
+
+      if(emails.length === 0) {
+        
+        console.log('emails array is empty'); 
+
+        return; 
+      }
 
       const data = {
           'quiz' : slug,
           'players': emails
       }
 
-      const response = await fetch('http://127.0.0.1:8000/game/new/', {
+      console.log('data before fetch: ', data);
+
+      setIsLoading(true);
+
+      const response = await fetch(ip + port + '/game/new/', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
@@ -144,18 +166,22 @@ const Home = () => {
           body:JSON.stringify(data)
       })
 
+      console.log('response: ', response);
+
       if(!response.ok){
           setError(true);
+          // setErrorMessage('there was an error'); 
+          // setStatus('error')
           console.log('there was an error')
           console.log('error: ' + JSON.stringify(response))
+          return; 
+      } 
+      
+      setIsLoading(false);
+      navigate('/questions')
+      const result = await response.json();
 
-      } else {
-        
-        navigate('/questions')
-        const result = await response.json();
-
-      }  
-
+      console.log('after nav'); 
     }; 
 
    /**
@@ -167,6 +193,7 @@ const Home = () => {
 
     if(isEmpty(email)) { // if email input is empty 
       setError(true);
+      // setStatus('error'); 
       setErrorMessage('Email input is empty'); 
 
       return; 
@@ -176,55 +203,90 @@ const Home = () => {
     if(!validEmail(email)) { // if email is invalid 
 
       setError(true); 
+      // setStatus('error'); 
       setErrorMessage('not valid email'); 
 
       return; 
     
     } 
 
+    const result = emails.filter(emailObj => emailObj.email === email); 
+   
+    if(result.length > 0) {
+      setError(true); 
+      setErrorMessage('Email already exists');  
+      return; 
+    }
+
     const objEmail = {
         
       "email": email
         
     }
-
     emails.push(objEmail);
+
+    console.log('emails: ', emails);
 
     setEmail(''); 
        
    }
 
+  return(
+        <div>
+            {
+        error && (
+          <Alert 
+            borderRadius='0.6rem'
+            mt='-19px'
+            mb='5px'
+          >
+              <AlertIcon />
+              <AlertTitle mr={2}>{errorMessage}</AlertTitle>
+                  
+          </Alert>
+        )
+      }
+      
+            <Center height="100vh">
 
-    return(
-        <Box>
-          <Box>
-              {
-                error && (
-                  <Alert 
-                    status='error'
-                    borderRadius='0.6rem'
-                    mt='-19px'
-                    mb='5px'
-                  >
-                  <AlertIcon />
-                  <AlertTitle mr={2}>{errorMessage}</AlertTitle>
-                  </Alert>
-                )
-              }
-              <Input placeholder='Email' value={email} onChange = {(e) => setEmail(e.target.value)}/>
-              {/* <Button onClick = {handleClick}>Add</Button> */}
-              <Button onClick  =  {addPlayer}>Add Player</Button>
-              <Button onClick = {handleClick}> Start Game</Button>
-          </Box>
-
+            {isLoading ? (<Spinner color='red.500' />) : (
+              <VStack>
+              <Box
+              height="200px"
+              width="400px"
+              bg = '#85DCBA'
+              boxShadow="0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)"
+              borderRadius="0.6rem"
+              p='4'
+              >
         
-          {emails.map(email => (
-            <Text>{email.email}</Text>
+              <FormControl isRequired>
+                  <FormLabel htmlFor='Email'>Enter player's email here:</FormLabel>
+                  <Input id = "Email" placeholder='Email' value={email} onChange = {(e) => setEmail(e.target.value)}/>
+              </FormControl>
+              <Button m = {4} onClick  =  {addPlayer}>Add Player</Button>
+              <Button onClick = {handleClick}> Start Game</Button>       
+              </Box>
+              <Box>
+                
+              {emails.map(email => (
+                <Text>{email.email}</Text>
+                ))}
 
-          ))
-          }
+              </Box>
+              </VStack>
+            )} 
 
-        </Box>
+              
+               
+            </Center>
+            
+            
+            
+        </div>
+
+
+
 
     )
 }

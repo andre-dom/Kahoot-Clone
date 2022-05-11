@@ -13,6 +13,11 @@ import {
 
 } from '@chakra-ui/react'
 
+import {
+  ip,
+  port
+} from '../../ports';
+
 const ViewQuiz = () => {
 
   const location = useLocation(); 
@@ -42,7 +47,7 @@ const ViewQuiz = () => {
    */
   const getQuiz = async (slug) => {
 
-    const response = await fetch(`http://127.0.0.1:8000/quizzes/${slug}/`, {
+    const response = await fetch(ip + port + `/quizzes/${slug}/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

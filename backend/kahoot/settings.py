@@ -104,8 +104,12 @@ ASGI_APPLICATION = 'kahoot.asgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'kahoot',
+	'USER': 'admin',
+	'PASSWORD': 'password',
+	'HOST': 'localhost',
+	'PORT': '5432'
     }
 }
 
@@ -181,6 +185,3 @@ EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # CELERY_BROKER_URL =
-
-
-

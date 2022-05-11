@@ -4,6 +4,11 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 
 import {
+  ip,
+  port
+} from '../../ports';
+
+import {
   Container,
   Heading,
   FormControl,
@@ -21,6 +26,7 @@ import {
 
 
 const Login = () => {
+  console.log(ip + port);
 
   const { setAuth } = useAuth(); 
 
@@ -121,7 +127,7 @@ const Login = () => {
    */
   const loginUser = async (data) => {
 
-    const response = await fetch('http://127.0.0.1:8000/auth/token/login/', {
+    const response = await fetch(ip + port + '/auth/token/login/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
