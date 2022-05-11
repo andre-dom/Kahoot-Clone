@@ -129,10 +129,11 @@ def get_completed_game(request, slug):
     game_data = {'slug': game.slug, 'players': []}
     scores = []
     for player in game.players.all():
+        scr = player.get_score()
         game_data['players'].append({'email': player.email,
                                      'answers': player.get_answer_list(),
-                                     'num_correct': player.num_correct_answers()},)
-        scores.append(player.num_correct_answers())
+                                     'num_correct': scr},)
+        scores.append(scr)
     scores = pd.Series(scores)
     game_data['leaderboard'] = game.get_leaderboard()
     game_data['mean_score'] = scores.mean()
@@ -155,7 +156,7 @@ def get_game_results_as_csv(request, slug):
     writer = csv.writer(res)
     writer.writerow(["Player", "Correct", "Incorrect"])
     for player in game.players.all():
-        correct = player.num_correct_answers()
+        correct = player.get_score()
         writer.writerow([player.email, correct, game.quiz.num_questions() - correct])
 
     return res

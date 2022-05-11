@@ -1,3 +1,4 @@
+from django.utils import timezone
 import uuid
 import ast
 
@@ -13,6 +14,7 @@ from django.core.mail import send_mail
 
 from celery import shared_task
 
+
 class Game(models.Model):
     creator = models.ForeignKey(User, related_name='games', on_delete=models.CASCADE, )
     quiz = models.ForeignKey(Quiz, null=False, on_delete=models.CASCADE, )
@@ -20,11 +22,13 @@ class Game(models.Model):
     state = FSMField(default='active', protected=True)
     slug = models.CharField(unique=True, max_length=5)
     created_at = models.DateTimeField(auto_now_add=True)
+    timer = models.DateTimeField(auto_now_add=True)
 
     # advance the game forward one question, return false if the game is ove
     def advance_game(self):
         if self.current_question.index < self.quiz.num_questions():
             self.current_question = self.quiz.questions.get(index=self.current_question.index + 1)
+            self.timer = timezone.now()
             self.save()
             return True
         self.to_state_complete()
@@ -35,7 +39,7 @@ class Game(models.Model):
     def get_leaderboard(self):
         leaderboard = {}
         for player in self.players.all():
-            leaderboard[player.email] = player.num_correct_answers()
+            leaderboard[player.email] = player.get_score()
 
         return {k: v for k, v in sorted(leaderboard.items(), key=lambda x: x[1], reverse=True)}
 
@@ -77,6 +81,8 @@ class Player(models.Model):
     name = models.CharField(max_length=30, default=None, null=True)
     answers = models.CharField(validators=[validate_comma_separated_integer_list],
                                max_length=100)  # 100 chars, enough for 50 comma seperated answers
+    answer_bonus = models.CharField(validators=[validate_comma_separated_integer_list],
+                                    max_length=200)
 
     # helper functions to convert between string and list
     def set_answer(self, question_index, answer):
@@ -86,8 +92,14 @@ class Player(models.Model):
         if int(answer) < 1 or int(answer) > 4:
             raise ValueError(f'set_answer: question_index should be between 1 and 4, got {answer}')
         answers = ast.literal_eval(f'[{self.answers}]')
+        bonus = ast.literal_eval(f'[{self.answer_bonus}]')
         answers[question_index - 1] = answer
+        if self.game.quiz.questions.get(index=question_index).correct_answer == answer:
+            bonus[question_index - 1] = max(0, 25 - int((timezone.now() - self.game.timer).seconds))
+        else:
+            bonus[question_index - 1] = 0
         self.answers = ','.join([str(i) for i in answers])
+        self.answer_bonus = ','.join([str(i) for i in bonus])
         self.save()
 
     def get_answer_list(self):
@@ -118,13 +130,21 @@ class Player(models.Model):
             return self.question_correct(self.game.quiz.num_questions())
         return self.question_correct(self.game.current_question.index - 1)
 
+    def total_bonus(self):
+        bonus = 0
+        bonus_list = ast.literal_eval(f'[{self.answer_bonus}]')
+        quiz = self.game.quiz
+        for i in range(0, quiz.num_questions()):
+            bonus += bonus_list[i]
+        return bonus
+
     # return the player's score - for now just the number of correct answers
     def get_score(self):
-        return self.num_correct_answers()
-      
+        return (self.num_correct_answers() * 100) + (self.total_bonus())
+
     # return an object for use with rechart
     def get_recharts_object(self):
-        return {'name': self.name if self.name else self.email, 'value': self.num_correct_answers()}
+        return {'name': self.name if self.name else self.email, 'value': self.get_score()}
 
     def __str__(self):
         return f'{self.email}: {self.game.quiz.name}'
@@ -140,6 +160,7 @@ def send_email_task(player):
         fail_silently=False,
     )
 
+
 # runs after a player is saved to DB, make sure they have an initialized answer list and id
 @receiver(models.signals.post_save, sender=Player)
 def initialize_player(sender, instance, created, *args, **kwargs):
@@ -150,4 +171,5 @@ def initialize_player(sender, instance, created, *args, **kwargs):
         if not instance.answers:
             send_email_task(instance)
             instance.answers = ','.join([str(0) for i in range(0, instance.game.quiz.num_questions())])
+            instance.answer_bonus = ','.join([str(0) for i in range(0, instance.game.quiz.num_questions())])
         instance.save()
