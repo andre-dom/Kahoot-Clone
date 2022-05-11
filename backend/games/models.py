@@ -21,7 +21,7 @@ class Game(models.Model):
     current_question = models.ForeignKey(Question, null=True, related_name='game', on_delete=models.CASCADE)
     state = FSMField(default='active', protected=True)
     slug = models.CharField(unique=True, max_length=5)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=False)
     timer = models.DateTimeField(auto_now_add=True)
 
     # advance the game forward one question, return false if the game is ove
@@ -82,7 +82,7 @@ class Player(models.Model):
     answers = models.CharField(validators=[validate_comma_separated_integer_list],
                                max_length=100)  # 100 chars, enough for 50 comma seperated answers
     answer_bonus = models.CharField(validators=[validate_comma_separated_integer_list],
-                                    max_length=200)
+                                    max_length=300)
 
     # helper functions to convert between string and list
     def set_answer(self, question_index, answer):
@@ -92,10 +92,16 @@ class Player(models.Model):
         if int(answer) < 1 or int(answer) > 4:
             raise ValueError(f'set_answer: question_index should be between 1 and 4, got {answer}')
         answers = ast.literal_eval(f'[{self.answers}]')
+        if answer == answers[question_index - 1]:
+            return
         bonus = ast.literal_eval(f'[{self.answer_bonus}]')
         answers[question_index - 1] = answer
         if self.game.quiz.questions.get(index=question_index).correct_answer == answer:
-            bonus[question_index - 1] = max(0, 25 - int((timezone.now() - self.game.timer).seconds))
+            if not self.game.timer:
+                self.game.timer = timezone.now()
+                bonus[question_index - 1] = 100
+            else:
+                bonus[question_index - 1] = max(0, 100 - int((timezone.now() - self.game.timer).seconds))
         else:
             bonus[question_index - 1] = 0
         self.answers = ','.join([str(i) for i in answers])
