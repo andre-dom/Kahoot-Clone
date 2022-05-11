@@ -9,6 +9,11 @@ import {
     
 } from '@chakra-ui/react';
 
+import {
+    ip, 
+    port
+} from '../ports'; 
+
 import useAuth from '../hooks/useAuth';
 import { useNavigate } from "react-router-dom";
 
@@ -30,7 +35,7 @@ const Question = () =>{
 
 
     const currentQuestion = async () =>{
-        const response = await fetch('http://127.0.0.1:8000/game/', {
+        const response = await fetch(ip + port + '/game/', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -49,7 +54,7 @@ const Question = () =>{
     }
 
     const nextQuestion = async () => {
-       const response = await fetch('http://127.0.0.1:8000/game/advance/', {
+       const response = await fetch(ip + port + '/game/advance/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -73,7 +78,7 @@ const Question = () =>{
    }
 
     const deleteQuiz = async () => {
-        const response = await  fetch (`http://127.0.0.1:8000/game/delete/`,{
+        const response = await  fetch (ip + port + `/game/delete/`,{
             method:  'DELETE',
             headers: {
                 'Content-Type':  'application/json',

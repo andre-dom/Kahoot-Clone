@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react";
 import QuizCard from "./QuizCard";
 import useAuth from "../../hooks/useAuth";
 
+import {
+  ip,
+  port
+} from '../../ports';
+
 
 import { Box, Heading, SimpleGrid, Center, Container, Wrap } from "@chakra-ui/react";
 
@@ -29,7 +34,7 @@ const Main = () => {
    */
    const getData = async () => {
 
-    const response = await fetch('http://127.0.0.1:8000/quizzes/', {
+    const response = await fetch(ip + port + '/quizzes/', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

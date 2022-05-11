@@ -4,6 +4,11 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 import {
+  ip,
+  port
+} from '../../ports';
+
+import {
   Container,
   Heading,
   FormControl,
@@ -109,8 +114,8 @@ const SignUp = () => {
    * Makes a request to the backend API to login and returns a token 
    */
   const login = async (data) => {
-    
-    const response = await fetch('http://127.0.0.1:8000/auth/token/login/', {
+    //http://127.0.0.1:8000/auth/token/login/
+    const response = await fetch(ip + port + '/auth/token/login/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -155,7 +160,7 @@ const SignUp = () => {
    */
   const createAccount = async (data) => {
 
-    const response = await fetch('http://127.0.0.1:8000/auth/users/', {
+    const response = await fetch(ip + port + '/auth/users/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

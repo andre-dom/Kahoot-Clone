@@ -16,6 +16,11 @@ import {
  import useAuth from '../hooks/useAuth';
  import { useNavigate, useLocation } from "react-router-dom";
 
+ import {
+  ip,
+  port
+} from '../ports';
+
  const address = ['@gmail.com', '@yahoo.com', '@qq.com', '@163.com', '@outlook.com', '@sjsu.edu']; 
 
 const Home = () => {
@@ -152,7 +157,7 @@ const Home = () => {
 
       setIsLoading(true);
 
-      const response = await fetch('http://127.0.0.1:8000/game/new/', {
+      const response = await fetch(ip + port + '/game/new/', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
@@ -161,7 +166,7 @@ const Home = () => {
           body:JSON.stringify(data)
       })
 
-      //console.log(response); 
+      console.log('response: ', response);
 
       if(!response.ok){
           setError(true);
@@ -169,14 +174,14 @@ const Home = () => {
           // setStatus('error')
           console.log('there was an error')
           console.log('error: ' + JSON.stringify(response))
+          return; 
+      } 
+      
+      setIsLoading(false);
+      navigate('/questions')
+      const result = await response.json();
 
-      } else {
-        setIsLoading(false);
-        navigate('/questions')
-        const result = await response.json();
-
-      }  
-
+      console.log('after nav'); 
     }; 
 
    /**
@@ -270,7 +275,7 @@ const Home = () => {
 
               </Box>
               </VStack>
-            )}
+            )} 
 
               
                

@@ -3,6 +3,11 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import useGame from "../../hooks/useGame";
 
+import {
+  ip,
+  port
+} from '../../ports';
+
 import { Flex, Box, Heading, Button, Alert, AlertIcon} from "@chakra-ui/react";
 
 const Navbar = () => {
@@ -19,7 +24,7 @@ const Navbar = () => {
 
     try {
      
-      const response = await fetch('http://127.0.0.1:8000/auth/token/logout/',{
+      const response = await fetch(ip + port + '/auth/token/logout/',{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -54,7 +59,7 @@ const Navbar = () => {
   }
 
   const endQuiz = async () =>{
-    const response = await  fetch (`http://127.0.0.1:8000/game/delete/`,{
+    const response = await  fetch (ip + port + '/game/delete/',{
             method:  'DELETE',
             headers: {
                 'Content-Type':  'application/json',

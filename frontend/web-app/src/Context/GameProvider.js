@@ -1,6 +1,11 @@
 import { createContext, useState, useEffect } from 'react'; 
 import useAuth from '../hooks/useAuth';
 
+import {
+  ip, 
+  port
+} from '../ports';
+
 const GameContext = createContext({}); 
 
 export const GameProvider = ({ children }) => {
@@ -12,8 +17,7 @@ export const GameProvider = ({ children }) => {
    * Checks to see if there is a game in progress
    */
   const getGame = async() => {
-    console.log('we are here')
-    const response = await fetch('http://127.0.0.1:8000/game/', {
+    const response = await fetch(ip + port + '/game/', {
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',

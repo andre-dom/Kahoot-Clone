@@ -10,6 +10,11 @@ import {
   Button,
 } from '@chakra-ui/react'
 
+import {
+  ip, 
+  port
+} from '../ports'; 
+
 const DisplayName = () => {
 
    /**
@@ -45,7 +50,7 @@ const DisplayName = () => {
       "name": username
     }
 
-    const response = await fetch(`http://127.0.0.1:8000/player/${slug}/setname/`, {
+    const response = await fetch(ip + port + `/player/${slug}/setname/`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
