@@ -171,9 +171,11 @@ def send_email_task(player):
 @receiver(models.signals.post_save, sender=Player)
 def initialize_player(sender, instance, created, *args, **kwargs):
     if created:
-        # at some point we should make a check to ensure that the player slug is unique
         if not instance.slug:
-            instance.slug = uuid.uuid4().hex[:6].upper()
+            slug = uuid.uuid4().hex[:6].upper()
+            while Player.objects.filter(slug=slug).exists():
+                slug = uuid.uuid4().hex[:6].upper()
+            instance.slug = slug
         if not instance.answers:
             send_email_task(instance)
             instance.answers = ','.join([str(0) for i in range(0, instance.game.quiz.num_questions())])
