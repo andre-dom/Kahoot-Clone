@@ -22,6 +22,12 @@ import {
   Bar
 } from "recharts"
 
+import {
+
+  ip,  
+  port
+} from '../../ports'; 
+
 const CompletedView = () => {
 
   const { slug } = useParams(); 
@@ -38,7 +44,7 @@ const CompletedView = () => {
    */
   const gameCompleted = async () => {
     
-    const response = await fetch(`http://127.0.0.1:8000/game/completed/${slug}/`, {
+    const response = await fetch(ip + port + `/game/completed/${slug}/`, {
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',

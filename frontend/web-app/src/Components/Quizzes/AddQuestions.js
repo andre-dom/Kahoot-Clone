@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Card from './Card';
 import useAuth from '../../hooks/useAuth'; 
-
-
 import {
   FormControl,
   FormLabel,
@@ -14,6 +12,12 @@ import {
   Select,
   VStack
 } from '@chakra-ui/react'
+
+import {
+    ip, 
+    port
+} from '../../ports'; 
+
 
 
 const AddQuestions = () => {
@@ -93,7 +97,7 @@ const AddQuestions = () => {
      * @returns to automatically end the function. 
      */
     const postQuiz = async (quizBundle) => {
-        const response = await fetch('http://127.0.0.1:8000/quizzes/', {
+        const response = await fetch(ip + port + '/quizzes/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -164,31 +168,6 @@ const AddQuestions = () => {
                 };
             setQuestions(singleQuestion);
         }else{
-            // console.log('question: ', question);
-            // setQuestions([...questions, {
-            //     question_body: question,
-            //     answers: [
-            //         {
-            //             answer_body:answer1,
-
-            //         },
-            //         {
-            //             answer_body:answer2,
-
-            //         },
-            //         {
-            //             answer_body:answer3,
-
-            //         },
-            //         {
-            //             answer_body:answer4,
-
-            //         },
-
-            //     ],
-            //     correct_answer:correctAnswer
-            //     }
-            // ]);
             const singleQuestion = {
                 question_body: question,
                 answers: [
