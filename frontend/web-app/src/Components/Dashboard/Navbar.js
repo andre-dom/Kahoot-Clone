@@ -2,12 +2,7 @@ import React, { useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import useGame from "../../hooks/useGame";
-
-import {
-  ip,
-  port
-} from '../../ports';
-
+import { ip, port } from '../../ports';
 import { Flex, Box, Heading, Button, Alert, AlertIcon} from "@chakra-ui/react";
 
 const Navbar = () => {
@@ -18,9 +13,11 @@ const Navbar = () => {
   const [alert, setAlert] = useState(false);
 
   /**
-   * 
+   * Will be called when the user wants to logout and sends
+   * a POST request to the backend that the user wants to logout 
+   * local storage will also be cleared 
    */
-  const handlSubmit = async () => {
+  const handleLogout = async () => {
 
     try {
      
@@ -37,7 +34,7 @@ const Navbar = () => {
 
       setAuth(false); 
       localStorage.clear(); 
-      navigate('/login'); 
+      navigate('/'); 
 
     } catch (e) {
 
@@ -46,32 +43,46 @@ const Navbar = () => {
     }
   }; 
 
+  /**
+  * Redirect the user to the create quiz page
+  */
   const addQuiz = () => {
     navigate('/createQuiz');
   }; 
 
+  /**
+   * Redirect the user to the completed quizzes page
+   */
   const completedQuizzes = () => {
     navigate('/CompletedQuizzes');
   }
 
+  /**
+   * Redirect the user to the questions page
+   */
   const resumeQuiz = () => {
     navigate('/questions');
   }
 
+  /**
+   * Sends a DELETE request to the backend to delete the quiz
+   * @returns 
+   */
   const endQuiz = async () =>{
     const response = await  fetch (ip + port + '/game/delete/',{
-            method:  'DELETE',
-            headers: {
-                'Content-Type':  'application/json',
-                'Authorization': `token ${auth.token}`
-            }
-        })
-        if(!response.ok){
-            console.log('an error occurred');
-            return;
-        }
-        setAlert(false);
-        setGame(false); 
+      method:  'DELETE',
+      headers: {
+          'Content-Type':  'application/json',
+          'Authorization': `token ${auth.token}`
+      }
+    })
+
+    if(!response.ok){
+        console.log('an error occurred');
+        return;
+    }
+    setAlert(false);
+    setGame(false); 
   }
 
   return (
@@ -112,7 +123,7 @@ const Navbar = () => {
           border="1px"
           borderColor="black.200"
           borderRadius="md"
-          onClick = {handlSubmit}
+          onClick = {handleLogout}
           mr = '10px'
         >
           Logout

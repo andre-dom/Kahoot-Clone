@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import {Routes, Route } from "react-router-dom";
+import {Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./Components/Layout";
 import Missing from "./Components/Missing";
 import Login from "./Components/PublicPages/Login";
@@ -23,10 +23,15 @@ const App = () => {
   return (
     <div style = {{backgroundColor : '#F5F5F5', minHeight: '100vh'/* minus the height of the footer */}}>
     <Routes>
-      <Route path ='/' element = {<Layout/>}>
+      <Route element = {<Layout/>}>
         {/* public routes */}
         <Route path="/signup" element={<SignUp />} />
-        <Route path='/login' element={<Login />} />
+        {/* <Route path='/' element={<Login />} /> */}
+        <Route path='/' element = {
+          <Navigate replace to='/login' />
+        }/>
+        {/*         <Route path="/" element={<Navigate replace to="/home" />} /> */}
+        <Route path='/login' element = {<Login/>}/>
         <Route path ='/game/:slug' element = {<DisplayName/>}/>
         <Route path ='/game/:slug/multipleChoice' element = {<StudentPage/>}/>
 

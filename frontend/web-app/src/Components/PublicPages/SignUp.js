@@ -114,7 +114,6 @@ const SignUp = () => {
    * Makes a request to the backend API to login and returns a token 
    */
   const login = async (data) => {
-    //http://127.0.0.1:8000/auth/token/login/
     const response = await fetch(ip + port + '/auth/token/login/', {
       method: 'POST',
       headers: {
@@ -336,7 +335,7 @@ const SignUp = () => {
         <HStack pl="55px">
           <Center>
             <p>Already have an account?</p>
-            <Link style={{margin: '1rem', textDecoration: 'none', color: 'blue'}} to="/login">
+            <Link style={{margin: '1rem', textDecoration: 'none', color: 'blue'}} to="/">
               Login
             </Link>
           </Center>
