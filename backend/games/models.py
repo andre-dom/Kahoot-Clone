@@ -22,7 +22,7 @@ class Game(models.Model):
     state = FSMField(default='active', protected=True)
     slug = models.CharField(unique=True, max_length=5)
     created_at = models.DateTimeField(auto_now_add=True)
-    timer = models.DateTimeField(auto_now_add=False)
+    timer = models.DateTimeField(auto_now_add=False, null=True)
 
     # advance the game forward one question, return false if the game is ove
     def advance_game(self):
