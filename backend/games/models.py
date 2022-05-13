@@ -28,7 +28,7 @@ class Game(models.Model):
     def advance_game(self):
         if self.current_question.index < self.quiz.num_questions():
             self.current_question = self.quiz.questions.get(index=self.current_question.index + 1)
-            self.timer = timezone.now()
+            self.timer = None
             self.save()
             return True
         self.to_state_complete()
