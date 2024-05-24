@@ -7,8 +7,6 @@ import Login from "./Components/PublicPages/Login";
 import SignUp from "./Components/PublicPages/SignUp";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import RequireAuth from "./Context/RequireAuth";
-import CreateQuiz from "./Components/Quizzes/CreateQuiz";
-import AddQuestions from './Components/Quizzes/AddQuestions'; 
 import ViewQuiz from "./Components/Quizzes/ViewQuiz";
 import { GameProvider } from "./Context/GameProvider";
 import Home from "./Game/Home";
