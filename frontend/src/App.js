@@ -48,7 +48,6 @@ const App = () => {
             <Route path='/questions' element = {<Question/>} />
             <Route path='/leaderBoard' element = {<LeaderBoard/>} />
             <Route path='/createQuiz' element ={<AddQuiz/>}/>
-            <Route path='/AddQuestions' element ={<AddQuestions/>}/>
             <Route path ='/viewQuiz/:name' element = {<ViewQuiz/>}/>
             <Route path ='/CompletedQuizzes' element = {<CompletedQuizzes/>}/>
             <Route path = '/CompletedQuizzes/:slug' element = {<CompletedView/>}/>
