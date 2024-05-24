@@ -18,6 +18,7 @@ import StudentPage from "./Components/Quizzes/StudentPage";
 import CompletedQuizzes from "./Components/Quizzes/CompletedQuizzes";
 import CompletedView from "./Components/Quizzes/CompletedView";
 import DisplayName from "./Game/DisplayName";
+import AddQuiz from "./Components/Quizzes/AddQuiz"
 
 const App = () => {
   return (
@@ -48,7 +49,7 @@ const App = () => {
             <Route path='/home' element ={<Home />} />
             <Route path='/questions' element = {<Question/>} />
             <Route path='/leaderBoard' element = {<LeaderBoard/>} />
-            <Route path='/createQuiz' element ={<CreateQuiz/>}/>
+            <Route path='/createQuiz' element ={<AddQuiz/>}/>
             <Route path='/AddQuestions' element ={<AddQuestions/>}/>
             <Route path ='/viewQuiz/:name' element = {<ViewQuiz/>}/>
             <Route path ='/CompletedQuizzes' element = {<CompletedQuizzes/>}/>

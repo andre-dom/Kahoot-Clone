@@ -25,8 +25,8 @@ import {
   AlertTitle,
 } from "@chakra-ui/react";
 
-const USER_REGEX = /^[A-Z][a-z0-9@#$%_.]{4,23}/
-const PWD_REGEX = /[A-Z][a-z0-9@#$%_.]{7,24}/
+const USER_REGEX = /^.{2,}$/;
+const PWD_REGEX = /^.{8,}$/;
 
 const SignUp = () => {
   
@@ -40,7 +40,7 @@ const SignUp = () => {
   // Username State
   const [user, setUser] = useState('');
   const [validName, setValidName] = useState(false);
-  const [userFocus, setUserFocus] = useState(false); 
+  const [userFocus, setUserFocus] = useState(false);
 
   //Password State
   const [pwd, setPwd] = useState('');
@@ -70,16 +70,16 @@ const SignUp = () => {
   // will test the user input once the user starts typing
   useEffect(() => {
 
-    setValidName(USER_REGEX.test(user)); 
+    setValidName(USER_REGEX.test(user));
 
-  }, [user]); 
+  }, [user]);
 
   // will test the user password input once the user starts typing
   useEffect(() => {
 
     setValidPwd(PWD_REGEX.test(pwd));
 
-  }, [pwd]); 
+  }, [pwd]);
 
 
   // this hook will run only once when the page is loaded
@@ -291,9 +291,7 @@ const SignUp = () => {
 
                 {userFocus && user && !validName && (
                   <FormHelperText>
-                    4 to 24 characters.<br />
-                    Must begin with a capital letter.<br />
-                    Letters, numbers, @.#$%_ are allowed
+                    Minimum 8 Chars
                   </FormHelperText>
                  )}   
                   <FormLabel htmlFor="password">Password</FormLabel>
@@ -311,9 +309,7 @@ const SignUp = () => {
                   ></Input>
                   {pwdFocus && pwd && !validPwd && (
                     <FormHelperText>
-                      8 to 24 characters. <br/>
-                      Must begin with a capital letter. <br/>
-                      Letters, numbers, and @.#$%_ are allowed
+                      Minimum 2 Chars
                     </FormHelperText>
                   )}
                 </Stack>
