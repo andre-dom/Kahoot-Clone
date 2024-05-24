@@ -1,6 +1,6 @@
-import React from 'react'; 
-import { useNavigate } from 'react-router-dom';
-import { 
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import {
   Box,
   Container,
   VStack,
@@ -8,21 +8,25 @@ import {
   Divider,
   Text,
   SimpleGrid,
-  Button
-
-} from '@chakra-ui/react'
-
+  Button,
+} from "@chakra-ui/react";
 
 const CompletedCard = ({ name, slug }) => {
-
   const navigate = useNavigate();
 
   const viewQuiz = () => {
-    navigate(`/CompletedQuizzes/${slug}`); 
-  }
+    navigate(`/CompletedQuizzes/${slug}`);
+  };
 
-  return(
-    <Box boxShadow="md" rounded="md" bg="white" height="180px" width = "300px" m = '0'>
+  return (
+    <Box
+      boxShadow="md"
+      rounded="md"
+      bg="white"
+      height="180px"
+      width="300px"
+      m="0"
+    >
       <Box
         display="flex"
         alignItems="center"
@@ -30,7 +34,9 @@ const CompletedCard = ({ name, slug }) => {
         height="80%"
         borderTopRadius="md"
       >
-        <Text fontSize= 'xl' color='#333333'>{name}</Text>
+        <Text fontSize="xl" color="#333333">
+          {name}
+        </Text>
       </Box>{" "}
       <Box
         height="20%"
@@ -38,24 +44,20 @@ const CompletedCard = ({ name, slug }) => {
         alignItems="center"
         justifyContent="center"
       >
-        <HStack align='center'>
-        
-          <Button 
-          color="#669DB3FF" 
-          fontFamily='Verdana'
-          variant="link" 
-          fontWeight="16px"
-          onClick = {viewQuiz}
+        <HStack align="center">
+          <Button
+            color="#669DB3FF"
+            fontFamily="Verdana"
+            variant="link"
+            fontWeight="16px"
+            onClick={viewQuiz}
           >
             View
           </Button>
-          
-
         </HStack>
       </Box>
     </Box>
-  ); 
+  );
+};
 
-}; 
-
-export default CompletedCard; 
+export default CompletedCard;

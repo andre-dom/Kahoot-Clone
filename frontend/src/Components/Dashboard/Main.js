@@ -1,122 +1,151 @@
-import React, { useState, useEffect } from "react";
-import QuizCard from "./QuizCard";
-import useAuth from "../../hooks/useAuth";
+import React, { useState, useEffect, useRef } from "react";
 
 import {
-  ip,
-  port
-} from '../../ports';
+  Box,
+  Heading,
+  SimpleGrid,
+  Center,
+  useColorModeValue,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  Button,
+} from "@chakra-ui/react";
 
+import QuizCard from "./QuizCard";
 
-import { Box, Heading, SimpleGrid, Center, Container, Wrap } from "@chakra-ui/react";
+import useAuth from "../../hooks/useAuth";
 
-const colors = ['#E27D60', '#85DCBA', '#E8A87C', '#C38D9E' , '#41B3A3']
+import { ip, port } from "../../ports";
+
+// Define color schemes outside of the component render method
+
+const lightColors = ["#E27D60", "#85DCBA", "#E8A87C", "#C38D9E", "#41B3A3"];
+
+const darkColors = ["#1D3557", "#457B9D", "#A8DADC", "#F1FAEE", "#E63946"];
 
 const Main = () => {
+  const [quizzes, setQuizzes] = useState([]);
 
-  const [quizzes, setQuizzes] = useState([]); 
+  const [deleteQuiz, setDeleteQuiz] = useState(null);
 
-  const { auth } = useAuth(); 
+  const { auth } = useAuth();
 
-  /**
-  * Every time the page renders, it will make a request to the 
-  * API to get the latest quizzes.    
-  */
+  const cancelRef = useRef();
+
   useEffect(() => {
+    getData();
+  }, []);
 
-    getData(); 
+  const getData = async () => {
+    const response = await fetch(`${ip}${port}/quizzes/`, {
+      method: "GET",
 
-  },[])
+      headers: {
+        "Content-Type": "application/json",
 
-  /**
-   * Retrieves all the quizzes that were created
-   * by the user. 
-   */
-   const getData = async () => {
-
-    const response = await fetch(ip + port + '/quizzes/', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `token ${auth.token}`
+        Authorization: `token ${auth.token}`,
       },
-    }); 
+    });
 
-    if(!response.ok) {
+    if (!response.ok) {
+      console.error("There was an error.");
 
-      console.log('there was an error.');
-      return; 
+      return;
     }
 
-    const result = await response.json(); 
-    
+    const result = await response.json();
+
     setQuizzes(result);
+  };
 
-   }; 
+  const handleDelete = (slug, name) => {
+    setDeleteQuiz({ slug, name });
+  };
 
-   /**
-    * This function will be passed down to the QuizCard component. 
-    * QuizCard component will call this function which will update the
-    * quizzes state and update the dom. 
-    * @param slug from QuizCard component 
-    */
-   const handleDelete = (slug) => {
-      const newQuizzes = quizzes.filter((quiz) => quiz.slug !== slug)
+  const confirmDelete = async () => {
+    if (deleteQuiz) {
+      const response = await fetch(`${ip}${port}/quizzes/${deleteQuiz.slug}/`, {
+        method: "DELETE",
 
-      setQuizzes(newQuizzes); 
-   }
+        headers: {
+          "Content-Type": "application/json",
+
+          Authorization: `token ${auth.token}`,
+        },
+      });
+
+      if (response.ok) {
+        setQuizzes(quizzes.filter((quiz) => quiz.slug !== deleteQuiz.slug));
+
+        setDeleteQuiz(null);
+      } else {
+        console.error("Failed to delete the quiz");
+
+        setDeleteQuiz(null);
+      }
+    }
+  };
+
+  // Theme specific values
+
+  const headingColor = useColorModeValue("black", "white");
+
+  const cardColors = useColorModeValue(lightColors, darkColors);
 
   return (
-    <Box> 
-      {/* <Center> */}
-      <Box>
-        <Heading
-          m='50px'
-          as="h5"
-          size="md"
-          p="2"
-          color="#333333"
-          fontWeight="semi-bold"
-          borderBottom="1px"
-          borderColor="grey.200"
-          fontFamily='Verdana'
-        >
-          My Quizzes
-        </Heading>
-  
-        <Box>
-        <Center>
+    <Box>
+      <Heading as="h1" size="lg" textAlign="center" my="8" color={headingColor}>
+        My Quizzes
+      </Heading>
 
-          <SimpleGrid
-            columns = {[1, 1,2,3, 4]}
-            spacing = '40px'
-            rounded="lg"
-            color="gray.500"
-            m = '20px'
-          >
+      <Center>
+        <SimpleGrid columns={[1, 2, 3, 4]} spacing="40px" rounded="lg" m="4">
+          {quizzes.map((quiz, index) => (
+            <QuizCard
+              key={quiz.slug}
+              name={quiz.name}
+              slug={quiz.slug}
+              handleDelete={() => handleDelete(quiz.slug, quiz.name)}
+              colorBg={cardColors[index % cardColors.length]}
+            />
+          ))}
+        </SimpleGrid>
+      </Center>
 
-        
-          
-              {quizzes.map((quiz, index) => 
-                (
-                  //? Not sure if the slug can be a valid key. Keep an eye for this when deleting the quiz from dashboard. 
+      <AlertDialog
+        isOpen={deleteQuiz !== null}
+        leastDestructiveRef={cancelRef}
+        onClose={() => setDeleteQuiz(null)}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Delete Quiz
+            </AlertDialogHeader>
 
-          
-                <QuizCard key = {quiz.slug} name = {quiz.name} slug = {quiz.slug} handleDelete = {handleDelete} colorBg = {colors[index % 5]}></QuizCard>
+            <AlertDialogBody>
+              Are you sure you want to delete the quiz "{deleteQuiz?.name}"? You
+              can't undo this action afterwards.
+            </AlertDialogBody>
 
-              ))}
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={() => setDeleteQuiz(null)}>
+                Cancel
+              </Button>
 
-            
-          </SimpleGrid>
-        </Center>
-        </Box>
-          
-
-          
-        
-      </Box>
-      {/* </Center> */}
+              <Button colorScheme="red" onClick={confirmDelete} ml={3}>
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Box>
   );
 };
+
 export default Main;

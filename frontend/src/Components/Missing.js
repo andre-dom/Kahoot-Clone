@@ -1,33 +1,26 @@
-import React from 'react'; 
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@chakra-ui/react';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@chakra-ui/react";
 
 const Missing = () => {
-
   /*
-  * TODO: needs some styling 
-  */
+   * TODO: needs some styling
+   */
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   // Will take the user back to the page they
-  // came from 
+  // came from
   const goback = () => {
-    navigate(-1); 
-  }
+    navigate(-1);
+  };
 
-  return(
+  return (
     <div>
       Error 404.
-      <Button
-      onClick={goback}
-      >
-        Go Back
-      </Button>
-      
+      <Button onClick={goback}>Go Back</Button>
     </div>
-
   );
 };
 
-export default Missing; 
+export default Missing;

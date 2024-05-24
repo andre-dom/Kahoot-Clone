@@ -1,40 +1,33 @@
-import { createContext, useState, useEffect } from 'react'; 
+import { createContext, useState, useEffect } from "react";
 
-const AuthContext = createContext({}); 
+const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
-
-
   // * Note that auth is an object
   const [auth, setAuth] = useState(() => {
-    const localUser = localStorage.getItem('user'); 
-    return localUser ? JSON.parse(localUser) : {}
-  }); 
+    const localUser = localStorage.getItem("user");
+    return localUser ? JSON.parse(localUser) : {};
+  });
 
   useEffect(() => {
-    const { user, token } = auth; 
+    const { user, token } = auth;
     const data = { user, token }; // no password 😁
 
-    localStorage.setItem('user', JSON.stringify(data))
-  }, [auth]); 
- 
+    localStorage.setItem("user", JSON.stringify(data));
+  }, [auth]);
+
   const values = {
-    auth, 
-    setAuth, 
-  }
+    auth,
+    setAuth,
+  };
 
-  return( 
-    <AuthContext.Provider value = {values}>
-      {children}
-    </AuthContext.Provider>
-  ); 
-}; 
+  return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;
+};
 
-export default AuthContext; 
-
+export default AuthContext;
 
 /**
  * We're returning the AuthContext Provider with the state being auth.
- * the children represent the nested components 
- * because authProvider will be wrapping around our components. 
-*/
+ * the children represent the nested components
+ * because authProvider will be wrapping around our components.
+ */

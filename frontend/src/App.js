@@ -1,6 +1,6 @@
 import React from "react";
-import "./App.css";
-import {Routes, Route, Navigate } from "react-router-dom";
+import { Box, useColorModeValue } from "@chakra-ui/react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./Components/Layout";
 import Missing from "./Components/Missing";
 import Login from "./Components/PublicPages/Login";
@@ -16,53 +16,43 @@ import StudentPage from "./Components/Quizzes/StudentPage";
 import CompletedQuizzes from "./Components/Quizzes/CompletedQuizzes";
 import CompletedView from "./Components/Quizzes/CompletedView";
 import DisplayName from "./Game/DisplayName";
-import AddQuiz from "./Components/Quizzes/AddQuiz"
-
+import AddQuiz from "./Components/Quizzes/AddQuiz";
 const App = () => {
+  // Define light and dark mode background
+  const bgColor = useColorModeValue("gray.100", "gray.800");
   return (
-    <div style = {{backgroundColor : '#F5F5F5', minHeight: '100vh'/* minus the height of the footer */}}>
-    <Routes>
-      <Route element = {<Layout/>}>
-        {/* public routes */}
-        <Route path="/signup" element={<SignUp />} />
-        {/* <Route path='/' element={<Login />} /> */}
-        <Route path='/' element = {
-          <Navigate replace to='/login' />
-        }/>
-        {/*         <Route path="/" element={<Navigate replace to="/home" />} /> */}
-        <Route path='/login' element = {<Login/>}/>
-        <Route path ='/game/:slug' element = {<DisplayName/>}/>
-        <Route path ='/game/:slug/multipleChoice' element = {<StudentPage/>}/>
-
-        {/* protected routes */}
-        <Route element = {<RequireAuth/>}>
-            <Route path="/dashboard" element = {
-              // <KahootProvider> 
-              <GameProvider>
-                <Dashboard/> 
-              </GameProvider>
-              // </KahootProvider>
-              }/>
-
-            <Route path='/home' element ={<Home />} />
-            <Route path='/questions' element = {<Question/>} />
-            <Route path='/leaderBoard' element = {<LeaderBoard/>} />
-            <Route path='/createQuiz' element ={<AddQuiz/>}/>
-            <Route path ='/viewQuiz/:name' element = {<ViewQuiz/>}/>
-            <Route path ='/CompletedQuizzes' element = {<CompletedQuizzes/>}/>
-            <Route path = '/CompletedQuizzes/:slug' element = {<CompletedView/>}/>
-
-        </Route>        
-
-        {/* catch all (404 page) */}
-        <Route path= "*" element = {<Missing/>}/>
-      </Route>
-    </Routes>
-
-
-    </div>
-  
+    <Box bg={bgColor} minHeight="100vh">
+      <Routes>
+        <Route element={<Layout />}>
+          {/* public routes */}
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/" element={<Navigate replace to="/login" />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/game/:slug" element={<DisplayName />} />
+          <Route path="/game/:slug/multipleChoice" element={<StudentPage />} />
+          {/* protected routes */}
+          <Route element={<RequireAuth />}>
+            <Route
+              path="/dashboard"
+              element={
+                <GameProvider>
+                  <Dashboard />
+                </GameProvider>
+              }
+            />
+            <Route path="/home" element={<Home />} />
+            <Route path="/questions" element={<Question />} />
+            <Route path="/leaderBoard" element={<LeaderBoard />} />
+            <Route path="/createQuiz" element={<AddQuiz />} />
+            <Route path="/viewQuiz/:name" element={<ViewQuiz />} />
+            <Route path="/CompletedQuizzes" element={<CompletedQuizzes />} />
+            <Route path="/CompletedQuizzes/:slug" element={<CompletedView />} />
+          </Route>
+          {/* catch all (404 page) */}
+          <Route path="*" element={<Missing />} />
+        </Route>
+      </Routes>
+    </Box>
   );
 };
-
 export default App;
