@@ -176,4 +176,4 @@ EMAIL_PORT = 587
 #just use this line. it made tings
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-# CELERY_BROKER_URL =
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/'

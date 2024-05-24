@@ -1,0 +1,26 @@
+services:
+  backend:
+    build: ./backend
+    command: python3 manage.py runserver 0.0.0.0:8000
+    network_mode: "host"
+
+  frontend:
+    build: ./frontend
+    network_mode: "host"
+
+  celery:
+    build: ./backend
+    command: celery -A kahoot worker -l INFO
+    volumes:
+      - ./backend:/backend/code
+    depends_on:
+      - backend
+      - rabbitmq
+    network_mode: "host"
+
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    network_mode: "host"
