@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import { useNavigate, useLocation } from "react-router-dom"; // Add useLocation for accessing state
+import { useNavigate, useLocation } from "react-router-dom";
 
 import Navbar from "./Components/Dashboard/Navbar";
 
@@ -29,7 +29,7 @@ import {
   FormLabel,
   Input,
   VStack,
-  Spinner, // Import Spinner for loading indicator
+  Spinner,
   IconButton,
 } from "@chakra-ui/react";
 
@@ -40,6 +40,8 @@ import QuizCard from "./Components/Dashboard/QuizCard";
 import useAuth from "./hooks/useAuth";
 
 import { ip, port } from "./ports";
+
+import AddQuiz from "./Components/Quizzes/AddQuiz";
 
 const lightColors = ["#E27D60", "#85DCBA", "#E8A87C", "#C38D9E", "#41B3A3"];
 
@@ -60,7 +62,7 @@ const Dashboard = () => {
 
   const [selectedQuiz, setSelectedQuiz] = useState(null);
 
-  // New state variables for modal and loading spinner
+  const [isAddQuizModalOpen, setIsAddQuizModalOpen] = useState(false);
 
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
@@ -211,7 +213,7 @@ const Dashboard = () => {
   };
 
   const openViewModal = (slug) => {
-    fetchQuizDetails(slug); // Fetch quiz data
+    fetchQuizDetails(slug);
 
     setIsViewModalOpen(true);
   };
@@ -239,7 +241,7 @@ const Dashboard = () => {
               m={4}
               bgColor={useColorModeValue("white", "gray.700")}
               cursor="pointer"
-              onClick={() => navigate("/createQuiz")}
+              onClick={() => setIsAddQuizModalOpen(true)}
             >
               <VStack align="center" justify="center" spacing={2}>
                 <div style={{ width: "300px", height: "40px" }} />
@@ -257,7 +259,7 @@ const Dashboard = () => {
                 slug={quiz.slug}
                 handleDelete={() => handleDelete(quiz.slug, quiz.name)}
                 openEmailModal={() => openEmailModal(quiz.slug)}
-                openViewModal={() => openViewModal(quiz.slug)} // Pass slug to openViewModal
+                openViewModal={() => openViewModal(quiz.slug)}
                 colorBg={cardColors[index % cardColors.length]}
               />
             ))}
@@ -367,7 +369,9 @@ const Dashboard = () => {
                 <Box>
                   {viewQuizData &&
                     viewQuizData.questions
+
                       .slice(0, 50)
+
                       .map((question, index) => (
                         <Box key={question.index} mb="4">
                           <Text fontWeight="bold">Question {index + 1}:</Text>
@@ -381,7 +385,7 @@ const Dashboard = () => {
                                 pl="4"
                                 fontStyle="italic"
                               >
-                                {answer.index + 1}. {answer.answer_body}
+                                {answer.index}. {answer.answer_body}
                               </Text>
                             ))}
 
@@ -397,6 +401,29 @@ const Dashboard = () => {
 
             <ModalFooter>
               <Button onClick={() => setIsViewModalOpen(false)}>Close</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
+        <Modal
+          isOpen={isAddQuizModalOpen}
+          onClose={() => setIsAddQuizModalOpen(false)}
+        >
+          <ModalOverlay />
+
+          <ModalContent>
+            <ModalHeader>Add New Quiz</ModalHeader>
+
+            <ModalCloseButton />
+
+            <ModalBody>
+              <AddQuiz />
+            </ModalBody>
+
+            <ModalFooter>
+              <Button onClick={() => setIsAddQuizModalOpen(false)}>
+                Close
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

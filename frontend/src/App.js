@@ -13,7 +13,7 @@ import Home from "./Game/Home";
 import Question from "./Game/Question";
 import LeaderBoard from "./Game/LeaderBoard";
 import StudentPage from "./Components/Quizzes/StudentPage";
-import CompletedQuizzes from "./Components/Quizzes/CompletedQuizzes";
+import CompletedGames from "./Components/Quizzes/CompletedGames";
 import CompletedView from "./Components/Quizzes/CompletedView";
 import DisplayName from "./Game/DisplayName";
 import AddQuiz from "./Components/Quizzes/AddQuiz";
@@ -48,8 +48,8 @@ const App = () => {
             <Route path="/leaderBoard" element={<LeaderBoard />} />
             <Route path="/createQuiz" element={<AddQuiz />} />
             <Route path="/viewQuiz/:name" element={<ViewQuiz />} />
-            <Route path="/CompletedQuizzes" element={<CompletedQuizzes />} />
-            <Route path="/CompletedQuizzes/:slug" element={<CompletedView />} />
+            <Route path="/CompletedGames" element={<CompletedGames />} />
+            <Route path="/CompletedGames/:slug" element={<CompletedView />} />
           </Route>
           {/* catch all (404 page) */}
           <Route path="*" element={<Missing />} />

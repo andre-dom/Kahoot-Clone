@@ -22,6 +22,8 @@ import {
 
 import { SunIcon, MoonIcon } from "@chakra-ui/icons";
 
+import CompletedGames from "../Quizzes/CompletedGames";
+
 const Navbar = () => {
   const navigate = useNavigate();
 
@@ -36,6 +38,8 @@ const Navbar = () => {
   const bg = useColorModeValue("gray.100", "gray.900");
 
   const color = useColorModeValue("gray.800", "white");
+
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
 
   const handleLogout = async () => {
     try {
@@ -63,8 +67,8 @@ const Navbar = () => {
     }
   };
 
-  const completedQuizzes = () => {
-    navigate("/CompletedQuizzes");
+  const completedGames = () => {
+    setIsModalOpen(true); // Show the modal when the button is clicked
   };
 
   const resumeQuiz = () => {
@@ -108,7 +112,6 @@ const Navbar = () => {
           </Flex>
         </Alert>
       )}
-
       <Flex align="center" justify="space-between" color-scheme="blue">
         <Box>
           <Heading as="h4" size="md">
@@ -125,8 +128,8 @@ const Navbar = () => {
             Logout
           </Button>
 
-          <Button mr={2} onClick={completedQuizzes}>
-            Completed Quizzes
+          <Button mr={2} onClick={completedGames}>
+            Game History
           </Button>
 
           <IconButton
@@ -136,6 +139,11 @@ const Navbar = () => {
           />
         </Flex>
       </Flex>
+      <CompletedGames
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />{" "}
+      {/* Modal controlled through state */}
     </Box>
   );
 };
