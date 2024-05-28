@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
+
+import { useNavigate, Link, useLocation } from "react-router-dom";
 
 import {
   Button,
@@ -8,7 +10,6 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
-  ModalFooter,
   useDisclosure,
   Stack,
   Box,
@@ -24,6 +25,15 @@ import Login from "./Components/Auth/Login";
 import SignUp from "./Components/Auth/Signup";
 
 const LandingPage = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const localUser = JSON.parse(localStorage.getItem("user"));
+
+    if (localUser?.user) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
+
   const {
     isOpen: isLoginOpen,
 

@@ -9,9 +9,9 @@ import {
   SimpleGrid,
 } from "@chakra-ui/react";
 
-import { ip, port } from "../ports";
+import { backend_url } from "../../backend_url";
 
-import useAuth from "../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 
 import { useNavigate } from "react-router-dom";
 
@@ -25,11 +25,27 @@ const Question = () => {
   const [answers, setAnswers] = useState([]);
 
   useEffect(() => {
+    fetch(`${backend_url}/game`, {
+      method: "GET",
+
+      headers: {
+        "Content-Type": "application/json",
+
+        Authorization: `token ${auth.token}`,
+      },
+    }).then((response) => {
+      if (!response.ok) {
+        navigate("/dashboard");
+      }
+    });
+  }, [navigate]);
+
+  useEffect(() => {
     currentQuestion();
   }, []);
 
   const currentQuestion = async () => {
-    const response = await fetch(ip + port + "/game/", {
+    const response = await fetch(backend_url + "/game/", {
       method: "GET",
 
       headers: {
@@ -53,7 +69,7 @@ const Question = () => {
   };
 
   const nextQuestion = async () => {
-    const response = await fetch(ip + port + "/game/advance/", {
+    const response = await fetch(backend_url + "/game/advance/", {
       method: "POST",
 
       headers: {
@@ -72,7 +88,7 @@ const Question = () => {
     if (result.info) {
       const { data } = result;
 
-      navigate("/leaderBoard", { state: { data } });
+      navigate(`/results/${result.info}`);
     } else {
       setQuestion(result.current_question.question_body);
 
@@ -81,7 +97,7 @@ const Question = () => {
   };
 
   const deleteQuiz = async () => {
-    const response = await fetch(ip + port + "/game/delete/", {
+    const response = await fetch(backend_url + "/game/delete/", {
       method: "DELETE",
 
       headers: {

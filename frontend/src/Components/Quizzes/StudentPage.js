@@ -8,7 +8,7 @@ import {
   Heading,
 } from "@chakra-ui/react";
 
-import { ip, port } from "../../ports";
+import { backend_url } from "../../backend_url";
 
 import { useParams, useLocation } from "react-router-dom";
 
@@ -20,7 +20,7 @@ const StudentPage = () => {
   const [show, setShow] = useState(true);
 
   const getScore = async () => {
-    const response = await fetch(ip + port + `/player/${slug}/game/`, {
+    const response = await fetch(backend_url + `/player/${slug}/game/`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -43,7 +43,7 @@ const StudentPage = () => {
   useEffect(() => {
     console.log("useeffect called");
 
-    const sse = new EventSource(ip + port + `/events/?channel=${slug}`, {
+    const sse = new EventSource(backend_url + `/events/?channel=${slug}`, {
       withCredentials: false,
     });
 
@@ -92,7 +92,7 @@ const StudentPage = () => {
       answer: answer,
     };
 
-    const response = await fetch(ip + port + `/player/${slug}/submit/`, {
+    const response = await fetch(backend_url + `/player/${slug}/submit/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

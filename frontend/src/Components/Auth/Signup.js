@@ -8,7 +8,7 @@ import { useNavigate, Link } from "react-router-dom";
 
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 
-import { ip, port } from "../../ports";
+import { backend_url } from "../../backend_url";
 
 import {
   Container,
@@ -111,7 +111,7 @@ const SignUp = () => {
   const isEmpty = (str) => !str || str.length === 0;
 
   const login = async (data) => {
-    const response = await fetch(ip + port + "/auth/token/login/", {
+    const response = await fetch(backend_url + "/auth/token/login/", {
       method: "POST",
 
       headers: {
@@ -141,7 +141,7 @@ const SignUp = () => {
   };
 
   const createAccount = async (data) => {
-    const response = await fetch(ip + port + "/auth/users/", {
+    const response = await fetch(backend_url + "/auth/users/", {
       method: "POST",
 
       headers: {

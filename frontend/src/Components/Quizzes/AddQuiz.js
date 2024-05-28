@@ -14,7 +14,9 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 
-import { ArrowBackIcon, DeleteIcon } from "@chakra-ui/icons";
+import { backend_url } from "../../backend_url";
+
+import { DeleteIcon } from "@chakra-ui/icons";
 
 import { useNavigate } from "react-router-dom";
 
@@ -114,7 +116,7 @@ const AddQuiz = ({ onClose, refreshQuizzes }) => {
     const quiz = { name: quizName, questions };
 
     try {
-      const response = await fetch("http://localhost:8000/quizzes/", {
+      const response = await fetch(`${backend_url}/quizzes/`, {
         method: "POST",
 
         headers: {

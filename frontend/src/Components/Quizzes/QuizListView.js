@@ -35,7 +35,7 @@ import Navbar from "./Navbar";
 
 import useAuth from "../../hooks/useAuth";
 
-import { ip, port } from "../../ports";
+import { backend_url } from "../../backend_url";
 
 import AddQuiz from "./AddQuiz";
 
@@ -75,7 +75,7 @@ const Dashboard = () => {
   }, []);
 
   const getData = async () => {
-    const response = await fetch(`${ip}${port}/quizzes/`, {
+    const response = await fetch(`${backend_url}/quizzes/`, {
       method: "GET",
 
       headers: {
@@ -103,7 +103,7 @@ const Dashboard = () => {
   const fetchQuizDetails = async (slug) => {
     setIsLoading(true);
 
-    const response = await fetch(`${ip}${port}/quizzes/${slug}`, {
+    const response = await fetch(`${backend_url}/quizzes/${slug}`, {
       method: "GET",
 
       headers: {
@@ -134,7 +134,7 @@ const Dashboard = () => {
 
   const confirmDelete = async () => {
     if (deleteQuiz) {
-      const response = await fetch(`${ip}${port}/quizzes/${deleteQuiz.slug}/`, {
+      const response = await fetch(`${backend_url}/quizzes/${deleteQuiz.slug}/`, {
         method: "DELETE",
 
         headers: {
@@ -163,7 +163,7 @@ const Dashboard = () => {
       players: emails.map((email) => ({ email })),
     });
 
-    const response = await fetch(`${ip}${port}/game/new/`, {
+    const response = await fetch(`${backend_url}/game/new/`, {
       method: "POST",
 
       headers: {

@@ -20,7 +20,7 @@ import {
   Box,
 } from "@chakra-ui/react";
 
-import { ip, port } from "../../ports";
+import { backend_url } from "../../backend_url";
 
 import CsvDownloadButton from "../CsvDownloadButton";
 
@@ -44,7 +44,7 @@ const CompletedQuizzes = ({ isOpen, onClose }) => {
   useEffect(() => {
     const fetchCompletedQuizzes = async () => {
       try {
-        const response = await fetch(`${ip}${port}/game/completed/`, {
+        const response = await fetch(`${backend_url}/game/completed/`, {
           method: "GET",
 
           headers: {
@@ -125,7 +125,7 @@ const CompletedQuizzes = ({ isOpen, onClose }) => {
                       </Td>
 
                       <Td>
-                        <CsvDownloadButton slug={quiz.slug} />
+                        <CsvDownloadButton game={quiz.slug} />
                       </Td>
                     </Tr>
                   ))}

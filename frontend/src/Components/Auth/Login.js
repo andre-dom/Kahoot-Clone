@@ -4,7 +4,7 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 
 import useAuth from "../../hooks/useAuth";
 
-import { ip, port } from "../../ports";
+import { backend_url } from "../../backend_url";
 
 import {
   Container,
@@ -88,7 +88,7 @@ const Login = () => {
   };
 
   const loginUser = async (data) => {
-    const response = await fetch(`${ip}${port}/auth/token/login/`, {
+    const response = await fetch(`${backend_url}/auth/token/login/`, {
       method: "POST",
 
       headers: {

@@ -20,7 +20,7 @@ import {
 
 import { BarChart } from "@saas-ui/charts";
 
-import { ip, port } from "../../ports";
+import { backend_url } from "../../backend_url";
 
 import useAuth from "../../hooks/useAuth";
 
@@ -35,7 +35,7 @@ const CompletedGameView = ({ isOpen, onClose, quizSlug }) => {
     const fetchQuizData = async () => {
       try {
         const response = await fetch(
-          `${ip}${port}/game/completed/${quizSlug}/`,
+          `${backend_url}/game/completed/${quizSlug}/`,
 
           {
             method: "GET",

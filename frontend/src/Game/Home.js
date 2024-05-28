@@ -16,7 +16,7 @@ import {
 import useAuth from "../hooks/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
 
-import { ip, port } from "../ports";
+import { backend_url } from "../backend_url";
 
 const address = [
   "@gmail.com",
@@ -147,7 +147,7 @@ const Home = () => {
 
     setIsLoading(true);
 
-    const response = await fetch(ip + port + "/game/new/", {
+    const response = await fetch(backend_url + "/game/new/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

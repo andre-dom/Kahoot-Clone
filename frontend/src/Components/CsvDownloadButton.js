@@ -1,15 +1,15 @@
 import React from "react";
 import { Button, Box } from "@chakra-ui/react";
-import { ip, port } from "../ports";
+import { backend_url } from "../backend_url";
 import useAuth from "../hooks/useAuth";
 
-const CsvDownloadButton = ({ slug }) => {
+const CsvDownloadButton = ({ game }) => {
   const { auth } = useAuth();
 
-  const handleDownload = async (slug) => {
+  const handleDownload = async (game) => {
     try {
       const response = await fetch(
-        `${ip}${port}/game/completed/${slug}/export/`,
+        `${backend_url}/game/completed/${game.name}_${game.completed_at}/export/`,
         {
           method: "GET",
           headers: {
@@ -26,7 +26,7 @@ const CsvDownloadButton = ({ slug }) => {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", `${slug}.csv`);
+      link.setAttribute("download", `${game.slug}.csv`);
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
@@ -38,8 +38,8 @@ const CsvDownloadButton = ({ slug }) => {
   return (
     <Box>
       <Button
-        key={slug}
-        onClick={() => handleDownload(slug)}
+        key={game.slug}
+        onClick={() => handleDownload(game.slug)}
         colorScheme="teal"
       >
         Download CSV

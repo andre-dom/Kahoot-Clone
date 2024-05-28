@@ -109,7 +109,7 @@ def advance_game(request):
         )
     return response.Response(
         {
-            "info": "game has completed!",
+            "info": {game.slug},
             "leaderboard": leaderboard,
             "data": game.get_rechart_object(),
         },
@@ -165,7 +165,7 @@ def submit_answer(request, slug):
 def list_completed_games(request):
     games = (
         Game.objects.filter(creator=request.user, state="complete")
-        .order_by("-created_at")
+        .order_by("-completed_at")
         .select_related("quiz")
         .prefetch_related("players")
     )

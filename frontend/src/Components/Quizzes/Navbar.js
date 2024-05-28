@@ -6,7 +6,7 @@ import useAuth from "../../hooks/useAuth";
 
 import useGame from "../../hooks/useGame";
 
-import { ip, port } from "../../ports";
+import { backend_url } from "../../backend_url";
 
 import {
   Flex,
@@ -43,7 +43,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch(ip + port + "/auth/token/logout/", {
+      const response = await fetch(backend_url + "/auth/token/logout/", {
         method: "POST",
 
         headers: {
@@ -76,7 +76,7 @@ const Navbar = () => {
   };
 
   const endQuiz = async () => {
-    const response = await fetch(ip + port + "/game/delete/", {
+    const response = await fetch(backend_url + "/game/delete/", {
       method: "DELETE",
 
       headers: {
