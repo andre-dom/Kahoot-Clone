@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 
 import useAuth from "../../hooks/useAuth";
 
-const AddQuiz = () => {
+const AddQuiz = ({ onClose, refreshQuizzes }) => {
   const { auth } = useAuth();
 
   const navigate = useNavigate();
@@ -30,16 +30,14 @@ const AddQuiz = () => {
   const [questions, setQuestions] = useState([
     {
       question_body: "",
-
       answers: Array(4).fill({ answer_body: "", index: 0 }),
-
       correct_answer: 1,
     },
   ]);
 
-  const handleQuizNameChange = (e) => {
-    setQuizName(e.target.value);
-  };
+  const [errors, setErrors] = useState({});
+
+  const handleQuizNameChange = (e) => setQuizName(e.target.value);
 
   const handleQuestionChange = (index, field, value) => {
     const updatedQuestions = [...questions];
@@ -54,7 +52,6 @@ const AddQuiz = () => {
 
     updatedQuestions[qIndex].answers[aIndex] = {
       answer_body: value,
-
       index: aIndex,
     };
 
@@ -73,12 +70,9 @@ const AddQuiz = () => {
     if (questions.length < 50) {
       setQuestions([
         ...questions,
-
         {
           question_body: "",
-
           answers: Array(4).fill({ answer_body: "", index: 0 }),
-
           correct_answer: 1,
         },
       ]);
@@ -92,6 +86,31 @@ const AddQuiz = () => {
   };
 
   const handleSubmit = async () => {
+    const newErrors = {};
+
+    if (!quizName) {
+      newErrors.quizName = "Quiz name is required";
+    }
+
+    questions.forEach((q, qIndex) => {
+      if (!q.question_body) {
+        newErrors[`question_body_${qIndex}`] = "Question body is required";
+      }
+
+      q.answers.forEach((a, aIndex) => {
+        if (!a.answer_body) {
+          newErrors[`answer_body_${qIndex}_${aIndex}`] =
+            `Answer ${aIndex + 1} is required`;
+        }
+      });
+    });
+
+    if (Object.keys(newErrors).length) {
+      setErrors(newErrors);
+
+      return;
+    }
+
     const quiz = { name: quizName, questions };
 
     try {
@@ -100,7 +119,6 @@ const AddQuiz = () => {
 
         headers: {
           "Content-Type": "application/json",
-
           Authorization: `token ${auth.token}`,
         },
 
@@ -111,9 +129,9 @@ const AddQuiz = () => {
         throw new Error(`HTTP error status: ${response.status}`);
       }
 
-      alert("Quiz submitted successfully");
+      onClose();
 
-      navigate("/"); // Adjust the route if needed
+      refreshQuizzes();
     } catch (error) {
       alert("Error submitting quiz: " + error.message);
     }
@@ -121,26 +139,21 @@ const AddQuiz = () => {
 
   return (
     <Box position="relative" p={5}>
-      <Tooltip label="Back" aria-label="Back">
-        <IconButton
-          icon={<ArrowBackIcon />}
-          onClick={() => navigate(-1)}
-          position="absolute"
-          top="20px"
-          right="20px"
-        />
-      </Tooltip>
-
       <Heading mb={5}>Create a Quiz</Heading>
 
       <VStack spacing={5} align="flex-start">
-        <FormControl id="quiz-name" isRequired>
+        <FormControl
+          id="quiz-name"
+          isRequired
+          isInvalid={Boolean(errors.quizName)}
+        >
           <FormLabel>Quiz Name</FormLabel>
 
           <Input
             value={quizName}
             onChange={handleQuizNameChange}
             placeholder="Enter quiz name"
+            borderColor={errors.quizName ? "red.500" : "inherit"}
           />
         </FormControl>
 
@@ -153,7 +166,11 @@ const AddQuiz = () => {
             width="100%"
             position="relative"
           >
-            <FormControl id={`question-body-${qIndex}`} isRequired>
+            <FormControl
+              id={`question-body-${qIndex}`}
+              isRequired
+              isInvalid={Boolean(errors[`question_body_${qIndex}`])}
+            >
               <FormLabel>Question {qIndex + 1}</FormLabel>
 
               <Textarea
@@ -162,6 +179,9 @@ const AddQuiz = () => {
                   handleQuestionChange(qIndex, "question_body", e.target.value)
                 }
                 placeholder="Enter question body"
+                borderColor={
+                  errors[`question_body_${qIndex}`] ? "red.500" : "inherit"
+                }
               />
             </FormControl>
 
@@ -170,6 +190,7 @@ const AddQuiz = () => {
                 key={aIndex}
                 id={`answer-${qIndex}-${aIndex}`}
                 isRequired
+                isInvalid={Boolean(errors[`answer_body_${qIndex}_${aIndex}`])}
                 mt={3}
               >
                 <FormLabel>Answer {aIndex + 1}</FormLabel>
@@ -180,6 +201,11 @@ const AddQuiz = () => {
                     handleAnswerChange(qIndex, aIndex, e.target.value)
                   }
                   placeholder={`Enter answer ${aIndex + 1}`}
+                  borderColor={
+                    errors[`answer_body_${qIndex}_${aIndex}`]
+                      ? "red.500"
+                      : "inherit"
+                  }
                 />
               </FormControl>
             ))}
@@ -203,16 +229,18 @@ const AddQuiz = () => {
               </Select>
             </FormControl>
 
-            <Tooltip label="Delete Question" aria-label="Delete Question">
-              <IconButton
-                icon={<DeleteIcon />}
-                colorScheme="red"
-                position="absolute"
-                top="10px"
-                right="10px"
-                onClick={() => deleteQuestion(qIndex)}
-              />
-            </Tooltip>
+            {questions.length > 1 && (
+              <Tooltip label="Delete Question" aria-label="Delete Question">
+                <IconButton
+                  icon={<DeleteIcon />}
+                  colorScheme="red"
+                  position="absolute"
+                  top="10px"
+                  right="10px"
+                  onClick={() => deleteQuestion(qIndex)}
+                />
+              </Tooltip>
+            )}
           </Box>
         ))}
 

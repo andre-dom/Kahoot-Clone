@@ -25,7 +25,7 @@ import CsvDownloadButton from "../CsvDownloadButton";
 
 import useAuth from "../../hooks/useAuth";
 
-import CompletedGameView from "../Games/CompletedGameView"; // Import the new modal
+import CompletedGameView from "./CompletedGameView";
 
 const CompletedQuizzes = ({ isOpen, onClose }) => {
   const { auth } = useAuth();
@@ -66,7 +66,7 @@ const CompletedQuizzes = ({ isOpen, onClose }) => {
     };
 
     fetchCompletedQuizzes();
-  }, []); // Run this effect only once when the component mounts
+  }, []);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

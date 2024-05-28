@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 import {
-  Box,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -113,7 +112,11 @@ const CompletedGameView = ({ isOpen, onClose, quizSlug }) => {
                 </Table>
                 <h3>Leaderboard</h3>
                 {/* <img src = {'data:image/jpeg;base64,'+histogram} ></img> */}
-                <BarChart data={quizData.data} categories={['value']} height="300px" />
+                <BarChart
+                  data={quizData.data}
+                  categories={["value"]}
+                  height="300px"
+                />
               </>
             )
           )}

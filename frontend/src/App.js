@@ -2,16 +2,15 @@ import React from "react";
 import { Box, useColorModeValue } from "@chakra-ui/react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./Components/Layout";
-import Missing from "./Components/Missing";
+//import Missing from "./Components/Missing";
 import Login from "./Components/Auth/Login";
 import SignUp from "./Components/Auth/Signup";
-import Dashboard from "./Dashboard";
+import QuizListView from "./Components/Quizzes/QuizListView";
 import RequireAuth from "./Context/RequireAuth";
 import { GameProvider } from "./Context/GameProvider";
 import Home from "./Game/Home";
 import Question from "./Game/Question";
 import StudentPage from "./Components/Quizzes/StudentPage";
-import CompletedGames from "./Components/Quizzes/CompletedGames";
 import DisplayName from "./Game/DisplayName";
 import AddQuiz from "./Components/Quizzes/AddQuiz";
 import LandingPage from "./LandingPage";
@@ -36,7 +35,7 @@ const App = () => {
               path="/dashboard"
               element={
                 <GameProvider>
-                  <Dashboard />
+                  <QuizListView />
                 </GameProvider>
               }
             />
@@ -45,7 +44,7 @@ const App = () => {
             <Route path="/createQuiz" element={<AddQuiz />} />
           </Route>
           {/* catch all (404 page) */}
-          <Route path="*" element={<Missing />} />
+          <Route path="*" element={<LandingPage />} />
         </Route>
       </Routes>
     </Box>

@@ -22,7 +22,7 @@ import {
 
 import { SunIcon, MoonIcon } from "@chakra-ui/icons";
 
-import CompletedGames from "../Quizzes/CompletedGames";
+import CompletedGames from "../Games/CompletedGames";
 
 const Navbar = () => {
   const navigate = useNavigate();

@@ -1,15 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, } from "react";
 
-import { useNavigate, useLocation } from "react-router-dom";
-
-import Navbar from "./Components/Dashboard/Navbar";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 
 import {
   Box,
-  Heading,
   SimpleGrid,
   Center,
-  useColorModeValue,
   AlertDialog,
   AlertDialogBody,
   AlertDialogFooter,
@@ -17,6 +13,11 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   Button,
+  VStack,
+  Spinner,
+  Text,
+  useColorModeValue,
+  useToast,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -24,30 +25,29 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Text,
-  FormControl,
-  FormLabel,
-  Input,
-  VStack,
-  Spinner,
-  IconButton,
 } from "@chakra-ui/react";
 
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 
-import QuizCard from "./Components/Dashboard/QuizCard";
+import QuizCard from "./QuizCard";
 
-import useAuth from "./hooks/useAuth";
+import Navbar from "./Navbar";
 
-import { ip, port } from "./ports";
+import useAuth from "../../hooks/useAuth";
 
-import AddQuiz from "./Components/Quizzes/AddQuiz";
+import { ip, port } from "../../ports";
+
+import AddQuiz from "./AddQuiz";
+
+import NewGame from "../Games/NewGame";
 
 const lightColors = ["#E27D60", "#85DCBA", "#E8A87C", "#C38D9E", "#41B3A3"];
 
 const darkColors = ["#1D3557", "#457B9D", "#A8DADC", "#F1FAEE", "#E63946"];
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
   const [quizzes, setQuizzes] = useState([]);
 
   const [deleteQuiz, setDeleteQuiz] = useState(null);
@@ -56,7 +56,7 @@ const Dashboard = () => {
 
   const cancelRef = useRef();
 
-  const [emails, setEmails] = useState([""]);
+  const toast = useToast();
 
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
@@ -69,8 +69,6 @@ const Dashboard = () => {
   const [viewQuizData, setViewQuizData] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     getData();
@@ -96,6 +94,10 @@ const Dashboard = () => {
     const result = await response.json();
 
     setQuizzes(result);
+  };
+
+  const refreshQuizzes = () => {
+    getData();
   };
 
   const fetchQuizDetails = async (slug) => {
@@ -154,56 +156,62 @@ const Dashboard = () => {
     }
   };
 
-  const addEmailField = () => setEmails([...emails, ""]);
-
-  const removeEmailField = (index) => {
-    const newEmails = emails.filter((_, i) => i !== index);
-
-    setEmails(newEmails.length ? newEmails : [""]);
-  };
-
-  const handleEmailChange = (index, value) => {
-    const newEmails = emails.map((email, i) => (i === index ? value : email));
-
-    setEmails(newEmails);
-  };
-
-  const handleEmailModalSubmit = async () => {
-    if (emails.some((email) => !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))) {
-      alert("Invalid email format");
-
-      return;
-    }
+  const handleEmailModalSubmit = async (emails) => {
 
     const body = JSON.stringify({
+  
       quiz: selectedQuiz,
-
+  
       players: emails.map((email) => ({ email })),
+  
     });
-
+  
+  
+  
     const response = await fetch(`${ip}${port}/game/new/`, {
+  
       method: "POST",
-
+  
       headers: {
+  
         "Content-Type": "application/json",
-
+  
         Authorization: `token ${auth.token}`,
+  
       },
-
+  
       body: body,
+  
     });
-
+  
+  
+  
     if (response.ok) {
+  
       setIsEmailModalOpen(false);
-
-      setEmails([""]);
-
+  
       setSelectedQuiz(null);
-
-      window.location.href = `/questions`;
+  
+      navigate("/questions");
+  
     } else {
-      console.error("Failed to start the game");
+  
+      toast({
+  
+        title: "Submission Error",
+  
+        description: "Failed to start the game.",
+  
+        status: "error",
+  
+        duration: 5000,
+  
+        isClosable: true,
+  
+      });
+  
     }
+  
   };
 
   const openEmailModal = (quizName) => {
@@ -295,59 +303,11 @@ const Dashboard = () => {
           </AlertDialogOverlay>
         </AlertDialog>
 
-        <Modal
+        <NewGame
           isOpen={isEmailModalOpen}
           onClose={() => setIsEmailModalOpen(false)}
-        >
-          <ModalOverlay />
-
-          <ModalContent>
-            <ModalHeader>Enter Emails</ModalHeader>
-
-            <ModalCloseButton />
-
-            <ModalBody>
-              <VStack spacing={4}>
-                {emails.map((email, index) => (
-                  <FormControl key={index} isRequired>
-                    <FormLabel>Email {index + 1}</FormLabel>
-
-                    <Input
-                      type="email"
-                      value={email}
-                      onChange={(e) => handleEmailChange(index, e.target.value)}
-                    />
-
-                    {emails.length > 1 && (
-                      <IconButton
-                        aria-label="Remove email"
-                        icon={<DeleteIcon />}
-                        onClick={() => removeEmailField(index)}
-                        mt={2}
-                      />
-                    )}
-                  </FormControl>
-                ))}
-
-                <Button leftIcon={<AddIcon />} onClick={addEmailField}>
-                  Add Email
-                </Button>
-              </VStack>
-            </ModalBody>
-
-            <ModalFooter>
-              <Button
-                colorScheme="blue"
-                mr={3}
-                onClick={handleEmailModalSubmit}
-              >
-                Submit
-              </Button>
-
-              <Button onClick={() => setIsEmailModalOpen(false)}>Cancel</Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+          onSubmit={handleEmailModalSubmit}
+        />
 
         <Modal
           isOpen={isViewModalOpen}
@@ -373,7 +333,7 @@ const Dashboard = () => {
                       .slice(0, 50)
 
                       .map((question, index) => (
-                        <Box key={question.index} mb="4">
+                        <Box key={index} mb="4">
                           <Text fontWeight="bold">Question {index + 1}:</Text>
 
                           <Text>{question.question_body}</Text>
@@ -417,7 +377,10 @@ const Dashboard = () => {
             <ModalCloseButton />
 
             <ModalBody>
-              <AddQuiz />
+              <AddQuiz
+                onClose={() => setIsAddQuizModalOpen(false)}
+                refreshQuizzes={refreshQuizzes}
+              />
             </ModalBody>
 
             <ModalFooter>
