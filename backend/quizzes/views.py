@@ -7,7 +7,7 @@ from .serializers import QuizSerializer, QuestionSerializer, AnswerSerializer
 class QuizView(viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
-    lookup_field = 'slug'
+    lookup_field = "slug"
     permission_classes = (permissions.IsAuthenticated,)
 
     def perform_create(self, serializer):

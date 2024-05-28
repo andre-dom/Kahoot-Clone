@@ -17,12 +17,20 @@ import django_eventstream
 
 # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "server.settings")
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'kahoot.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "kahoot.settings")
 
-application = ProtocolTypeRouter({
-    'http': URLRouter([
-        re_path(r'^events/', AuthMiddlewareStack(URLRouter(django_eventstream.routing.urlpatterns))),
-        re_path(r'', get_asgi_application()),
-    ]),
-})
-
+application = ProtocolTypeRouter(
+    {
+        "http": URLRouter(
+            [
+                re_path(
+                    r"^events/",
+                    AuthMiddlewareStack(
+                        URLRouter(django_eventstream.routing.urlpatterns)
+                    ),
+                ),
+                re_path(r"", get_asgi_application()),
+            ]
+        ),
+    }
+)

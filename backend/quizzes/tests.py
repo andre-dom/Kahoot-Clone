@@ -8,7 +8,7 @@ from .models import Quiz
 
 class QuizPostTests(APITestCase):
     def setUp(self):
-        self.user1 = User.objects.create(username='user1')
+        self.user1 = User.objects.create(username="user1")
         self.user1.set_password("password")
         self.user1.save()
 
@@ -17,15 +17,14 @@ class QuizPostTests(APITestCase):
         If a quiz has no questions, fail to validate
         """
         url = reverse("quiz-list")
-        data = {
-            'name': 'a quiz with no questions',
-            'questions': []
-        }
+        data = {"name": "a quiz with no questions", "questions": []}
         self.client.force_authenticate(user=self.user1)
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, data, format="json")
         self.client.force_authenticate(user=None)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {"non_field_errors": ["Must be at least one question"]})
+        self.assertEqual(
+            response.data, {"non_field_errors": ["Must be at least one question"]}
+        )
 
     def test_post_quiz_with_4_answers(self):
         """
@@ -38,28 +37,17 @@ class QuizPostTests(APITestCase):
                 {
                     "question_body": "string",
                     "answers": [
-                        {
-                            "answer_body": "a"
-
-                        },
-                        {
-                            "answer_body": "b"
-
-                        },
-                        {
-                            "answer_body": "c"
-
-                        },
-                        {
-                            "answer_body": "d"
-                        }
+                        {"answer_body": "a"},
+                        {"answer_body": "b"},
+                        {"answer_body": "c"},
+                        {"answer_body": "d"},
                     ],
-                    "correct_answer": 4
+                    "correct_answer": 4,
                 }
-            ]
+            ],
         }
         self.client.force_authenticate(user=self.user1)
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, data, format="json")
         self.client.force_authenticate(user=None)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -74,29 +62,26 @@ class QuizPostTests(APITestCase):
                 {
                     "question_body": "string",
                     "answers": [
-                        {
-                            "answer_body": "a"
-
-                        },
-                        {
-                            "answer_body": "b"
-
-                        },
-                        {
-                            "answer_body": "c"
-
-                        }
-
+                        {"answer_body": "a"},
+                        {"answer_body": "b"},
+                        {"answer_body": "c"},
                     ],
-                    "correct_answer": 4
+                    "correct_answer": 4,
                 }
-            ]
+            ],
         }
         self.client.force_authenticate(user=self.user1)
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, data, format="json")
         self.client.force_authenticate(user=None)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {"questions": [{"non_field_errors": ["Must be exactly 4 answers to each question"]}]})
+        self.assertEqual(
+            response.data,
+            {
+                "questions": [
+                    {"non_field_errors": ["Must be exactly 4 answers to each question"]}
+                ]
+            },
+        )
 
     def test_post_quiz_with_5_answers(self):
         """
@@ -110,32 +95,26 @@ class QuizPostTests(APITestCase):
                 {
                     "question_body": "string",
                     "answers": [
-                        {
-                            "answer_body": "a"
-
-                        },
-                        {
-                            "answer_body": "b"
-
-                        },
-                        {
-                            "answer_body": "c"
-
-                        },
-                        {
-                            "answer_body": "d"
-                        },
-                        {
-                            "answer_body": "e"
-                        }
+                        {"answer_body": "a"},
+                        {"answer_body": "b"},
+                        {"answer_body": "c"},
+                        {"answer_body": "d"},
+                        {"answer_body": "e"},
                     ],
-                    "correct_answer": 4
+                    "correct_answer": 4,
                 }
-            ]
+            ],
         }
         self.client.force_authenticate(user=self.user1)
 
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, data, format="json")
         self.client.force_authenticate(user=None)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {"questions": [{"non_field_errors": ["Must be exactly 4 answers to each question"]}]})
+        self.assertEqual(
+            response.data,
+            {
+                "questions": [
+                    {"non_field_errors": ["Must be exactly 4 answers to each question"]}
+                ]
+            },
+        )

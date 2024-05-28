@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 # Register your models here.
 from .models import Quiz, Question, Answer
 
@@ -8,19 +9,25 @@ import nested_admin
 # i guess this is for what is displayed in the admin pages????
 class AnswerInline(nested_admin.NestedTabularInline):
     model = Answer
-    list_display = ('index', 'answer_body',)
+    list_display = (
+        "index",
+        "answer_body",
+    )
 
 
 class QuestionInline(nested_admin.NestedTabularInline):
     model = Question
-    list_display = ('index', 'question_body',)
+    list_display = (
+        "index",
+        "question_body",
+    )
     inlines = (AnswerInline,)
 
 
 class QuizAdmin(nested_admin.NestedModelAdmin):
     model = Quiz
-    list_display = ('name',)
-    readonly_fields = ('slug',)
+    list_display = ("name",)
+    readonly_fields = ("slug",)
     inlines = (QuestionInline,)
 
 

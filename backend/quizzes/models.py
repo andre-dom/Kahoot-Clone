@@ -8,9 +8,13 @@ from django.contrib.auth.models import User
 
 class Quiz(models.Model):
     name = models.CharField(max_length=30)
-    creator = models.ForeignKey(User, related_name='quizzes', on_delete=models.CASCADE, )
+    creator = models.ForeignKey(
+        User,
+        related_name="quizzes",
+        on_delete=models.CASCADE,
+    )
     # used to make objects unique by providing a '-' inside key's syntax
-    slug = AutoSlugField(populate_from='name', unique=True, editable=False)
+    slug = AutoSlugField(populate_from="name", unique=True, editable=False)
 
     # not sure what this will be used for right now...
     def num_questions(self):
@@ -21,14 +25,22 @@ class Quiz(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = 'quizzes'
+        verbose_name_plural = "quizzes"
 
 
 class Question(models.Model):
     question_body = models.TextField()
-    index = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(50)])
-    quiz = models.ForeignKey('Quiz', related_name='questions', on_delete=models.CASCADE, )
-    correct_answer = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(4)])
+    index = models.PositiveIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(50)]
+    )
+    quiz = models.ForeignKey(
+        "Quiz",
+        related_name="questions",
+        on_delete=models.CASCADE,
+    )
+    correct_answer = models.PositiveIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(4)]
+    )
 
     def num_answers(self):
         return len(self.answers.all())
@@ -38,17 +50,23 @@ class Question(models.Model):
         super(Question, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.index}. {self.question_body}'
+        return f"{self.index}. {self.question_body}"
 
 
 class Answer(models.Model):
     answer_body = models.TextField()
-    index = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(4)])
-    question = models.ForeignKey('Question', related_name='answers', on_delete=models.CASCADE, )
+    index = models.PositiveIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(4)]
+    )
+    question = models.ForeignKey(
+        "Question",
+        related_name="answers",
+        on_delete=models.CASCADE,
+    )
 
     def save(self, *args, **kwargs):
         self.index = self.question.num_answers() + 1
         super(Answer, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.index}. {self.answer_body}'
+        return f"{self.index}. {self.answer_body}"

@@ -3,9 +3,6 @@ from . import views
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register('quizzes', views.QuizView)
+router.register("quizzes", views.QuizView)
 
-urlpatterns = [
-
-    path('', include(router.urls))
-]
+urlpatterns = [path("", include(router.urls))]

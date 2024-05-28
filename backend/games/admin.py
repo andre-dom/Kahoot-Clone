@@ -9,21 +9,29 @@ from .models import Game, Player
 
 import nested_admin
 
+
 class PlayerAdmin(admin.ModelAdmin):
     model = Player
-    list_display = ('email',)
-    readonly_fields = ('slug', 'answers')
+    list_display = ("email",)
+    readonly_fields = ("slug", "answers")
+
 
 class PlayerInline(nested_admin.NestedTabularInline):
     model = Player
-    list_display = ('email',)
-    readonly_fields = ('slug', 'answers')
+    list_display = ("email",)
+    readonly_fields = ("slug", "answers")
 
 
 class GameAdmin(nested_admin.NestedModelAdmin):
     model = Game
-    list_display = ('creator', 'quiz',)
-    readonly_fields = ('current_question', 'state',)
+    list_display = (
+        "creator",
+        "quiz",
+    )
+    readonly_fields = (
+        "current_question",
+        "state",
+    )
     inlines = (PlayerInline,)
 
 
