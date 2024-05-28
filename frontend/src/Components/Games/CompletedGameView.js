@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import {
+  Box,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -18,6 +19,8 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 
+import { BarChart } from "@saas-ui/charts";
+
 import { ip, port } from "../../ports";
 
 import useAuth from "../../hooks/useAuth";
@@ -34,6 +37,7 @@ const CompletedGameView = ({ isOpen, onClose, quizSlug }) => {
       try {
         const response = await fetch(
           `${ip}${port}/game/completed/${quizSlug}/`,
+
           {
             method: "GET",
 
@@ -96,15 +100,20 @@ const CompletedGameView = ({ isOpen, onClose, quizSlug }) => {
                   </Thead>
 
                   <Tbody>
-                    {quizData.leaderboard.map((entry, index) => (
-                      <Tr key={index}>
-                        <Td>{entry.email}</Td>
+                    {Object.entries(quizData.leaderboard).map(
+                      ([email, score], index) => (
+                        <Tr key={index}>
+                          <Td>{email}</Td>
 
-                        <Td>{entry.score}</Td>
-                      </Tr>
-                    ))}
+                          <Td>{score}</Td>
+                        </Tr>
+                      ),
+                    )}
                   </Tbody>
                 </Table>
+                <h3>Leaderboard</h3>
+                {/* <img src = {'data:image/jpeg;base64,'+histogram} ></img> */}
+                <BarChart data={quizData.data} categories={['value']} height="300px" />
               </>
             )
           )}

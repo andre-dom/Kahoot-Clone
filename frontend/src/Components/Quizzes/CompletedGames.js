@@ -21,13 +21,22 @@ import {
 
 import { ip, port } from "../../ports";
 
+import CsvDownloadButton from "../CsvDownloadButton";
+
 import useAuth from "../../hooks/useAuth";
+
+import CompletedGameView from "../Games/CompletedGameView"; // Import the new modal
 
 const CompletedQuizzes = ({ isOpen, onClose }) => {
   const { auth } = useAuth();
+
   const [completedQuizzes, setCompletedQuizzes] = useState([]);
 
   const [loading, setLoading] = useState(true);
+
+  const [selectedQuizSlug, setSelectedQuizSlug] = useState(null);
+
+  const [isQuizViewOpen, setIsQuizViewOpen] = useState(false);
 
   useEffect(() => {
     const fetchCompletedQuizzes = async () => {
@@ -80,6 +89,8 @@ const CompletedQuizzes = ({ isOpen, onClose }) => {
                   <Th>Quiz Name</Th>
 
                   <Th>Action</Th>
+
+                  <Th>Export</Th>
                 </Tr>
               </Thead>
 
@@ -91,11 +102,18 @@ const CompletedQuizzes = ({ isOpen, onClose }) => {
                     <Td>
                       <Button
                         colorScheme="blue"
-                        as="a"
-                        href={`http://localhost:8080/games/completed/${quiz.slug}`}
+                        onClick={() => {
+                          setSelectedQuizSlug(quiz.slug);
+
+                          setIsQuizViewOpen(true);
+                        }}
                       >
                         View
                       </Button>
+                    </Td>
+
+                    <Td>
+                      <CsvDownloadButton slug={quiz.slug} />
                     </Td>
                   </Tr>
                 ))}
@@ -108,6 +126,12 @@ const CompletedQuizzes = ({ isOpen, onClose }) => {
           <Button onClick={onClose}>Close</Button>
         </ModalFooter>
       </ModalContent>
+
+      <CompletedGameView
+        isOpen={isQuizViewOpen}
+        onClose={() => setIsQuizViewOpen(false)}
+        quizSlug={selectedQuizSlug}
+      />
     </Modal>
   );
 };
