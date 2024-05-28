@@ -17,6 +17,7 @@ import {
   Td,
   Spinner,
   Text,
+  Box,
 } from "@chakra-ui/react";
 
 import { ip, port } from "../../ports";
@@ -26,6 +27,8 @@ import CsvDownloadButton from "../CsvDownloadButton";
 import useAuth from "../../hooks/useAuth";
 
 import CompletedGameView from "./CompletedGameView";
+
+import { formatDistanceToNow } from "date-fns";
 
 const CompletedQuizzes = ({ isOpen, onClose }) => {
   const { auth } = useAuth();
@@ -66,13 +69,17 @@ const CompletedQuizzes = ({ isOpen, onClose }) => {
     };
 
     fetchCompletedQuizzes();
-  }, []);
+  }, [auth.token]);
+
+  const timeAgo = (datetimeStr) => {
+    return formatDistanceToNow(new Date(datetimeStr), { addSuffix: true });
+  };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} size="xl">
       <ModalOverlay />
 
-      <ModalContent>
+      <ModalContent maxHeight="80vh" overflow="hidden">
         <ModalHeader>Completed Quizzes</ModalHeader>
 
         <ModalCloseButton />
@@ -83,42 +90,48 @@ const CompletedQuizzes = ({ isOpen, onClose }) => {
           ) : completedQuizzes.length === 0 ? (
             <Text>No completed quizzes found.</Text>
           ) : (
-            <Table variant="simple">
-              <Thead>
-                <Tr>
-                  <Th>Quiz Name</Th>
+            <Box overflowY="auto" maxHeight="60vh">
+              <Table variant="simple">
+                <Thead>
+                  <Tr>
+                    <Th>Quiz Name</Th>
 
-                  <Th>Action</Th>
+                    <Th>Completed</Th>
 
-                  <Th>Export</Th>
-                </Tr>
-              </Thead>
+                    <Th>Action</Th>
 
-              <Tbody>
-                {completedQuizzes.map((quiz) => (
-                  <Tr key={quiz.slug}>
-                    <Td>{quiz.name}</Td>
-
-                    <Td>
-                      <Button
-                        colorScheme="blue"
-                        onClick={() => {
-                          setSelectedQuizSlug(quiz.slug);
-
-                          setIsQuizViewOpen(true);
-                        }}
-                      >
-                        View
-                      </Button>
-                    </Td>
-
-                    <Td>
-                      <CsvDownloadButton slug={quiz.slug} />
-                    </Td>
+                    <Th>Export</Th>
                   </Tr>
-                ))}
-              </Tbody>
-            </Table>
+                </Thead>
+
+                <Tbody>
+                  {completedQuizzes.map((quiz) => (
+                    <Tr key={quiz.slug}>
+                      <Td>{quiz.name}</Td>
+
+                      <Td>{timeAgo(quiz.completed_at)}</Td>
+
+                      <Td>
+                        <Button
+                          colorScheme="blue"
+                          onClick={() => {
+                            setSelectedQuizSlug(quiz.slug);
+
+                            setIsQuizViewOpen(true);
+                          }}
+                        >
+                          View
+                        </Button>
+                      </Td>
+
+                      <Td>
+                        <CsvDownloadButton slug={quiz.slug} />
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </Box>
           )}
         </ModalBody>
 

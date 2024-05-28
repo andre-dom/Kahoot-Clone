@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { useNavigate, Link, useLocation } from "react-router-dom";
 
@@ -157,61 +157,43 @@ const Dashboard = () => {
   };
 
   const handleEmailModalSubmit = async (emails) => {
-
     const body = JSON.stringify({
-  
       quiz: selectedQuiz,
-  
+
       players: emails.map((email) => ({ email })),
-  
     });
-  
-  
-  
+
     const response = await fetch(`${ip}${port}/game/new/`, {
-  
       method: "POST",
-  
+
       headers: {
-  
         "Content-Type": "application/json",
-  
+
         Authorization: `token ${auth.token}`,
-  
       },
-  
+
       body: body,
-  
     });
-  
-  
-  
+
     if (response.ok) {
-  
       setIsEmailModalOpen(false);
-  
+
       setSelectedQuiz(null);
-  
+
       navigate("/questions");
-  
     } else {
-  
       toast({
-  
         title: "Submission Error",
-  
+
         description: "Failed to start the game.",
-  
+
         status: "error",
-  
+
         duration: 5000,
-  
+
         isClosable: true,
-  
       });
-  
     }
-  
   };
 
   const openEmailModal = (quizName) => {
