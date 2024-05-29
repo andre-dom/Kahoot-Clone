@@ -134,15 +134,18 @@ const Dashboard = () => {
 
   const confirmDelete = async () => {
     if (deleteQuiz) {
-      const response = await fetch(`${backend_url}/quizzes/${deleteQuiz.slug}/`, {
-        method: "DELETE",
+      const response = await fetch(
+        `${backend_url}/quizzes/${deleteQuiz.slug}/`,
+        {
+          method: "DELETE",
 
-        headers: {
-          "Content-Type": "application/json",
+          headers: {
+            "Content-Type": "application/json",
 
-          Authorization: `token ${auth.token}`,
+            Authorization: `token ${auth.token}`,
+          },
         },
-      });
+      );
 
       if (response.ok) {
         setQuizzes(quizzes.filter((quiz) => quiz.slug !== deleteQuiz.slug));

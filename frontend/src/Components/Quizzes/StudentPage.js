@@ -1,177 +1,151 @@
 import React, { useState, useEffect } from "react";
+
 import {
   Button,
   Box,
   SimpleGrid,
   Center,
-  Text,
   Heading,
+  useColorMode,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 import { backend_url } from "../../backend_url";
 
-import { useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const StudentPage = () => {
   let { slug } = useParams();
 
   const [message, setMessage] = useState("");
+
   const [score, setScore] = useState(0);
+
   const [show, setShow] = useState(true);
 
-  const getScore = async () => {
-    const response = await fetch(backend_url + `/player/${slug}/game/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) {
-      setShow(false);
-    }
-    const result = await response.json();
-    const { score } = result;
-    console.log("destructed score: ", score);
-    setScore(score);
-    console.log(result);
-  };
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+
+  const { toggleColorMode } = useColorMode();
+
+  const bgColor = useColorModeValue("gray.100", "gray.800");
+
+  const buttonBg = useColorModeValue("blue.400", "blue.600");
+
+  const buttonColor = useColorModeValue("white", "gray.200");
 
   useEffect(() => {
+    const getScore = async () => {
+      try {
+        const response = await fetch(`${backend_url}/player/${slug}/game/`, {
+          method: "GET",
+
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (!response.ok) {
+          setShow(false);
+
+          return;
+        }
+
+        const { score } = await response.json();
+
+        setScore(score);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
     getScore();
-  }, []);
+  }, [slug]);
 
   useEffect(() => {
-    console.log("useeffect called");
-
-    const sse = new EventSource(backend_url + `/events/?channel=${slug}`, {
+    const sse = new EventSource(`${backend_url}/events/?channel=${slug}`, {
       withCredentials: false,
     });
 
-    const getRealTime = (data) => {
-      const { message } = data;
-      const { score } = data;
+    sse.onmessage = (e) => {
+      const data = JSON.parse(e.data);
 
-      if (data.text) {
-        console.log("data.text: " + data.text);
-        setShow(false);
-      }
+      if (data.text) setShow(false);
 
-      setScore(score);
-      console.log("using sse: ", score);
+      setScore(data.score);
 
-      setMessage(message);
+      setMessage(data.message);
 
-      console.log(data);
-
-      console.log("message: " + message);
+      setSelectedAnswer(null); // Reset selected answer on new SSE message
     };
 
-    sse.onmessage = (e) => getRealTime(JSON.parse(e.data));
+    sse.addEventListener("stream-open", (e) =>
+      console.log("Stream opened: " + e.data),
+    );
 
-    sse.addEventListener("stream-open", function (e) {
-      console.log("e.data: " + e.data);
-    });
-    sse.addEventListener("keep-alive", function (e) {
-      console.log(e.data);
-    });
+    sse.addEventListener("keep-alive", (e) =>
+      console.log("Keep-alive: " + e.data),
+    );
 
     sse.onerror = () => {
-      console.log("an error occured with sse");
+      console.error("An error occurred with SSE");
 
       sse.close();
     };
 
-    return () => {
-      sse.close();
-    };
-  }, []);
+    return () => sse.close();
+  }, [slug]);
 
-  console.log("message: " + message);
   const postAnswer = async (answer) => {
-    const answerObj = {
-      answer: answer,
-    };
+    setSelectedAnswer(answer); // Set the pressed button as selected
 
-    const response = await fetch(backend_url + `/player/${slug}/submit/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(answerObj),
-    });
+    try {
+      const response = await fetch(`${backend_url}/player/${slug}/submit/`, {
+        method: "POST",
 
-    if (!response.ok) {
-      console.log("response is not okay");
-      console.log(response);
-    } else if (response.status === 400) {
-      console.log("status 400 error");
-    } else if (response.status == 401) {
-      console.log("status 401 error");
+        headers: { "Content-Type": "application/json" },
+
+        body: JSON.stringify({ answer }),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to submit answer:", response.status);
+      }
+    } catch (err) {
+      console.error("Error submitting answer:", err);
     }
   };
 
   return (
-    <Box>
+    <Box bg={bgColor} minHeight="100vh" p={10} borderRadius="md">
+      <Center mb={4}>
+        <Button onClick={toggleColorMode}>
+          Toggle {useColorModeValue("Dark", "Light")} Mode
+        </Button>
+      </Center>
+
       {show ? (
         <Box>
           <Center>
-            <Heading as="h2" size="xl">
-              score: {score}
+            <Heading as="h2" size="xl" mb={10}>
+              Score: {score}
             </Heading>
           </Center>
-          <SimpleGrid columns={2} spacingX="40px" spacingY="20px">
-            <Box mt={10}>
-              <Center>
-                <Button
-                  bg="tomato"
-                  height="20vh"
-                  width="600px"
-                  onClick={() => postAnswer(1)}
-                >
-                  One
-                </Button>
-              </Center>
-            </Box>
-            <Box mt={10}>
-              <Center>
-                <Button
-                  bg="tomato"
-                  height="20vh"
-                  width="600px"
-                  onClick={() => postAnswer(2)}
-                >
-                  Two
-                </Button>
-              </Center>
-            </Box>
-            <Box>
-              <Center>
-                <Button
-                  bg="tomato"
-                  height="20vh"
-                  width="600px"
-                  onClick={() => postAnswer(3)}
-                >
-                  Three
-                </Button>
-              </Center>
-            </Box>
-            <Box>
-              <Center>
-                <Button
-                  bg="tomato"
-                  height="20vh"
-                  width="600px"
-                  onClick={() => postAnswer(4)}
-                >
-                  Four
-                </Button>
-              </Center>
-            </Box>
+
+          <SimpleGrid columns={[1, 2]} spacing={10}>
+            {[1, 2, 3, 4].map((num) => (
+              <Button
+                key={num}
+                bg={selectedAnswer === num ? "tomato" : buttonBg}
+                color={buttonColor}
+                height="20vh"
+                width="100%"
+                onClick={() => postAnswer(num)}
+              >
+                {num}
+              </Button>
+            ))}
           </SimpleGrid>
         </Box>
       ) : (
-        <Center height="100vh">
+        <Center height="full">
           <Heading as="h2" size="xl">
             The game has finished!
           </Heading>
