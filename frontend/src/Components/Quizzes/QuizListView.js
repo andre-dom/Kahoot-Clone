@@ -321,7 +321,7 @@ const Dashboard = () => {
                         <Box key={index} mb="4">
                           <Text fontWeight="bold">Question {index + 1}:</Text>
 
-                          <Text>{question.question_body}</Text>
+                          <Text>{question.body}</Text>
 
                           <VStack align="start" mt="2">
                             {question.answers.map((answer) => (
@@ -330,7 +330,7 @@ const Dashboard = () => {
                                 pl="4"
                                 fontStyle="italic"
                               >
-                                {answer.index}. {answer.answer_body}
+                                {answer.index}. {answer.body}
                               </Text>
                             ))}
 

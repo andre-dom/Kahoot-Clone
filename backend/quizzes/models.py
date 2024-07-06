@@ -13,14 +13,8 @@ class Quiz(models.Model):
         related_name="quizzes",
         on_delete=models.CASCADE,
     )
-    # used to make objects unique by providing a '-' inside key's syntax
     slug = AutoSlugField(populate_from="name", unique=True, editable=False)
 
-    # not sure what this will be used for right now...
-    def num_questions(self):
-        return len(self.questions.all())
-
-    # Django will use the result of that function to display objects of that type for example in the admin interface.
     def __str__(self):
         return self.name
 
@@ -29,7 +23,7 @@ class Quiz(models.Model):
 
 
 class Question(models.Model):
-    question_body = models.TextField()
+    body = models.TextField()
     index = models.PositiveIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(50)]
     )
@@ -42,19 +36,18 @@ class Question(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(4)]
     )
 
-    def num_answers(self):
-        return len(self.answers.all())
-
     def save(self, *args, **kwargs):
-        self.index = self.quiz.num_questions() + 1
         super(Question, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.index}. {self.question_body}"
+        return f"{self.index}. {self.body}"
+
+    class Meta:
+        ordering = ["index"]
 
 
 class Answer(models.Model):
-    answer_body = models.TextField()
+    body = models.TextField()
     index = models.PositiveIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(4)]
     )
@@ -65,8 +58,8 @@ class Answer(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        self.index = self.question.num_answers() + 1
+        self.index = self.question.answers.count() + 1
         super(Answer, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.index}. {self.answer_body}"
+        return f"{self.index}. {self.body}"

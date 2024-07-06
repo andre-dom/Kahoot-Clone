@@ -12,7 +12,7 @@ class AnswerSerializer(WritableNestedModelSerializer):
     class Meta:
         model = Answer
         fields = (
-            "answer_body",
+            "body",
             "index",
         )
 
@@ -23,7 +23,7 @@ class QuestionSerializer(WritableNestedModelSerializer):
     class Meta:
         model = Question
         fields = (
-            "question_body",
+            "body",
             "answers",
             "correct_answer",
             "index",

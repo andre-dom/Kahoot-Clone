@@ -31,8 +31,8 @@ const AddQuiz = ({ onClose, refreshQuizzes }) => {
 
   const [questions, setQuestions] = useState([
     {
-      question_body: "",
-      answers: Array(4).fill({ answer_body: "", index: 0 }),
+      body: "",
+      answers: Array(4).fill({ body: "", index: 0 }),
       correct_answer: 1,
     },
   ]);
@@ -53,7 +53,7 @@ const AddQuiz = ({ onClose, refreshQuizzes }) => {
     const updatedQuestions = [...questions];
 
     updatedQuestions[qIndex].answers[aIndex] = {
-      answer_body: value,
+      body: value,
       index: aIndex,
     };
 
@@ -73,8 +73,8 @@ const AddQuiz = ({ onClose, refreshQuizzes }) => {
       setQuestions([
         ...questions,
         {
-          question_body: "",
-          answers: Array(4).fill({ answer_body: "", index: 0 }),
+          body: "",
+          answers: Array(4).fill({ body: "", index: 0 }),
           correct_answer: 1,
         },
       ]);
@@ -95,13 +95,13 @@ const AddQuiz = ({ onClose, refreshQuizzes }) => {
     }
 
     questions.forEach((q, qIndex) => {
-      if (!q.question_body) {
-        newErrors[`question_body_${qIndex}`] = "Question body is required";
+      if (!q.body) {
+        newErrors[`body_${qIndex}`] = "Question body is required";
       }
 
       q.answers.forEach((a, aIndex) => {
-        if (!a.answer_body) {
-          newErrors[`answer_body_${qIndex}_${aIndex}`] =
+        if (!a.body) {
+          newErrors[`body_${qIndex}_${aIndex}`] =
             `Answer ${aIndex + 1} is required`;
         }
       });
@@ -171,18 +171,18 @@ const AddQuiz = ({ onClose, refreshQuizzes }) => {
             <FormControl
               id={`question-body-${qIndex}`}
               isRequired
-              isInvalid={Boolean(errors[`question_body_${qIndex}`])}
+              isInvalid={Boolean(errors[`body_${qIndex}`])}
             >
               <FormLabel>Question {qIndex + 1}</FormLabel>
 
               <Textarea
-                value={question.question_body}
+                value={question.body}
                 onChange={(e) =>
-                  handleQuestionChange(qIndex, "question_body", e.target.value)
+                  handleQuestionChange(qIndex, "body", e.target.value)
                 }
                 placeholder="Enter question body"
                 borderColor={
-                  errors[`question_body_${qIndex}`] ? "red.500" : "inherit"
+                  errors[`body_${qIndex}`] ? "red.500" : "inherit"
                 }
               />
             </FormControl>
@@ -192,19 +192,19 @@ const AddQuiz = ({ onClose, refreshQuizzes }) => {
                 key={aIndex}
                 id={`answer-${qIndex}-${aIndex}`}
                 isRequired
-                isInvalid={Boolean(errors[`answer_body_${qIndex}_${aIndex}`])}
+                isInvalid={Boolean(errors[`body_${qIndex}_${aIndex}`])}
                 mt={3}
               >
                 <FormLabel>Answer {aIndex + 1}</FormLabel>
 
                 <Input
-                  value={answer.answer_body}
+                  value={answer.body}
                   onChange={(e) =>
                     handleAnswerChange(qIndex, aIndex, e.target.value)
                   }
                   placeholder={`Enter answer ${aIndex + 1}`}
                   borderColor={
-                    errors[`answer_body_${qIndex}_${aIndex}`]
+                    errors[`body_${qIndex}_${aIndex}`]
                       ? "red.500"
                       : "inherit"
                   }

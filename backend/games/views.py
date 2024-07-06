@@ -80,8 +80,8 @@ def advance_game(request):
     if game.advance_game():
         question = game.current_question
         index = question.index
-        body = question.question_body
-        answers = [answer.answer_body for answer in question.answers.all()]
+        body = question.body
+        answers = [answer.body for answer in question.answers.all()]
         for player in game.players.all():
             send_event(
                 player.slug,
@@ -89,7 +89,7 @@ def advance_game(request):
                 {
                     "message": "game advanced",
                     "question_index": index,
-                    "question_body": body,
+                    "body": body,
                     "correct": player.previous_question_correct(),
                     "score": player.get_score(),
                     "answers": answers,
@@ -135,12 +135,12 @@ def player_get_game_state(request, slug):
         )
     question = player.game.current_question
     index = question.index
-    body = question.question_body
-    answers = [answer.answer_body for answer in question.answers.all()]
+    body = question.body
+    answers = [answer.body for answer in question.answers.all()]
     return response.Response(
         {
             "question_index": index,
-            "question_body": body,
+            "body": body,
             "score": player.get_score(),
             "answers": answers,
         },
@@ -224,7 +224,7 @@ def get_game_results_as_csv(request, slug):
     writer.writerow(["Player", "Correct", "Incorrect"])
     for player in game.players.all():
         correct = player.get_score()
-        writer.writerow([player.email, correct, game.quiz.num_questions() - correct])
+        writer.writerow([player.email, correct, game.quiz.questions.count() - correct])
 
     return res
 

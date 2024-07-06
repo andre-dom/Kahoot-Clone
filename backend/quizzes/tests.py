@@ -1,7 +1,6 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-
 from django.contrib.auth.models import User
 from .models import Quiz
 
@@ -14,10 +13,10 @@ class QuizPostTests(APITestCase):
 
     def test_post_quiz_with_no_questions(self):
         """
-        If a quiz has no questions, fail to validate
+        If a quiz has no questions, it should fail validation
         """
         url = reverse("quiz-list")
-        data = {"name": "a quiz with no questions", "questions": []}
+        data = {"name": "A quiz with no questions", "questions": []}
         self.client.force_authenticate(user=self.user1)
         response = self.client.post(url, data, format="json")
         self.client.force_authenticate(user=None)
@@ -28,19 +27,19 @@ class QuizPostTests(APITestCase):
 
     def test_post_quiz_with_4_answers(self):
         """
-        If a quiz has a question with 4 answers, success validation
+        If a quiz has a question with 4 answers, it should pass validation
         """
         url = reverse("quiz-list")
         data = {
-            "name": "string",
+            "name": "Valid Quiz",
             "questions": [
                 {
-                    "question_body": "string",
+                    "body": "Valid Question?",
                     "answers": [
-                        {"answer_body": "a"},
-                        {"answer_body": "b"},
-                        {"answer_body": "c"},
-                        {"answer_body": "d"},
+                        {"body": "a"},
+                        {"body": "b"},
+                        {"body": "c"},
+                        {"body": "d"},
                     ],
                     "correct_answer": 4,
                 }
@@ -53,18 +52,18 @@ class QuizPostTests(APITestCase):
 
     def test_post_quiz_with_3_answers(self):
         """
-        If a quiz has a question with 3 answers, fail  to validate
+        If a quiz has a question with 3 answers, it should fail validation
         """
         url = reverse("quiz-list")
         data = {
-            "name": "string",
+            "name": "Invalid Quiz",
             "questions": [
                 {
-                    "question_body": "string",
+                    "body": "Invalid Question?",
                     "answers": [
-                        {"answer_body": "a"},
-                        {"answer_body": "b"},
-                        {"answer_body": "c"},
+                        {"body": "a"},
+                        {"body": "b"},
+                        {"body": "c"},
                     ],
                     "correct_answer": 4,
                 }
@@ -85,28 +84,26 @@ class QuizPostTests(APITestCase):
 
     def test_post_quiz_with_5_answers(self):
         """
-        If a quiz has a question with 5 answers, fail to validate
+        If a quiz has a question with 5 answers, it should fail validation
         """
-
         url = reverse("quiz-list")
         data = {
-            "name": "string",
+            "name": "Invalid Quiz",
             "questions": [
                 {
-                    "question_body": "string",
+                    "body": "Invalid Question?",
                     "answers": [
-                        {"answer_body": "a"},
-                        {"answer_body": "b"},
-                        {"answer_body": "c"},
-                        {"answer_body": "d"},
-                        {"answer_body": "e"},
+                        {"body": "a"},
+                        {"body": "b"},
+                        {"body": "c"},
+                        {"body": "d"},
+                        {"body": "e"},
                     ],
                     "correct_answer": 4,
                 }
             ],
         }
         self.client.force_authenticate(user=self.user1)
-
         response = self.client.post(url, data, format="json")
         self.client.force_authenticate(user=None)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -118,3 +115,67 @@ class QuizPostTests(APITestCase):
                 ]
             },
         )
+
+    def test_post_quiz_with_empty_name(self):
+        """
+        If a quiz has an empty name, it should fail validation
+        """
+        url = reverse("quiz-list")
+        data = {
+            "name": "",
+            "questions": [
+                {
+                    "body": "Valid Question?",
+                    "answers": [
+                        {"body": "a"},
+                        {"body": "b"},
+                        {"body": "c"},
+                        {"body": "d"},
+                    ],
+                    "correct_answer": 1,
+                }
+            ],
+        }
+        self.client.force_authenticate(user=self.user1)
+        response = self.client.post(url, data, format="json")
+        self.client.force_authenticate(user=None)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("name", response.data)
+
+    def test_post_quiz_with_duplicate_question_indices(self):
+        """
+        If a quiz has questions with duplicate indices, it should fail validation
+        """
+        url = reverse("quiz-list")
+        data = {
+            "name": "Quiz with duplicate questions",
+            "questions": [
+                {
+                    "body": "Question 1?",
+                    "answers": [
+                        {"body": "a"},
+                        {"body": "b"},
+                        {"body": "c"},
+                        {"body": "d"},
+                    ],
+                    "correct_answer": 1,
+                    "index": 1,
+                },
+                {
+                    "body": "Question 2?",
+                    "answers": [
+                        {"body": "a"},
+                        {"body": "b"},
+                        {"body": "c"},
+                        {"body": "d"},
+                    ],
+                    "correct_answer": 2,
+                    "index": 1,  # Duplicate index
+                },
+            ],
+        }
+        self.client.force_authenticate(user=self.user1)
+        response = self.client.post(url, data, format="json")
+        self.client.force_authenticate(user=None)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("non_field_errors", response.data)

@@ -10,9 +10,6 @@ from quizzes.models import Quiz, Question, Answer
 from django_fsm import FSMField, transition
 
 from django.db import models
-from django.core.mail import send_mail
-
-from celery import shared_task
 
 
 class Game(models.Model):
@@ -37,7 +34,7 @@ class Game(models.Model):
 
     # advance the game forward one question, return false if the game is ove
     def advance_game(self):
-        if self.current_question.index < self.quiz.num_questions():
+        if self.current_question.index < self.quiz.questions.count():
             self.current_question = self.quiz.questions.get(
                 index=self.current_question.index + 1
             )
@@ -68,7 +65,7 @@ class Game(models.Model):
 
     # precondition for state transition, make sure we are on the last question before we finish the game
     def can_complete(self):
-        return not self.current_question.index < self.quiz.num_questions()
+        return not self.current_question.index < self.quiz.questions.count()
 
     # complete the game
     @transition(
@@ -112,9 +109,9 @@ class Player(models.Model):
 
     # helper functions to convert between string and list
     def set_answer(self, question_index, answer):
-        if question_index < 1 or question_index > self.game.quiz.num_questions():
+        if question_index < 1 or question_index > self.game.quiz.questions.count():
             raise ValueError(
-                f"get_answer: question_index should be between 1 and {self.game.quiz.num_questions()}, got {question_index}"
+                f"get_answer: question_index should be between 1 and {self.game.quiz.questions.count()}, got {question_index}"
             )
         if int(answer) < 1 or int(answer) > 4:
             raise ValueError(
@@ -143,9 +140,9 @@ class Player(models.Model):
         return ast.literal_eval(f"[{self.answers}]")
 
     def get_answer(self, question_index):
-        if question_index < 1 or question_index > self.game.quiz.num_questions():
+        if question_index < 1 or question_index > self.game.quiz.questions.count():
             raise ValueError(
-                f"get_answer: question_index should be between 1 and {self.game.quiz.num_questions()}, got {question_index}"
+                f"get_answer: question_index should be between 1 and {self.game.quiz.questions.count()}, got {question_index}"
             )
         return self.get_answer_list()[question_index - 1]
 
@@ -153,7 +150,7 @@ class Player(models.Model):
         correct = 0
         answers = self.get_answer_list()
         quiz = self.game.quiz
-        for i in range(0, quiz.num_questions()):
+        for i in range(0, quiz.questions.count()):
             if answers[i] == quiz.questions.get(index=i + 1).correct_answer:
                 correct += 1
         return correct
@@ -168,14 +165,14 @@ class Player(models.Model):
     # check if player got the previous question correct
     def previous_question_correct(self):
         if self.game.state == "complete":
-            return self.question_correct(self.game.quiz.num_questions())
+            return self.question_correct(self.game.quiz.questions.count())
         return self.question_correct(self.game.current_question.index - 1)
 
     def total_bonus(self):
         bonus = 0
         bonus_list = ast.literal_eval(f"[{self.answer_bonus}]")
         quiz = self.game.quiz
-        for i in range(0, quiz.num_questions()):
+        for i in range(0, quiz.questions.count()):
             bonus += bonus_list[i]
         return bonus
 
@@ -194,17 +191,6 @@ class Player(models.Model):
         return f"{self.email}: {self.game.quiz.name}"
 
 
-@shared_task
-def send_email_task(player):
-    send_mail(
-        "Kahoot-Clone Game Invite",
-        f"{player.game.creator.username} has invited you to a game! Join with the link below:\n\nhttp://127.0.0.1:3000/game/{player.slug}",
-        "admin@example.com",
-        [player.email],
-        fail_silently=False,
-    )
-
-
 # runs after a player is saved to DB, make sure they have an initialized answer list and id
 @receiver(models.signals.post_save, sender=Player)
 def initialize_player(sender, instance, created, *args, **kwargs):
@@ -217,9 +203,9 @@ def initialize_player(sender, instance, created, *args, **kwargs):
         if not instance.answers:
             send_email_task(instance)
             instance.answers = ",".join(
-                [str(0) for i in range(0, instance.game.quiz.num_questions())]
+                [str(0) for i in range(0, instance.game.quiz.questions.count())]
             )
             instance.answer_bonus = ",".join(
-                [str(0) for i in range(0, instance.game.quiz.num_questions())]
+                [str(0) for i in range(0, instance.game.quiz.questions.count())]
             )
         instance.save()

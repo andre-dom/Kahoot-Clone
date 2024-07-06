@@ -11,7 +11,7 @@ class AnswerInline(nested_admin.NestedTabularInline):
     model = Answer
     list_display = (
         "index",
-        "answer_body",
+        "body",
     )
 
 
@@ -19,7 +19,7 @@ class QuestionInline(nested_admin.NestedTabularInline):
     model = Question
     list_display = (
         "index",
-        "question_body",
+        "body",
     )
     inlines = (AnswerInline,)
 

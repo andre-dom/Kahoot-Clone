@@ -63,7 +63,7 @@ const Question = () => {
 
     const result = await response.json();
 
-    setQuestion(result.current_question.question_body);
+    setQuestion(result.current_question.body);
 
     setAnswers(result.current_question.answers);
   };
@@ -90,7 +90,7 @@ const Question = () => {
 
       navigate(`/results/${result.info}`);
     } else {
-      setQuestion(result.current_question.question_body);
+      setQuestion(result.current_question.body);
 
       setAnswers(result.current_question.answers);
     }
@@ -127,7 +127,7 @@ const Question = () => {
           <SimpleGrid columns={1} spacing={5} w="100%">
             {answers.map((answer, index) => (
               <Button key={index} w="100%" h="80px" fontSize="2xl">
-                {index + 1}. {answer.answer_body}
+                {index + 1}. {answer.body}
               </Button>
             ))}
           </SimpleGrid>
