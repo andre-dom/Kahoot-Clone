@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "rest_framework.authtoken",
+    "django_elasticsearch_dsl",
+    "django_elasticsearch_dsl_drf",
     "djoser",
     "nested_admin",
     "drf_spectacular",
@@ -147,17 +149,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 EVENTSTREAM_ALLOW_ORIGIN = "*"
 
-# requirment for sending emails. use the smtp backend because we do not want to print to console.
-# must search for an smtp server
 EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# requirement for sending emails
 
-# the connection to the smtp server
 
 EMAIL_USE_TLS = True
 
-# need the email host for sending emails. use smtp.gmail because it belongs to an smtp server i think
 EMAIL_HOST = "smtp.gmail.com"
 
 # use an email address that has an app password.
@@ -174,3 +171,7 @@ EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 CELERY_BROKER_URL = "amqp://guest:guest@localhost:5672/"
+
+ELASTICSEARCH_DSL = {
+    "default": {"hosts": "http://localhost:9200"},
+}

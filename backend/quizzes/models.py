@@ -37,6 +37,13 @@ class Question(models.Model):
     )
 
     def save(self, *args, **kwargs):
+        max_index = (
+            Question.objects.filter(quiz=self.quiz).aggregate(
+                largest=models.Max("index")
+            )["largest"]
+            or 1
+        )
+        self.index = max_index + 1
         super(Question, self).save(*args, **kwargs)
 
     def __str__(self):

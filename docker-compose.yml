@@ -1,8 +1,11 @@
-version: '3.8'
 services:
   backend:
     build: ./backend
-    command: python3 manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
     network_mode: "host"
 
   frontend:
@@ -23,20 +26,21 @@ services:
     image: "rabbitmq:3-management"
     ports:
       - "5672:5672"
-      - "15672:15672"
     network_mode: "host"
-
+ 
   elasticsearch:
-    image: "docker.elastic.co/elasticsearch/elasticsearch:7.10.0" # Adjust version as needed
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.22
     environment:
       - discovery.type=single-node
+      # - xpack.security.enabled=false
+      # - xpack.security.http.ssl.enabled=false
+      # - xpack.security.transport.ssl.enabled=false
+      - cluster.routing.allocation.disk.threshold_enabled=false
     ports:
       - "9200:9200"
-      - "9300:9300"
-    networks:
-      - default
-    volumes:
-      - esdata:/usr/share/elasticsearch/data
-
-volumes:
-  esdata:
+    network_mode: "host"
+    healthcheck:
+      test: curl -u elastic:elastic -s -f localhost:9200/_cat/health >/dev/null || exit 1
+      interval: 5s
+      timeout: 10s
+      retries: 100
